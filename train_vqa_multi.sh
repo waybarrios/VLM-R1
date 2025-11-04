@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# VQA Training Script with Multi-GPU Support
+# This script trains Qwen2.5-VL-3B on VQA tasks with GRPO
+#
+# REQUIREMENTS:
+# - Ollama must be running with gpt-oss:20b model
+#   Start with: ollama serve
+#   Pull model: ollama pull gpt-oss:20b
+# - transformers==4.52.4 (for Flash Attention support)
+# - datasets>=3.0.0
+
 # Configuration
 PROJECT_ROOT="/gpudata3/Wayner/VLM-R1"
 SRC_DIR="${PROJECT_ROOT}/src/open-r1-multimodal/src"
@@ -24,6 +34,8 @@ echo "Model: $MODEL"
 echo "Dataset: $DATASET"
 echo "Output: $OUTPUT"
 echo "Number of GPUs: $NUM_GPUS"
+echo "LLM Judge: ENABLED (gpt-oss:20b)"
+echo "Seed: 42 (with shuffle)"
 echo "========================================"
 
 # Run training with accelerate (with explicit configuration)
@@ -39,6 +51,9 @@ accelerate launch \
     --use_huggingface_dataset \
     --task_type "vqa" \
     --reward_funcs "format" "accuracy" "reasoning" \
+    --use_llm_judge \
+    --llm_judge_model "gpt-oss:20b" \
+    --llm_judge_base_url "http://localhost:11434/v1" \
     --output_dir $OUTPUT \
     --seed 42 \
     --shuffle_train_dataset \
