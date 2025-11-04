@@ -298,6 +298,31 @@ Configure LLM-based semantic verification for free-form text answers:
 --reward_funcs "accuracy" --use_llm_judge --llm_judge_model "llama3.2"
 ```
 
+### GPU Selection
+
+The training script supports selecting specific GPUs via `CUDA_VISIBLE_DEVICES`. Edit `train_vqa_multi.sh`:
+
+```bash
+# Use specific GPUs (GPUs 0, 1, 2, 3)
+GPU_IDS="0,1,2,3"
+
+# Use only 2 GPUs (GPUs 0 and 2)
+GPU_IDS="0,2"
+
+# Use all available GPUs
+GPU_IDS=""
+```
+
+**Alternative**: Set `CUDA_VISIBLE_DEVICES` before running:
+```bash
+CUDA_VISIBLE_DEVICES=0,1,2,3 ./train_vqa_multi.sh
+```
+
+**Important**: Ensure `num_generations` is compatible with your GPU count:
+- 2 GPUs × 4 batch = 8 → use `--num_generations 2` or `4` or `8`
+- 3 GPUs × 4 batch = 12 → use `--num_generations 2`, `3`, `4`, `6`, or `12`
+- 4 GPUs × 4 batch = 16 → use `--num_generations 2`, `4`, `8`, or `16`
+
 ### Model Configuration
 
 - `--model_name_or_path`: Model to fine-tune
@@ -617,6 +642,12 @@ pip install --upgrade datasets
 # Or adjust batch size instead
 --per_device_train_batch_size 2  # 3 GPUs × 2 = 6 (divisible by 2, 3, 6)
 ```
+
+### Issue: "TypeError: VLMGRPOTrainer._get_train_sampler() takes 1 positional argument but 2 were given"
+
+**Cause**: Method signature incompatibility with newer transformers versions.
+
+**Solution**: This has been fixed in the latest code. The `_get_train_sampler()` method now accepts an optional `train_dataset` parameter for compatibility with transformers 4.52.4+.
 
 ## Dataset Caching
 

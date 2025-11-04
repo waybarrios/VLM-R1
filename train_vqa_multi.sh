@@ -22,7 +22,26 @@ export PYTHONPATH="${SRC_DIR}:${MLLM_EVALUATOR_DIR}:${PYTHONPATH}"
 MODEL="Qwen/Qwen2.5-VL-3B-Instruct"
 DATASET="/gpudata3/Wayner/reasoning/reasoning_train_with_reference_steps"
 OUTPUT="${PROJECT_ROOT}/output/qwen2.5-vl-3b-vqa-multi-$(date +%Y%m%d_%H%M%S)"
-NUM_GPUS=4
+
+# GPU Configuration
+# Specify which GPUs to use (comma-separated). Leave empty to use all available GPUs.
+# Examples:
+#   GPU_IDS="0,1,2,3"    # Use GPUs 0, 1, 2, 3
+#   GPU_IDS="0,2"        # Use only GPUs 0 and 2
+#   GPU_IDS=""           # Use all available GPUs
+GPU_IDS="0,1,2,3"
+
+# Set CUDA_VISIBLE_DEVICES if GPU_IDS is specified
+if [ -n "$GPU_IDS" ]; then
+    export CUDA_VISIBLE_DEVICES=$GPU_IDS
+    # Count number of GPUs
+    NUM_GPUS=$(echo $GPU_IDS | tr ',' '\n' | wc -l)
+    echo "Using GPUs: $GPU_IDS"
+else
+    # Use all available GPUs
+    NUM_GPUS=$(nvidia-smi --list-gpus | wc -l)
+    echo "Using all available GPUs"
+fi
 
 # Create output directory
 mkdir -p $OUTPUT
@@ -33,7 +52,11 @@ echo "========================================"
 echo "Model: $MODEL"
 echo "Dataset: $DATASET"
 echo "Output: $OUTPUT"
-echo "Number of GPUs: $NUM_GPUS"
+if [ -n "$GPU_IDS" ]; then
+    echo "GPUs: $GPU_IDS (count: $NUM_GPUS)"
+else
+    echo "GPUs: All available (count: $NUM_GPUS)"
+fi
 echo "LLM Judge: ENABLED (gpt-oss:20b)"
 echo "Seed: 42 (with shuffle)"
 echo "========================================"
