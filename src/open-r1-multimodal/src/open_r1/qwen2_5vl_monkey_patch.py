@@ -1,8 +1,34 @@
 
 # ----------------------- Fix the flash attention bug in the current version of transformers -----------------------
-from transformers.models.qwen2_5_vl.modeling_qwen2_5_vl import Qwen2_5_VLVisionFlashAttention2, apply_rotary_pos_emb_flashatt, flash_attn_varlen_func
 import torch
 from typing import Tuple, Optional
+
+# Try to import Flash Attention classes (compatible with multiple transformers versions)
+try:
+    from transformers.models.qwen2_5_vl.modeling_qwen2_5_vl import Qwen2_5_VLVisionFlashAttention2
+    FLASH_ATTN_CLASS = Qwen2_5_VLVisionFlashAttention2
+except ImportError:
+    try:
+        # Newer transformers versions may use a different class name
+        from transformers.models.qwen2_5_vl.modeling_qwen2_5_vl import Qwen2_5_VLVisionAttention
+        FLASH_ATTN_CLASS = None  # Will skip monkey patch if flash attention class not found
+        print("Warning: Qwen2_5_VLVisionFlashAttention2 not found, Flash Attention monkey patch will be skipped")
+    except ImportError:
+        FLASH_ATTN_CLASS = None
+
+# Import other necessary functions
+try:
+    from transformers.models.qwen2_5_vl.modeling_qwen2_5_vl import apply_rotary_pos_emb_flashatt
+except ImportError:
+    apply_rotary_pos_emb_flashatt = None
+
+try:
+    from flash_attn import flash_attn_varlen_func
+except ImportError:
+    try:
+        from transformers.models.qwen2_5_vl.modeling_qwen2_5_vl import flash_attn_varlen_func
+    except ImportError:
+        flash_attn_varlen_func = None
 def qwen2_5vl_vision_flash_attn_forward(
         self,
         hidden_states: torch.Tensor,
@@ -41,7 +67,11 @@ def qwen2_5vl_vision_flash_attn_forward(
 
 
 def monkey_patch_qwen2_5vl_flash_attn():
-    Qwen2_5_VLVisionFlashAttention2.forward = qwen2_5vl_vision_flash_attn_forward
+    if FLASH_ATTN_CLASS is not None and apply_rotary_pos_emb_flashatt is not None and flash_attn_varlen_func is not None:
+        FLASH_ATTN_CLASS.forward = qwen2_5vl_vision_flash_attn_forward
+        print("✓ Qwen2.5-VL Flash Attention monkey patch applied successfully")
+    else:
+        print("⚠ Skipping Flash Attention monkey patch (not available in this transformers version)")
 
 
 # ----------------------- Fix the process pending bug when using data mixture of image-text data and pure-text under deepseed zero3-----------------------

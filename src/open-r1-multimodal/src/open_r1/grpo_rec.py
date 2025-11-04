@@ -300,8 +300,6 @@ def get_vlm_module(model_name_or_path):
     elif "internvl" in model_name_or_path.lower():
         return InvernVLModule
     elif "glm" in model_name_or_path.lower():
-        if GLMVModule is None:
-            raise ValueError(f"GLM model requested but GLMVModule is not available. Please upgrade transformers to a version that supports Glm4vForConditionalGeneration.")
         return GLMVModule
     else:
         raise ValueError(f"Unsupported model: {model_name_or_path}")
