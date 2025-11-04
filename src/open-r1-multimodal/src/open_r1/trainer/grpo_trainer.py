@@ -23,8 +23,6 @@ import transformers
 from datasets import Dataset, IterableDataset
 from packaging import version
 from transformers import (
-    AriaForConditionalGeneration,
-    AriaProcessor,
     AutoModelForCausalLM,
     AutoModelForSequenceClassification,
     AutoProcessor,
@@ -38,6 +36,13 @@ from transformers import (
     TrainerCallback,
     is_wandb_available,
 )
+
+# Optional Aria support for newer transformers versions
+try:
+    from transformers import AriaForConditionalGeneration, AriaProcessor
+except ImportError:
+    AriaForConditionalGeneration = None
+    AriaProcessor = None
 from transformers.integrations.deepspeed import is_deepspeed_zero3_enabled
 from transformers.utils import is_peft_available
 
