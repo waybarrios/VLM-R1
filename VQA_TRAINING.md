@@ -100,6 +100,8 @@ python src/open-r1-multimodal/src/open_r1/grpo_rec.py \
     --per_device_train_batch_size 4 \
     --gradient_accumulation_steps 4 \
     --learning_rate 1e-5 \
+    --seed 42 \
+    --shuffle_train_dataset \
     --logging_steps 10 \
     --save_steps 500 \
     --max_pixels 12845056 \
@@ -199,6 +201,30 @@ deepspeed --num_gpus 4 \
 - `--task_type "vqa"`: **Required** - Sets the task to VQA mode with JSON output
 - `--use_huggingface_dataset`: **Required** - Enables HuggingFace dataset loading
 - `--dataset_name`: Path to your HuggingFace dataset directory
+
+### Dataset Shuffling & Reproducibility
+
+Control dataset shuffling and random seed for reproducible training:
+
+- `--shuffle_train_dataset`: Whether to shuffle the training dataset (default: True)
+- `--seed`: Random seed for reproducibility (default: 42)
+
+**Reproducibility:**
+- Sets seed for Python `random`, NumPy, PyTorch (CPU and CUDA)
+- Ensures deterministic shuffling and sampling
+- Use the same seed to reproduce exact training order
+
+**Example usage:**
+```bash
+# Reproducible training with specific seed
+--seed 42 --shuffle_train_dataset
+
+# Reproducible training without shuffling (sequential order)
+--seed 42 --no-shuffle_train_dataset
+
+# Different shuffle order
+--seed 123 --shuffle_train_dataset
+```
 
 ### Reward Functions
 
@@ -431,7 +457,31 @@ The VQA prompt is fixed in the code. If you need modifications:
 - Ensure `{USER_INSTRUCTION}` placeholder remains
 - Maintain JSON schema in instructions
 
-### 6. Evaluation
+### 6. Reproducibility
+
+**For reproducible training:**
+- Always set `--seed` to a fixed value (e.g., 42)
+- Use `--shuffle_train_dataset` for better generalization
+- Same seed + same data order = identical training trajectory
+
+**Important notes:**
+- Seed is set for Python random, NumPy, PyTorch (CPU + CUDA)
+- Distributed training may have slight variations due to parallelism
+- For exact reproducibility, use single GPU with fixed seed
+
+**Example reproducible run:**
+```bash
+# Run 1
+--seed 42 --shuffle_train_dataset
+
+# Run 2 (should produce identical results)
+--seed 42 --shuffle_train_dataset
+
+# Run 3 (different shuffle order)
+--seed 123 --shuffle_train_dataset
+```
+
+### 7. Evaluation
 
 **During training:**
 - Monitor reward trends in logs/tensorboard
@@ -499,6 +549,10 @@ DATASET="/path/to/your/dataset"
 OUTPUT="./output/qwen2.5-vl-3b-vqa-$(date +%Y%m%d_%H%M%S)"
 NUM_GPUS=4
 
+# Reproducibility
+SEED=42
+SHUFFLE_DATASET=true
+
 # LLM Judge Configuration (optional)
 USE_LLM_JUDGE=false  # Set to true to enable LLM judge
 LLM_JUDGE_MODEL="llama3.2"
@@ -518,6 +572,12 @@ if [ "$USE_LLM_JUDGE" = true ]; then
     echo "LLM Judge enabled with model: $LLM_JUDGE_MODEL"
 fi
 
+# Build shuffle argument
+SHUFFLE_ARGS=""
+if [ "$SHUFFLE_DATASET" = true ]; then
+    SHUFFLE_ARGS="--shuffle_train_dataset"
+fi
+
 # Train with accelerate
 accelerate launch --num_processes $NUM_GPUS \
     src/open-r1-multimodal/src/open_r1/grpo_rec.py \
@@ -526,6 +586,8 @@ accelerate launch --num_processes $NUM_GPUS \
     --use_huggingface_dataset \
     --task_type "vqa" \
     --reward_funcs "format" "accuracy" "reasoning" \
+    --seed $SEED \
+    $SHUFFLE_ARGS \
     $LLM_JUDGE_ARGS \
     --output_dir $OUTPUT \
     --num_train_epochs 3 \
@@ -566,6 +628,8 @@ python src/open-r1-multimodal/src/open_r1/grpo_rec.py \
     --task_type "vqa" \
     --reward_funcs "format" "accuracy" \
     --output_dir "./output/qwen2.5-vl-3b-test" \
+    --seed 42 \
+    --shuffle_train_dataset \
     --num_train_epochs 1 \
     --per_device_train_batch_size 4 \
     --gradient_accumulation_steps 4 \

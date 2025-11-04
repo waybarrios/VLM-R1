@@ -40,6 +40,8 @@ import yaml
 import json
 import random
 import math
+import numpy as np
+import torch
 from datasets import load_from_disk
 
 from open_r1.qwen2_5vl_monkey_patch import monkey_patch_qwen2_5vl_flash_attn, monkey_patch_qwen2_5vl_forward
@@ -97,6 +99,14 @@ class GRPOScriptArguments(ScriptArguments):
         default="http://localhost:11434/v1",
         metadata={"help": "Base URL for Ollama API (OpenAI-compatible endpoint)"},
     )
+    shuffle_train_dataset: bool = field(
+        default=True,
+        metadata={"help": "Whether to shuffle the training dataset"},
+    )
+    seed: Optional[int] = field(
+        default=42,
+        metadata={"help": "Random seed for reproducibility (shuffling, sampling, etc.)"},
+    )
 
 @dataclass
 class GRPOModelConfig(ModelConfig):
@@ -117,6 +127,15 @@ class LazySupervisedDataset(Dataset):
         self.list_data_dict = []
         self.question_template = question_template
         self.use_huggingface = script_args.use_huggingface_dataset
+
+        # Set random seed for reproducibility
+        if script_args.seed is not None:
+            random.seed(script_args.seed)
+            np.random.seed(script_args.seed)
+            torch.manual_seed(script_args.seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(script_args.seed)
+            print(f"Random seed set to: {script_args.seed}")
 
         if self.use_huggingface:
             # Load HuggingFace dataset from disk
@@ -181,6 +200,13 @@ class LazySupervisedDataset(Dataset):
                     self.list_data_dict.extend(cur_data_dict)
         else:
             raise ValueError(f"Unsupported file type: {data_path}")
+
+        # Shuffle the entire dataset if requested
+        if script_args.shuffle_train_dataset:
+            random.shuffle(self.list_data_dict)
+            print(f"Dataset shuffled with seed {script_args.seed}")
+
+        print(f"Total samples in dataset: {len(self.list_data_dict)}")
 
     def __len__(self):
         return len(self.list_data_dict)
