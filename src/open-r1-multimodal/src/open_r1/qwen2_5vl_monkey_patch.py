@@ -170,7 +170,7 @@ def qwen2_5vl_forward(
             # calculate RoPE index once per generation in the pre-fill stage only
             if (
                 (cache_position is not None and cache_position[0] == 0)
-                or self.rope_deltas is None
+                or getattr(self, 'rope_deltas', None) is None
                 or (past_key_values is None or past_key_values.get_seq_length() == 0)
             ):
                 position_ids, rope_deltas = self.get_rope_index(
@@ -185,7 +185,7 @@ def qwen2_5vl_forward(
             else:
                 batch_size, seq_length, _ = inputs_embeds.shape
                 delta = (
-                    (cache_position[0] + self.rope_deltas).to(inputs_embeds.device)
+                    (cache_position[0] + getattr(self, 'rope_deltas', 0)).to(inputs_embeds.device)
                     if cache_position is not None
                     else 0
                 )
@@ -237,7 +237,7 @@ def qwen2_5vl_forward(
             past_key_values=outputs.past_key_values,
             hidden_states=outputs.hidden_states,
             attentions=outputs.attentions,
-            rope_deltas=self.rope_deltas,
+            rope_deltas=getattr(self, 'rope_deltas', None),
         )
 
 def monkey_patch_qwen2_5vl_forward():
