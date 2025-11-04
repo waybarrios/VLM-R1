@@ -2,12 +2,30 @@
 
 This guide explains how to train Vision-Language Models on Visual Question Answering (VQA) tasks using GRPO (Group Relative Policy Optimization) with reasoning steps.
 
+## Quick Start
+
+```bash
+# 1. Install dependencies (transformers 4.52.4 recommended for Qwen2.5-VL)
+pip install transformers==4.52.4 datasets>=3.0.0 trl peft accelerate
+
+# 2. Run training
+bash train_vqa_multi.sh  # Uses Qwen2.5-VL-3B-Instruct by default
+```
+
 ## Overview
 
 The VQA training mode uses a JSON output format with reasoning steps and final answers, evaluated using three reward functions:
 - **Format Reward**: Validates JSON structure
-- **Accuracy Reward**: Evaluates answer correctness
+- **Accuracy Reward**: Evaluates answer correctness (rule-based or LLM-based with `gpt-oss:20b`)
 - **Reasoning Reward**: Measures reasoning quality using Match F1
+
+**Key Features:**
+- ✅ HuggingFace dataset support with `load_from_disk()`
+- ✅ Multi-GPU training with Accelerate
+- ✅ Optional LLM judge for semantic verification (default: `gpt-oss:20b`)
+- ✅ Reproducible training with seed control (via `--seed` from TrainingArguments)
+- ✅ Dataset shuffling with `--shuffle_train_dataset`
+- ✅ Support for Qwen2.5-VL, Aria, and GLM-4V models
 
 ## Dataset Requirements
 
@@ -58,14 +76,22 @@ Dataset({
 
 ```bash
 # Install base requirements
-pip install transformers torch datasets pillow pyyaml
+# NOTE: For Qwen2.5-VL with Flash Attention support, use transformers 4.52.4
+# For all models (Qwen2.5-VL + Aria + GLM-4V), use transformers >= 4.56.0
+pip install transformers==4.52.4  # or transformers>=4.56.0 for all models
+pip install torch datasets pillow pyyaml
 
 # Install TRL and GRPO dependencies
 pip install trl peft accelerate
+pip install datasets>=3.0.0  # Required by TRL
 
 # Install mllm_evaluator dependencies
 pip install sentence-transformers pandas numpy openai tqdm
 ```
+
+**Transformers Version Notes:**
+- **transformers 4.52.4**: ✅ Best for Qwen2.5-VL with Flash Attention support
+- **transformers ≥4.56.0**: ✅ Supports all models (Qwen2.5-VL + Aria + GLM-4V), but Flash Attention monkey patch may be skipped (still works with standard attention)
 
 ### Optional: Ollama Setup (for LLM-based accuracy grading)
 
@@ -78,11 +104,11 @@ curl -fsSL https://ollama.com/install.sh | sh
 # Start Ollama service
 ollama serve
 
-# Pull a model (in another terminal)
-ollama pull llama3.2
+# Pull the gpt-oss model (in another terminal)
+ollama pull gpt-oss:20b
 ```
 
-**Note**: The accuracy calculator uses rule-based matching by default for speed. Enable LLM-based semantic verification with `--use_llm_judge` if needed.
+**Note**: The accuracy calculator uses rule-based matching by default for speed. Enable LLM-based semantic verification with `--use_llm_judge` if needed. The default LLM judge model is `gpt-oss:20b` (configurable via `--llm_judge_model`).
 
 ## Training Commands
 
@@ -120,7 +146,7 @@ python src/open-r1-multimodal/src/open_r1/grpo_rec.py \
     --task_type "vqa" \
     --reward_funcs "format" "accuracy" \
     --use_llm_judge \
-    --llm_judge_model "llama3.2" \
+    --llm_judge_model "gpt-oss:20b" \
     --llm_judge_base_url "http://localhost:11434/v1" \
     --output_dir "./output/qwen2.5-vl-3b-vqa-llm-judge" \
     --num_train_epochs 3 \
@@ -243,8 +269,8 @@ Choose from the following reward functions (can use multiple):
 Configure LLM-based semantic verification for free-form text answers:
 
 - `--use_llm_judge`: Enable LLM judge for accuracy evaluation (default: False)
-- `--llm_judge_model`: Ollama model name (default: "llama3.2")
-  - Options: `"llama3.2"`, `"llama3.1"`, `"mistral"`, `"phi3"`, `"gemma2"`
+- `--llm_judge_model`: Ollama model name (default: "gpt-oss:20b")
+  - Options: `"gpt-oss:20b"`, `"llama3.2"`, `"llama3.1"`, `"mistral"`, `"phi3"`, `"gemma2"`
 - `--llm_judge_base_url`: Ollama API endpoint (default: "http://localhost:11434/v1")
 
 **When to use LLM Judge:**
@@ -264,7 +290,10 @@ Configure LLM-based semantic verification for free-form text answers:
 # Fast training (rule-based only)
 --reward_funcs "accuracy"
 
-# Semantic training (LLM-based)
+# Semantic training (LLM-based with gpt-oss:20b)
+--reward_funcs "accuracy" --use_llm_judge --llm_judge_model "gpt-oss:20b"
+
+# Using a different model
 --reward_funcs "accuracy" --use_llm_judge --llm_judge_model "llama3.2"
 ```
 
@@ -493,6 +522,42 @@ The VQA prompt is fixed in the code. If you need modifications:
 
 ## Troubleshooting
 
+### Issue: "cannot import name 'AriaForConditionalGeneration'" or "cannot import name 'Glm4vForConditionalGeneration'"
+
+**Cause**: Using transformers version that doesn't include newer models (Aria, GLM-4V).
+
+**Solution**: Upgrade transformers to latest version:
+```bash
+pip install --upgrade transformers>=4.56.0
+```
+
+**Note**: With transformers ≥4.56.0, Flash Attention monkey patch may be skipped (you'll see a warning), but training will still work with standard attention.
+
+### Issue: "cannot import name 'Qwen2_5_VLVisionFlashAttention2'"
+
+**Cause**: Using transformers version with breaking changes in Flash Attention.
+
+**Solution**: Use transformers 4.52.4 for best Qwen2.5-VL Flash Attention support:
+```bash
+pip uninstall transformers -y
+pip install transformers==4.52.4
+```
+
+### Issue: "argument --seed: conflicting option string"
+
+**Cause**: Duplicate seed parameter definition (fixed in latest version).
+
+**Solution**: This was a bug that has been fixed. The `--seed` parameter is now from `TrainingArguments` (standard Hugging Face parameter).
+
+### Issue: "pip's dependency resolver" - datasets version conflict
+
+**Cause**: TRL requires datasets>=3.0.0.
+
+**Solution**:
+```bash
+pip install --upgrade datasets
+```
+
 ### Issue: "Unsupported file type"
 
 **Solution**: Ensure you use `--use_huggingface_dataset` flag for HuggingFace datasets.
@@ -555,7 +620,7 @@ SHUFFLE_DATASET=true
 
 # LLM Judge Configuration (optional)
 USE_LLM_JUDGE=false  # Set to true to enable LLM judge
-LLM_JUDGE_MODEL="llama3.2"
+LLM_JUDGE_MODEL="gpt-oss:20b"
 LLM_JUDGE_URL="http://localhost:11434/v1"
 
 # Enable debug logging

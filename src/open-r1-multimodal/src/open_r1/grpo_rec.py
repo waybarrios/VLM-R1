@@ -92,8 +92,8 @@ class GRPOScriptArguments(ScriptArguments):
         metadata={"help": "Whether to use LLM-based judge for accuracy evaluation (requires Ollama)"},
     )
     llm_judge_model: str = field(
-        default="llama3.2",
-        metadata={"help": "Ollama model name for LLM judge (e.g., 'llama3.2', 'mistral', 'phi3')"},
+        default="gpt-oss:20b",
+        metadata={"help": "Ollama model name for LLM judge (e.g., 'gpt-oss:20b', 'llama3.2', 'mistral', 'phi3')"},
     )
     llm_judge_base_url: str = field(
         default="http://localhost:11434/v1",
@@ -102,10 +102,6 @@ class GRPOScriptArguments(ScriptArguments):
     shuffle_train_dataset: bool = field(
         default=True,
         metadata={"help": "Whether to shuffle the training dataset"},
-    )
-    seed: Optional[int] = field(
-        default=42,
-        metadata={"help": "Random seed for reproducibility (shuffling, sampling, etc.)"},
     )
 
 @dataclass
@@ -121,21 +117,22 @@ SYSTEM_PROMPT = (
 )
 
 class LazySupervisedDataset(Dataset):
-    def __init__(self, data_path: str, script_args: GRPOScriptArguments, question_template: str):
+    def __init__(self, data_path: str, script_args: GRPOScriptArguments, question_template: str, seed: Optional[int] = None):
         super(LazySupervisedDataset, self).__init__()
         self.script_args = script_args
+        self.seed = seed
         self.list_data_dict = []
         self.question_template = question_template
         self.use_huggingface = script_args.use_huggingface_dataset
 
         # Set random seed for reproducibility
-        if script_args.seed is not None:
-            random.seed(script_args.seed)
-            np.random.seed(script_args.seed)
-            torch.manual_seed(script_args.seed)
+        if seed is not None:
+            random.seed(seed)
+            np.random.seed(seed)
+            torch.manual_seed(seed)
             if torch.cuda.is_available():
-                torch.cuda.manual_seed_all(script_args.seed)
-            print(f"Random seed set to: {script_args.seed}")
+                torch.cuda.manual_seed_all(seed)
+            print(f"Random seed set to: {seed}")
 
         if self.use_huggingface:
             # Load HuggingFace dataset from disk
@@ -204,7 +201,7 @@ class LazySupervisedDataset(Dataset):
         # Shuffle the entire dataset if requested
         if script_args.shuffle_train_dataset:
             random.shuffle(self.list_data_dict)
-            print(f"Dataset shuffled with seed {script_args.seed}")
+            print(f"Dataset shuffled with seed {self.seed}")
 
         print(f"Total samples in dataset: {len(self.list_data_dict)}")
 
@@ -323,7 +320,12 @@ def main(script_args, training_args, model_args):
     print("task_type:", script_args.task_type)
 
     # Load the dataset
-    dataset = LazySupervisedDataset(script_args.dataset_name, script_args, question_template=vlm_module_cls.get_question_template(task_type=script_args.task_type))
+    dataset = LazySupervisedDataset(
+        script_args.dataset_name,
+        script_args,
+        question_template=vlm_module_cls.get_question_template(task_type=script_args.task_type),
+        seed=training_args.seed
+    )
 
     trainer_cls = VLMGRPOTrainer
     # Initialize the GRPO trainer

@@ -16,14 +16,14 @@ from accuracy_calculator import AccuracyCalculator
 class Qwen2VLModule(VLMBaseModule):
     # Class variables for LLM judge configuration
     _use_llm_judge = False
-    _llm_judge_model = "llama3.2"
+    _llm_judge_model = "gpt-oss:20b"
     _llm_judge_base_url = "http://localhost:11434/v1"
 
     def __init__(self):
         super().__init__()
 
     @classmethod
-    def configure_llm_judge(cls, use_llm_judge=False, llm_judge_model="llama3.2", llm_judge_base_url="http://localhost:11434/v1"):
+    def configure_llm_judge(cls, use_llm_judge=False, llm_judge_model="gpt-oss:20b", llm_judge_base_url="http://localhost:11434/v1"):
         """Configure LLM judge settings for accuracy evaluation."""
         cls._use_llm_judge = use_llm_judge
         cls._llm_judge_model = llm_judge_model
