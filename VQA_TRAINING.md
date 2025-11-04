@@ -600,12 +600,59 @@ pip install --upgrade datasets
 
 ### Issue: OOM (Out of Memory)
 
-**Solutions:**
-- Reduce batch size
-- Increase gradient accumulation
-- Reduce max_pixels
-- Use DeepSpeed ZeRO-3
-- Use QLoRA/LoRA
+**Error Example**: `torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 148.00 MiB. GPU 2 has a total capacity of 79.25 GiB...`
+
+**Critical Solutions** (apply in order):
+
+1. **Reduce batch size and increase gradient accumulation**:
+   ```bash
+   # Original (OOM)
+   --per_device_train_batch_size 4 --gradient_accumulation_steps 2
+
+   # Memory optimized (same effective batch size)
+   --per_device_train_batch_size 1 --gradient_accumulation_steps 8
+   ```
+
+2. **Enable gradient checkpointing** (saves ~40% memory):
+   ```bash
+   --gradient_checkpointing
+   ```
+
+3. **Reduce image resolution** (cut max_pixels in half):
+   ```bash
+   # Original
+   --max_pixels 12845056
+
+   # Reduced (saves ~50% memory per image)
+   --max_pixels 6422528
+   ```
+
+4. **Set PyTorch memory optimization**:
+   ```bash
+   export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+   ```
+
+5. **Use fewer GPUs** (if you have limited VRAM):
+   ```bash
+   # Use only 2 GPUs instead of 4
+   GPU_IDS="0,1"
+   ```
+
+6. **Advanced: Use DeepSpeed ZeRO-3** (for 7B+ models):
+   ```bash
+   --deepspeed configs/deepspeed_zero3.json
+   ```
+
+**Memory Usage Guide**:
+- **Qwen2.5-VL-3B**: ~20-25GB per GPU (with optimizations)
+- **Qwen2.5-VL-7B**: ~40-50GB per GPU (requires DeepSpeed ZeRO-3)
+
+**Updated train_vqa_multi.sh** (memory optimized):
+- `per_device_train_batch_size: 1` (was 4)
+- `gradient_accumulation_steps: 8` (was 2)
+- `max_pixels: 6422528` (was 12845056)
+- `gradient_checkpointing: enabled`
+- `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`
 
 ### Issue: Reasoning reward is 0.0
 
