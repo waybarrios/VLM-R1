@@ -40,6 +40,7 @@ import yaml
 import json
 import random
 import math
+from datasets import load_from_disk
 
 from open_r1.qwen2_5vl_monkey_patch import monkey_patch_qwen2_5vl_flash_attn, monkey_patch_qwen2_5vl_forward
 monkey_patch_qwen2_5vl_flash_attn()
@@ -76,6 +77,14 @@ class GRPOScriptArguments(ScriptArguments):
         default=None,
         metadata={"help": "Root directory of the image"},
     )
+    use_huggingface_dataset: bool = field(
+        default=False,
+        metadata={"help": "Whether to use HuggingFace dataset format instead of JSON/JSONL"},
+    )
+    task_type: str = field(
+        default="rec",
+        metadata={"help": "Task type for the VLM module. Possible values: 'rec', 'vqa', 'ic', 'odLength'"},
+    )
 
 @dataclass
 class GRPOModelConfig(ModelConfig):
@@ -95,8 +104,24 @@ class LazySupervisedDataset(Dataset):
         self.script_args = script_args
         self.list_data_dict = []
         self.question_template = question_template
+        self.use_huggingface = script_args.use_huggingface_dataset
 
-        if data_path.endswith(".yaml"):
+        if self.use_huggingface:
+            # Load HuggingFace dataset from disk
+            dataset = load_from_disk(data_path)
+            # Convert HuggingFace dataset to list of dicts
+            for item in dataset:
+                self.list_data_dict.append({
+                    'image': item['image'],  # PIL Image
+                    'question': item['question'],
+                    'answer': item['answer'],
+                    'reference_steps': item.get('reference_steps', []),
+                    'choices': item.get('choices', []),
+                    'options': item.get('options', []),
+                    'source': item.get('source', ''),
+                })
+            print(f"Loaded {len(self.list_data_dict)} samples from HuggingFace dataset at {data_path}")
+        elif data_path.endswith(".yaml"):
             with open(data_path, "r") as file:
                 yaml_data = yaml.safe_load(file)
                 datasets = yaml_data.get("datasets")
@@ -149,50 +174,86 @@ class LazySupervisedDataset(Dataset):
         return len(self.list_data_dict)
 
     def __getitem__(self, i):
-        # Format into conversation
-        def make_conversation(example):
-            return {
-                "prompt": [
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": example["problem"]},
-                ],
-            }
-        QUESTION_TEMPLATE = self.question_template
-        def make_conversation_image(example):
-            return {
-                "prompt": [
-                    # {"role": "system", "content": [{"type": "text", "text": SYSTEM_PROMPT}]},
-                    {
-                        "role": "user",
-                        "content": [
-                            {"type": "image"},
-                            {"type": "text", "text": QUESTION_TEMPLATE.format(Question=example["problem"])},
-                        ],
-                    },
-                ],
-            }
-
         example = self.list_data_dict[i]
-        image_root = self.script_args.image_root
-        if 'image' in example:
-            image_path = os.path.join(image_root, example['image'])
-            # In case the image is not found
-            while not os.path.exists(image_path):
-                print(f"Warning: Image {image_path} not found, randomly selecting another image")
-                new_index = random.randint(0, len(self.list_data_dict)-1)
-                example = self.list_data_dict[new_index]
-                image_path = os.path.join(image_root, example['image'])
-            image = Image.open(image_path).convert("RGB")
-        else:
-            image = None
-        
 
-        return {
-            'image': image,
-            'problem': example['problem'],
-            'solution': example['solution'],
-            'prompt': make_conversation_image(example)['prompt'] if 'image' in example else make_conversation(example)['prompt'],
-        }
+        if self.use_huggingface:
+            # HuggingFace dataset format
+            # Format the user question with choices/options
+            if example.get("choices"):
+                formatted_options = "\n".join([f"{chr(65+i)}) {c}" for i, c in enumerate(example["choices"])])
+            elif example.get("options"):
+                formatted_options = "\n".join([f"{chr(65+i)}) {c}" for i, c in enumerate(example["options"])])
+            else:
+                formatted_options = ""
+
+            user_question = f"{example['question']}\n\n{formatted_options}".strip()
+            user_instruction = self.question_template.replace("{USER_INSTRUCTION}", user_question)
+
+            # Image is already PIL Image from HuggingFace dataset
+            image = example['image']
+
+            # Create prompt without system message
+            prompt = [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "image"},
+                        {"type": "text", "text": user_instruction},
+                    ],
+                },
+            ]
+
+            return {
+                'image': image,
+                'problem': user_question,
+                'solution': example['answer'],
+                'reference_steps': example.get('reference_steps', []),
+                'prompt': prompt,
+            }
+        else:
+            # Original JSON/JSONL format
+            def make_conversation(example):
+                return {
+                    "prompt": [
+                        {"role": "system", "content": SYSTEM_PROMPT},
+                        {"role": "user", "content": example["problem"]},
+                    ],
+                }
+            QUESTION_TEMPLATE = self.question_template
+            def make_conversation_image(example):
+                return {
+                    "prompt": [
+                        # {"role": "system", "content": [{"type": "text", "text": SYSTEM_PROMPT}]},
+                        {
+                            "role": "user",
+                            "content": [
+                                {"type": "image"},
+                                {"type": "text", "text": QUESTION_TEMPLATE.format(Question=example["problem"])},
+                            ],
+                        },
+                    ],
+                }
+
+            image_root = self.script_args.image_root
+            if 'image' in example:
+                image_path = os.path.join(image_root, example['image'])
+                # In case the image is not found
+                while not os.path.exists(image_path):
+                    print(f"Warning: Image {image_path} not found, randomly selecting another image")
+                    new_index = random.randint(0, len(self.list_data_dict)-1)
+                    example = self.list_data_dict[new_index]
+                    image_path = os.path.join(image_root, example['image'])
+                image = Image.open(image_path).convert("RGB")
+            else:
+                image = None
+
+
+            return {
+                'image': image,
+                'problem': example['problem'],
+                'solution': example['solution'],
+                'prompt': make_conversation_image(example)['prompt'] if 'image' in example else make_conversation(example)['prompt'],
+            }
 
 
 def get_vlm_module(model_name_or_path):
@@ -209,16 +270,13 @@ def main(script_args, training_args, model_args):
     # Load the VLM module
     vlm_module_cls = get_vlm_module(model_args.model_name_or_path)
 
-    # Load the reward functions
-    reward_funcs_registry = {
-        "accuracy": vlm_module_cls.iou_reward,
-        "format": vlm_module_cls.format_reward_rec,
-    }
-    reward_funcs = [reward_funcs_registry[func] for func in script_args.reward_funcs]
+    # Load the reward functions based on task type
+    reward_funcs = [vlm_module_cls.select_reward_func(func, script_args.task_type) for func in script_args.reward_funcs]
     print("reward_funcs:", reward_funcs)
+    print("task_type:", script_args.task_type)
 
     # Load the dataset
-    dataset = LazySupervisedDataset(script_args.dataset_name, script_args, question_template=vlm_module_cls.get_question_template(task_type="rec"))
+    dataset = LazySupervisedDataset(script_args.dataset_name, script_args, question_template=vlm_module_cls.get_question_template(task_type=script_args.task_type))
 
     trainer_cls = VLMGRPOTrainer
     # Initialize the GRPO trainer
