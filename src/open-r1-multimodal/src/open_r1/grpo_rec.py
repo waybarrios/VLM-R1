@@ -26,6 +26,8 @@ import re
 from datetime import datetime
 from dataclasses import dataclass, field
 from typing import Optional
+import pickle
+import hashlib
 
 from PIL import Image
 from torch.utils.data import Dataset
@@ -134,6 +136,24 @@ class LazySupervisedDataset(Dataset):
                 torch.cuda.manual_seed_all(seed)
             print(f"Random seed set to: {seed}")
 
+        # Create cache filename based on data_path and seed
+        cache_key = f"{data_path}_{seed}_{script_args.shuffle_train_dataset}"
+        cache_hash = hashlib.md5(cache_key.encode()).hexdigest()
+        cache_dir = os.path.join(os.path.dirname(data_path), ".dataset_cache")
+        os.makedirs(cache_dir, exist_ok=True)
+        self.cache_file = os.path.join(cache_dir, f"dataset_cache_{cache_hash}.pkl")
+
+        # Try to load from cache
+        if os.path.exists(self.cache_file):
+            print(f"📦 Loading dataset from cache: {self.cache_file}")
+            try:
+                with open(self.cache_file, 'rb') as f:
+                    self.list_data_dict = pickle.load(f)
+                print(f"✓ Loaded {len(self.list_data_dict)} samples from cache!")
+                return  # Skip loading and processing
+            except Exception as e:
+                print(f"⚠ Cache loading failed: {e}. Loading from source...")
+
         if self.use_huggingface:
             # Load HuggingFace dataset from disk
             print(f"Loading HuggingFace dataset from: {data_path}")
@@ -216,6 +236,15 @@ class LazySupervisedDataset(Dataset):
             print(f"Dataset shuffled with seed {self.seed}")
 
         print(f"Total samples in dataset: {len(self.list_data_dict)}")
+
+        # Save to cache for future runs
+        try:
+            print(f"💾 Saving dataset to cache: {self.cache_file}")
+            with open(self.cache_file, 'wb') as f:
+                pickle.dump(self.list_data_dict, f, protocol=pickle.HIGHEST_PROTOCOL)
+            print(f"✓ Cache saved! Future runs will load instantly.")
+        except Exception as e:
+            print(f"⚠ Failed to save cache (non-critical): {e}")
 
     def __len__(self):
         return len(self.list_data_dict)

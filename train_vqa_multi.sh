@@ -61,6 +61,7 @@ accelerate launch \
     --per_device_train_batch_size 4 \
     --gradient_accumulation_steps 2 \
     --learning_rate 1e-5 \
+    --num_generations 4 \
     --logging_steps 10 \
     --save_steps 500 \
     --max_pixels 12845056 \

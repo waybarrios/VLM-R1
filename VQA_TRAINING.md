@@ -26,6 +26,7 @@ The VQA training mode uses a JSON output format with reasoning steps and final a
 - ✅ Reproducible training with seed control (via `--seed` from TrainingArguments)
 - ✅ Dataset shuffling with `--shuffle_train_dataset`
 - ✅ Support for Qwen2.5-VL, Aria, and GLM-4V models
+- ✅ **Automatic dataset caching** - Processed datasets are cached for instant loading on subsequent runs
 
 ## Dataset Requirements
 
@@ -600,6 +601,58 @@ pip install --upgrade datasets
 - Increase batch size if memory allows
 - Use multiple GPUs
 - Reduce dataset size for testing
+
+### Issue: "The global train batch size must be evenly divisible by the number of generations"
+
+**Error Example**: `ValueError: The global train batch size (3 x 4) must be evenly divisible by the number of generations per prompt (8)`
+
+**Cause**: GRPO requires `(num_gpus × batch_size)` to be evenly divisible by `num_generations` (default: 8)
+
+**Solution**: Add `--num_generations` parameter with a valid value:
+```bash
+# For 3 GPUs × 4 batch size = 12 total batch size
+# Valid options: 2, 3, 4, 6, or 12
+--num_generations 4  # Recommended
+
+# Or adjust batch size instead
+--per_device_train_batch_size 2  # 3 GPUs × 2 = 6 (divisible by 2, 3, 6)
+```
+
+## Dataset Caching
+
+**Automatic Caching**: The dataset is automatically cached after the first load to speed up subsequent training runs.
+
+**How it works:**
+- First run: Dataset is loaded from source, converted, shuffled, and cached (~1-2 minutes for 30K samples)
+- Subsequent runs: Dataset loads instantly from cache (<1 second)
+- Cache location: `.dataset_cache/` directory next to your dataset
+- Cache key: Based on dataset path, seed, and shuffle settings
+
+**Output on first run:**
+```
+Loading HuggingFace dataset from: /path/to/dataset
+This may take a while if dataset is large or on network storage...
+✓ Dataset loaded! Total rows: 30312
+Converting dataset to internal format...
+  Progress: 3031/30312 (10.0%)
+  ...
+✓ Loaded 30312 samples from HuggingFace dataset
+Dataset shuffled with seed 42
+Total samples in dataset: 30312
+💾 Saving dataset to cache: .dataset_cache/dataset_cache_abc123.pkl
+✓ Cache saved! Future runs will load instantly.
+```
+
+**Output on subsequent runs:**
+```
+📦 Loading dataset from cache: .dataset_cache/dataset_cache_abc123.pkl
+✓ Loaded 30312 samples from cache!
+```
+
+**Clear cache** (if you update your dataset):
+```bash
+rm -rf /path/to/dataset/.dataset_cache/
+```
 
 ## Example Training Script
 
