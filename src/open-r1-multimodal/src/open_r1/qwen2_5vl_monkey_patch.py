@@ -106,7 +106,7 @@ def qwen2_5vl_forward(
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
         if inputs_embeds is None:
-            inputs_embeds = self.model.embed_tokens(input_ids)
+            inputs_embeds = self.model.language_model.embed_tokens(input_ids)
 
             has_images_global = False
             if pixel_values is not None:
