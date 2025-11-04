@@ -136,9 +136,17 @@ class LazySupervisedDataset(Dataset):
 
         if self.use_huggingface:
             # Load HuggingFace dataset from disk
+            print(f"Loading HuggingFace dataset from: {data_path}")
+            print("This may take a while if dataset is large or on network storage...")
             dataset = load_from_disk(data_path)
+            print(f"✓ Dataset loaded! Total rows: {len(dataset)}")
+
             # Convert HuggingFace dataset to list of dicts
-            for item in dataset:
+            print("Converting dataset to internal format...")
+            dataset_len = len(dataset)
+            print_every = max(1, dataset_len // 10)  # Print progress every 10%
+
+            for idx, item in enumerate(dataset):
                 self.list_data_dict.append({
                     'image': item['image'],  # PIL Image
                     'question': item['question'],
@@ -148,7 +156,11 @@ class LazySupervisedDataset(Dataset):
                     'options': item.get('options', []),
                     'source': item.get('source', ''),
                 })
-            print(f"Loaded {len(self.list_data_dict)} samples from HuggingFace dataset at {data_path}")
+                if (idx + 1) % print_every == 0:
+                    progress = (idx + 1) / dataset_len * 100
+                    print(f"  Progress: {idx + 1}/{dataset_len} ({progress:.1f}%)")
+
+            print(f"✓ Loaded {len(self.list_data_dict)} samples from HuggingFace dataset at {data_path}")
         elif data_path.endswith(".yaml"):
             with open(data_path, "r") as file:
                 yaml_data = yaml.safe_load(file)
