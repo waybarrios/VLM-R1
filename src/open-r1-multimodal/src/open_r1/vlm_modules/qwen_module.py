@@ -14,8 +14,20 @@ from mllm_evaluator import MLLMReasoningEvaluator
 from accuracy_calculator import AccuracyCalculator
 
 class Qwen2VLModule(VLMBaseModule):
+    # Class variables for LLM judge configuration
+    _use_llm_judge = False
+    _llm_judge_model = "llama3.2"
+    _llm_judge_base_url = "http://localhost:11434/v1"
+
     def __init__(self):
         super().__init__()
+
+    @classmethod
+    def configure_llm_judge(cls, use_llm_judge=False, llm_judge_model="llama3.2", llm_judge_base_url="http://localhost:11434/v1"):
+        """Configure LLM judge settings for accuracy evaluation."""
+        cls._use_llm_judge = use_llm_judge
+        cls._llm_judge_model = llm_judge_model
+        cls._llm_judge_base_url = llm_judge_base_url
 
     def get_vlm_key(self):
         return "qwen"
@@ -272,8 +284,17 @@ User instruction: {USER_INSTRUCTION}"""
         import os
         from datetime import datetime
 
-        # Initialize accuracy calculator (without LLM grader for speed)
-        accuracy_calc = AccuracyCalculator(use_llm_grader=False)
+        # Get LLM judge configuration from kwargs or class variables
+        use_llm_grader = kwargs.get("use_llm_judge", Qwen2VLModule._use_llm_judge)
+        llm_model = kwargs.get("llm_judge_model", Qwen2VLModule._llm_judge_model)
+        base_url = kwargs.get("llm_judge_base_url", Qwen2VLModule._llm_judge_base_url)
+
+        # Initialize accuracy calculator with optional LLM grader
+        accuracy_calc = AccuracyCalculator(
+            use_llm_grader=use_llm_grader,
+            llm_model=llm_model,
+            base_url=base_url
+        )
 
         completion_contents = [completion[0]["content"] for completion in completions]
         problems = kwargs.get("problem", [])

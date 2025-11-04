@@ -82,20 +82,20 @@ ollama serve
 ollama pull llama3.2
 ```
 
-**Note**: The accuracy calculator uses `use_llm_grader=False` by default for speed. Enable it in the code if needed.
+**Note**: The accuracy calculator uses rule-based matching by default for speed. Enable LLM-based semantic verification with `--use_llm_judge` if needed.
 
 ## Training Commands
 
-### Basic VQA Training
+### Basic VQA Training (Qwen2.5-VL-3B)
 
 ```bash
 python src/open-r1-multimodal/src/open_r1/grpo_rec.py \
-    --model_name_or_path "Qwen/Qwen2-VL-7B-Instruct" \
+    --model_name_or_path "Qwen/Qwen2.5-VL-3B-Instruct" \
     --dataset_name "/path/to/your/huggingface/dataset" \
     --use_huggingface_dataset \
     --task_type "vqa" \
     --reward_funcs "format" "accuracy" \
-    --output_dir "./output/qwen2vl-vqa-grpo" \
+    --output_dir "./output/qwen2.5-vl-3b-vqa-grpo" \
     --num_train_epochs 3 \
     --per_device_train_batch_size 4 \
     --gradient_accumulation_steps 4 \
@@ -106,18 +106,41 @@ python src/open-r1-multimodal/src/open_r1/grpo_rec.py \
     --min_pixels 3136
 ```
 
+### VQA Training with LLM Judge (Enhanced Accuracy)
+
+Use LLM-based semantic verification for free-form text answers:
+
+```bash
+python src/open-r1-multimodal/src/open_r1/grpo_rec.py \
+    --model_name_or_path "Qwen/Qwen2.5-VL-3B-Instruct" \
+    --dataset_name "/path/to/your/huggingface/dataset" \
+    --use_huggingface_dataset \
+    --task_type "vqa" \
+    --reward_funcs "format" "accuracy" \
+    --use_llm_judge \
+    --llm_judge_model "llama3.2" \
+    --llm_judge_base_url "http://localhost:11434/v1" \
+    --output_dir "./output/qwen2.5-vl-3b-vqa-llm-judge" \
+    --num_train_epochs 3 \
+    --per_device_train_batch_size 4 \
+    --gradient_accumulation_steps 4 \
+    --learning_rate 1e-5 \
+    --logging_steps 10 \
+    --save_steps 500
+```
+
 ### With Reasoning Reward
 
 To also evaluate reasoning quality (requires reference_steps in dataset):
 
 ```bash
 python src/open-r1-multimodal/src/open_r1/grpo_rec.py \
-    --model_name_or_path "Qwen/Qwen2-VL-7B-Instruct" \
+    --model_name_or_path "Qwen/Qwen2.5-VL-3B-Instruct" \
     --dataset_name "/path/to/your/huggingface/dataset" \
     --use_huggingface_dataset \
     --task_type "vqa" \
     --reward_funcs "format" "accuracy" "reasoning" \
-    --output_dir "./output/qwen2vl-vqa-grpo-reasoning" \
+    --output_dir "./output/qwen2.5-vl-3b-vqa-reasoning" \
     --num_train_epochs 3 \
     --per_device_train_batch_size 4 \
     --gradient_accumulation_steps 4 \
@@ -133,12 +156,12 @@ python src/open-r1-multimodal/src/open_r1/grpo_rec.py \
 ```bash
 accelerate launch --num_processes 4 \
     src/open-r1-multimodal/src/open_r1/grpo_rec.py \
-    --model_name_or_path "Qwen/Qwen2-VL-7B-Instruct" \
+    --model_name_or_path "Qwen/Qwen2.5-VL-3B-Instruct" \
     --dataset_name "/path/to/your/huggingface/dataset" \
     --use_huggingface_dataset \
     --task_type "vqa" \
     --reward_funcs "format" "accuracy" "reasoning" \
-    --output_dir "./output/qwen2vl-vqa-grpo" \
+    --output_dir "./output/qwen2.5-vl-3b-vqa-grpo" \
     --num_train_epochs 3 \
     --per_device_train_batch_size 2 \
     --gradient_accumulation_steps 8 \
@@ -148,17 +171,17 @@ accelerate launch --num_processes 4 \
     --save_steps 500
 ```
 
-### With DeepSpeed ZeRO-3
+### With DeepSpeed ZeRO-3 (for larger models like 7B)
 
 ```bash
 deepspeed --num_gpus 4 \
     src/open-r1-multimodal/src/open_r1/grpo_rec.py \
-    --model_name_or_path "Qwen/Qwen2-VL-7B-Instruct" \
+    --model_name_or_path "Qwen/Qwen2.5-VL-7B-Instruct" \
     --dataset_name "/path/to/your/huggingface/dataset" \
     --use_huggingface_dataset \
     --task_type "vqa" \
     --reward_funcs "format" "accuracy" "reasoning" \
-    --output_dir "./output/qwen2vl-vqa-grpo" \
+    --output_dir "./output/qwen2.5-vl-7b-vqa-grpo" \
     --deepspeed configs/deepspeed_zero3.json \
     --num_train_epochs 3 \
     --per_device_train_batch_size 1 \
@@ -189,12 +212,51 @@ Choose from the following reward functions (can use multiple):
 - Fast training: `--reward_funcs "format" "accuracy"`
 - High quality: `--reward_funcs "format" "accuracy" "reasoning"`
 
+### LLM Judge Configuration
+
+Configure LLM-based semantic verification for free-form text answers:
+
+- `--use_llm_judge`: Enable LLM judge for accuracy evaluation (default: False)
+- `--llm_judge_model`: Ollama model name (default: "llama3.2")
+  - Options: `"llama3.2"`, `"llama3.1"`, `"mistral"`, `"phi3"`, `"gemma2"`
+- `--llm_judge_base_url`: Ollama API endpoint (default: "http://localhost:11434/v1")
+
+**When to use LLM Judge:**
+- Dataset contains free-form text answers (not just multiple choice or numbers)
+- Answers require semantic understanding (e.g., "The capital of France is Paris" vs "Paris")
+- Higher accuracy evaluation quality is needed
+- Ollama is installed and running locally
+
+**Trade-offs:**
+- ✅ Better semantic understanding of text answers
+- ✅ Handles paraphrasing and variations
+- ❌ Slower training (LLM inference per sample)
+- ❌ Requires Ollama setup
+
+**Example usage:**
+```bash
+# Fast training (rule-based only)
+--reward_funcs "accuracy"
+
+# Semantic training (LLM-based)
+--reward_funcs "accuracy" --use_llm_judge --llm_judge_model "llama3.2"
+```
+
 ### Model Configuration
 
 - `--model_name_or_path`: Model to fine-tune
-  - Qwen: `"Qwen/Qwen2-VL-7B-Instruct"`, `"Qwen/Qwen2.5-VL-7B-Instruct"`
-  - InternVL: `"OpenGVLab/InternVL2-8B"`
-  - GLM: `"THUDM/glm-4v-9b"`
+  - **Qwen2.5-VL** (Recommended):
+    - `"Qwen/Qwen2.5-VL-3B-Instruct"` - 3B parameters, efficient
+    - `"Qwen/Qwen2.5-VL-7B-Instruct"` - 7B parameters, higher quality
+  - **Qwen2-VL**:
+    - `"Qwen/Qwen2-VL-7B-Instruct"`
+  - **InternVL**: `"OpenGVLab/InternVL2-8B"`
+  - **GLM**: `"THUDM/glm-4v-9b"`
+
+**Model Selection Guide:**
+- **Qwen2.5-VL-3B**: Best for fast training, limited resources (24GB GPU)
+- **Qwen2.5-VL-7B**: Best for high quality, more resources (80GB or multi-GPU)
+- **InternVL/GLM**: Alternative architectures
 
 - `--max_pixels`: Maximum pixels for image processing (default: 12845056)
 - `--min_pixels`: Minimum pixels for image processing (default: 3136)
@@ -209,16 +271,16 @@ Choose from the following reward functions (can use multiple):
 
 ### LoRA/QLoRA (Optional)
 
-To use parameter-efficient fine-tuning:
+To use parameter-efficient fine-tuning (recommended for limited GPU memory):
 
 ```bash
 python src/open-r1-multimodal/src/open_r1/grpo_rec.py \
-    --model_name_or_path "Qwen/Qwen2-VL-7B-Instruct" \
+    --model_name_or_path "Qwen/Qwen2.5-VL-3B-Instruct" \
     --dataset_name "/path/to/your/huggingface/dataset" \
     --use_huggingface_dataset \
     --task_type "vqa" \
     --reward_funcs "format" "accuracy" \
-    --output_dir "./output/qwen2vl-vqa-lora" \
+    --output_dir "./output/qwen2.5-vl-3b-vqa-lora" \
     --use_peft \
     --lora_r 16 \
     --lora_alpha 32 \
@@ -323,14 +385,25 @@ dataset.save_to_disk("/path/to/save/dataset")
 
 ### 2. Memory Management
 
+**For Qwen2.5-VL-3B:**
+- Single GPU (24GB): batch_size=4, gradient_accumulation=4
+- Multi-GPU (4x24GB): batch_size=4 per GPU, gradient_accumulation=2
+- With LoRA: batch_size=8, gradient_accumulation=2
+
 **For 7B models:**
 - Single GPU (24GB): batch_size=2, gradient_accumulation=8
+- Single GPU (80GB): batch_size=8, gradient_accumulation=2
 - Multi-GPU (4x24GB): batch_size=2 per GPU, gradient_accumulation=4
 - With DeepSpeed ZeRO-3: batch_size=1, gradient_accumulation=16
 
 **For larger models (13B+):**
 - Use DeepSpeed ZeRO-3 or QLoRA
 - Reduce max_pixels if OOM occurs
+
+**Memory tips:**
+- Qwen2.5-VL-3B requires ~12GB VRAM for inference + ~8GB for training
+- Qwen2.5-VL-7B requires ~28GB VRAM for inference + ~20GB for training
+- Use gradient checkpointing to reduce memory: `--gradient_checkpointing`
 
 ### 3. Training Speed
 
@@ -421,10 +494,15 @@ Create `train_vqa.sh`:
 #!/bin/bash
 
 # Configuration
-MODEL="Qwen/Qwen2-VL-7B-Instruct"
+MODEL="Qwen/Qwen2.5-VL-3B-Instruct"
 DATASET="/path/to/your/dataset"
-OUTPUT="./output/qwen2vl-vqa-$(date +%Y%m%d_%H%M%S)"
+OUTPUT="./output/qwen2.5-vl-3b-vqa-$(date +%Y%m%d_%H%M%S)"
 NUM_GPUS=4
+
+# LLM Judge Configuration (optional)
+USE_LLM_JUDGE=false  # Set to true to enable LLM judge
+LLM_JUDGE_MODEL="llama3.2"
+LLM_JUDGE_URL="http://localhost:11434/v1"
 
 # Enable debug logging
 export DEBUG_MODE=true
@@ -432,6 +510,13 @@ export LOG_PATH="$OUTPUT/training_debug.txt"
 
 # Create output directory
 mkdir -p $OUTPUT
+
+# Build LLM judge arguments
+LLM_JUDGE_ARGS=""
+if [ "$USE_LLM_JUDGE" = true ]; then
+    LLM_JUDGE_ARGS="--use_llm_judge --llm_judge_model $LLM_JUDGE_MODEL --llm_judge_base_url $LLM_JUDGE_URL"
+    echo "LLM Judge enabled with model: $LLM_JUDGE_MODEL"
+fi
 
 # Train with accelerate
 accelerate launch --num_processes $NUM_GPUS \
@@ -441,10 +526,11 @@ accelerate launch --num_processes $NUM_GPUS \
     --use_huggingface_dataset \
     --task_type "vqa" \
     --reward_funcs "format" "accuracy" "reasoning" \
+    $LLM_JUDGE_ARGS \
     --output_dir $OUTPUT \
     --num_train_epochs 3 \
-    --per_device_train_batch_size 2 \
-    --gradient_accumulation_steps 8 \
+    --per_device_train_batch_size 4 \
+    --gradient_accumulation_steps 4 \
     --learning_rate 1e-5 \
     --bf16 \
     --logging_steps 10 \
@@ -463,6 +549,30 @@ Run with:
 ```bash
 chmod +x train_vqa.sh
 ./train_vqa.sh
+```
+
+### Quick Start Script (Single GPU)
+
+For quick testing on a single GPU:
+
+```bash
+#!/bin/bash
+# quick_train.sh
+
+python src/open-r1-multimodal/src/open_r1/grpo_rec.py \
+    --model_name_or_path "Qwen/Qwen2.5-VL-3B-Instruct" \
+    --dataset_name "/path/to/your/dataset" \
+    --use_huggingface_dataset \
+    --task_type "vqa" \
+    --reward_funcs "format" "accuracy" \
+    --output_dir "./output/qwen2.5-vl-3b-test" \
+    --num_train_epochs 1 \
+    --per_device_train_batch_size 4 \
+    --gradient_accumulation_steps 4 \
+    --learning_rate 1e-5 \
+    --bf16 \
+    --logging_steps 10 \
+    --save_steps 1000
 ```
 
 ## References

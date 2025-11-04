@@ -85,6 +85,18 @@ class GRPOScriptArguments(ScriptArguments):
         default="rec",
         metadata={"help": "Task type for the VLM module. Possible values: 'rec', 'vqa', 'ic', 'odLength'"},
     )
+    use_llm_judge: bool = field(
+        default=False,
+        metadata={"help": "Whether to use LLM-based judge for accuracy evaluation (requires Ollama)"},
+    )
+    llm_judge_model: str = field(
+        default="llama3.2",
+        metadata={"help": "Ollama model name for LLM judge (e.g., 'llama3.2', 'mistral', 'phi3')"},
+    )
+    llm_judge_base_url: str = field(
+        default="http://localhost:11434/v1",
+        metadata={"help": "Base URL for Ollama API (OpenAI-compatible endpoint)"},
+    )
 
 @dataclass
 class GRPOModelConfig(ModelConfig):
@@ -269,6 +281,15 @@ def get_vlm_module(model_name_or_path):
 def main(script_args, training_args, model_args):
     # Load the VLM module
     vlm_module_cls = get_vlm_module(model_args.model_name_or_path)
+
+    # Configure LLM judge if using VQA task
+    if script_args.task_type == "vqa":
+        vlm_module_cls.configure_llm_judge(
+            use_llm_judge=script_args.use_llm_judge,
+            llm_judge_model=script_args.llm_judge_model,
+            llm_judge_base_url=script_args.llm_judge_base_url
+        )
+        print(f"LLM Judge configured: use_llm_judge={script_args.use_llm_judge}, model={script_args.llm_judge_model}")
 
     # Load the reward functions based on task type
     reward_funcs = [vlm_module_cls.select_reward_func(func, script_args.task_type) for func in script_args.reward_funcs]
