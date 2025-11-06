@@ -106,7 +106,7 @@ def qwen2_5vl_forward(
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
         if inputs_embeds is None:
-            inputs_embeds = self.model.embed_tokens(input_ids)
+            inputs_embeds = self.model.language_model.embed_tokens(input_ids)
 
             has_images_global = False
             if pixel_values is not None:
@@ -172,10 +172,10 @@ def qwen2_5vl_forward(
             # calculate RoPE index once per generation in the pre-fill stage only
             if (
                 (cache_position is not None and cache_position[0] == 0)
-                or self.rope_deltas is None
+                or getattr(self, 'rope_deltas', None) is None
                 or (past_key_values is None or past_key_values.get_seq_length() == 0)
             ):
-                position_ids, rope_deltas = self.get_rope_index(
+                position_ids, rope_deltas = self.model.get_rope_index(
                     input_ids,
                     image_grid_thw,
                     video_grid_thw,
@@ -239,7 +239,7 @@ def qwen2_5vl_forward(
             past_key_values=outputs.past_key_values,
             hidden_states=outputs.hidden_states,
             attentions=outputs.attentions,
-            rope_deltas=self.rope_deltas,
+            rope_deltas=getattr(self, 'rope_deltas', None),
         )
 
 def monkey_patch_qwen2_5vl_forward():

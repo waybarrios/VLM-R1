@@ -146,24 +146,31 @@ class AnswerNormalizer:
         return False, "numeric_mismatch", 0.0
     
     @staticmethod
-    def extract_choice(text: str) -> Optional[str]:
+    def extract_choice(text: str, problem_text: Optional[str] = None) -> Optional[str]:
         """
         Extract multiple choice answer (A, B, C, D, etc.)
-        
-        Handles two cases:
+
+        Handles three cases:
         1. Short answer (single letter or letter with minimal formatting)
         2. Long answer (e.g., "a) option-text") - extract only the letter
+        3. Full option text without letter - match against problem options
+
+        Args:
+            text: The answer text to extract choice from
+            problem_text: Optional problem text containing the options (e.g., "A) option1\nB) option2")
         """
         original_text = text
-        text = AnswerNormalizer.normalize_text(text)
-        
-        # Case 1: If text is very short (1-5 chars), likely just a letter answer
-        if len(text) <= 5:
+        text_normalized = AnswerNormalizer.normalize_text(text)
+
+        # Case 1: If text is very short AND looks like a single letter answer
+        # Only extract letter if it's a single letter with optional formatting
+        # Don't extract from words like "Paris" (5 chars) which might match this condition
+        if len(text_normalized) <= 3:  # Changed from 5 to 3 to avoid matching words
             # Match patterns like: a, (a), a), [a], {a}
-            match = re.search(r'([a-z])', text)
+            match = re.search(r'^([a-z])$', text_normalized)  # Must be ONLY a letter
             if match:
                 return match.group(1).upper()
-        
+
         # Case 2: Longer text - extract letter from patterns like "a) option-text"
         # Try multiple patterns in order of specificity
         patterns = [
@@ -176,12 +183,63 @@ class AnswerNormalizer:
             r'\(([a-z])\)',  # Matches "(a)" anywhere
             r'\b([a-z])\)',  # Matches "a)" as a word
         ]
-        
+
         for pattern in patterns:
-            match = re.search(pattern, text)
+            match = re.search(pattern, text_normalized)
             if match:
                 return match.group(1).upper()
-        
+
+        # Case 3: If we have the problem text with options, try to match the full answer text
+        # against the option texts to find the corresponding letter
+        if problem_text:
+            return AnswerNormalizer.match_answer_to_option(text, problem_text)
+
+        return None
+
+    @staticmethod
+    def match_answer_to_option(answer_text: str, problem_text: str) -> Optional[str]:
+        """
+        Match an answer text to its corresponding option letter in the problem.
+
+        Example:
+            answer_text: "Aiden can trade his tomatoes for Bonnie's broccoli."
+            problem_text: "...A) option1\nB) Aiden can trade his tomatoes for Bonnie's broccoli.\n..."
+            returns: "B"
+
+        Args:
+            answer_text: The answer text to match
+            problem_text: The problem text containing options
+
+        Returns:
+            The option letter (A, B, C, D, etc.) or None if no match found
+        """
+        # Normalize the answer text for comparison
+        answer_normalized = AnswerNormalizer.normalize_text(answer_text)
+
+        # Extract all options from the problem text
+        # Matches patterns like "A) text", "B) text", etc.
+        option_pattern = r'([A-Z])\)\s*([^\n]+)'
+        matches = re.findall(option_pattern, problem_text)
+
+        if not matches:
+            return None
+
+        # Try to find the best matching option
+        for letter, option_text in matches:
+            option_normalized = AnswerNormalizer.normalize_text(option_text)
+
+            # Check for exact match
+            if answer_normalized == option_normalized:
+                return letter
+
+            # Check if answer is a substring of option (or vice versa)
+            if answer_normalized in option_normalized or option_normalized in answer_normalized:
+                # Ensure it's a substantial match (at least 80% of shorter text)
+                shorter_len = min(len(answer_normalized), len(option_normalized))
+                longer_len = max(len(answer_normalized), len(option_normalized))
+                if shorter_len / longer_len >= 0.8:
+                    return letter
+
         return None
     
     @staticmethod
@@ -341,29 +399,29 @@ class AccuracyCalculator:
         self.numeric_absolute_tolerance = numeric_absolute_tolerance
         self.delta = delta
     
-    def evaluate_single(self, 
+    def evaluate_single(self,
                        question: str,
-                       predicted_answer: str, 
+                       predicted_answer: str,
                        ground_truth_answer: str) -> AccuracyResult:
         """
         Evaluate a single prediction against ground truth
-        
+
         Implements Equation (1) where C(pred, gt) returns 1 if correct, 0 otherwise.
-        
+
         Handles multiple answer types:
         - Numeric answers (with tolerance as per Equation 2)
-        - Multiple choice (A, B, C, D) - with smart extraction
+        - Multiple choice (A, B, C, D) - with smart extraction and option matching
         - Yes/No questions
         - Free-form text (using LLM grader for semantic equivalence)
         - Exact text matching with normalization
         """
         pred_norm = self.normalizer.normalize_text(predicted_answer)
         gt_norm = self.normalizer.normalize_text(ground_truth_answer)
-        
+
         # 1. Try numeric matching with tolerance (Equation 2)
         pred_num = self.normalizer.extract_number(predicted_answer)
         gt_num = self.normalizer.extract_number(ground_truth_answer)
-        
+
         if pred_num is not None and gt_num is not None:
             is_correct, match_type, confidence = self.normalizer.compare_numbers(
                 pred_num, gt_num,
@@ -380,12 +438,12 @@ class AccuracyCalculator:
                 match_type=match_type,
                 confidence=confidence
             )
-        
+
         # 2. Try yes/no matching (must come before choice to avoid "Yes" -> "Y")
         if self.normalizer.is_yes_no_question(gt_norm):
             pred_yn = self.normalizer.normalize_yes_no(predicted_answer)
             gt_yn = self.normalizer.normalize_yes_no(ground_truth_answer)
-            
+
             is_correct = pred_yn == gt_yn
             return AccuracyResult(
                 is_correct=is_correct,
@@ -396,22 +454,34 @@ class AccuracyCalculator:
                 match_type='yes_no',
                 confidence=1.0
             )
-        
-        # 3. Try multiple choice matching
-        pred_choice = self.normalizer.extract_choice(predicted_answer)
-        gt_choice = self.normalizer.extract_choice(ground_truth_answer)
-        
-        if pred_choice is not None and gt_choice is not None:
-            is_correct = pred_choice == gt_choice
-            return AccuracyResult(
-                is_correct=is_correct,
-                predicted_answer=predicted_answer,
-                ground_truth_answer=ground_truth_answer,
-                normalized_prediction=pred_choice,
-                normalized_ground_truth=gt_choice,
-                match_type='choice',
-                confidence=1.0
-            )
+
+        # 3. Try multiple choice matching (pass question for option matching)
+        pred_choice = self.normalizer.extract_choice(predicted_answer, question)
+        gt_choice = self.normalizer.extract_choice(ground_truth_answer, question)
+
+        # If either prediction or ground truth is a choice, try to extract both as choices
+        if pred_choice is not None or gt_choice is not None:
+            # If one is None, it might be full text - try to extract it
+            if pred_choice is None and gt_choice is not None:
+                # Prediction is full text, try to match it to an option
+                pred_choice = self.normalizer.match_answer_to_option(predicted_answer, question)
+
+            if gt_choice is None and pred_choice is not None:
+                # Ground truth is full text, try to match it to an option
+                gt_choice = self.normalizer.match_answer_to_option(ground_truth_answer, question)
+
+            # Now if both are available, compare them
+            if pred_choice is not None and gt_choice is not None:
+                is_correct = pred_choice == gt_choice
+                return AccuracyResult(
+                    is_correct=is_correct,
+                    predicted_answer=predicted_answer,
+                    ground_truth_answer=ground_truth_answer,
+                    normalized_prediction=pred_choice,
+                    normalized_ground_truth=gt_choice,
+                    match_type='choice',
+                    confidence=1.0
+                )
         
         # 4. Try exact text matching (after normalization)
         if pred_norm == gt_norm:

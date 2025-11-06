@@ -1,4 +1,10 @@
-from transformers import Glm4vForConditionalGeneration,AutoProcessor
+try:
+    from transformers import Glm4vForConditionalGeneration, AutoProcessor
+except ImportError:
+    # Glm4vForConditionalGeneration not available in transformers 4.49.0
+    # Only needed if using GLM models
+    Glm4vForConditionalGeneration = None
+    from transformers import AutoProcessor
 from typing import Dict, Any, Union
 from trl.data_utils import maybe_apply_chat_template
 import torch

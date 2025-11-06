@@ -8,10 +8,11 @@ from PIL import Image
 import sys
 import os
 
-# Add mllm_evaluator to path
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../..', 'mllm_evaluator'))
-from mllm_evaluator import MLLMReasoningEvaluator
+# Import from mllm_evaluator (added to PYTHONPATH by training script)
 from accuracy_calculator import AccuracyCalculator
+# Use simple similarity instead of neural-network based evaluator
+# to avoid GPU conflicts in DeepSpeed multi-GPU context
+from simple_similarity import best_match_f1
 
 class Qwen2VLModule(VLMBaseModule):
     # Class variables for LLM judge configuration
@@ -89,41 +90,7 @@ class Qwen2VLModule(VLMBaseModule):
     def get_question_template(task_type: str):
         match task_type:
             case "vqa":
-                return """You are a vision-language model. First, analyze the provided image(s) and any user text silently. Do NOT reveal your internal reasoning.
-
-Return ONLY a single, valid JSON object with this exact schema:
-{"reasoning_steps": [], "answer": ""}
-
-Rules for "reasoning_steps":
-- Decide the number of steps based on task complexity; include enough to make the answer evident without filler.
-- Include some inference from visual information, always anchored to visible cues.
-- Write single-clause sentences, each adding a new, directly checkable fact or cue-based inference.
-- You may include cautious, visually grounded commonsense using words such as "appears", "suggests", or "likely", but always anchor it to visible cues (lighting/shadows; perspective/vanishing lines/horizon/tilt; scale/relative size; focus/DOF; parallax; occlusion/contact shadows; reflections/transparency; material/texture; symmetry/patterns/alignment; position/orientation/foreground–background; density/motion cues; human pose/gaze/gesture; interactions/affordances; object state; physics plausibility; signage/text/logos/typography; numbers/units; plots/charts: type, axes/ticks/units, scale (lin/log), legend↔series, gridlines/baseline, error bars/CI, trendlines, outliers/binning, colorbar; maps: scale bar, north arrow; math/geometry: labels/givens, unit checks, angle rules, Pythagorean, distance/slope, transformations, area/volume, circle theorems, trig (incl. sine/cosine laws), vectors, systems/quadratics, combinatorics, logs/exponents, probability/statistics, exact forms, conversions, plots, graphs, math equations, diagrams).
-- Keep each step ≤14 words. No multi-sentence items. No chains like "because/therefore". No internal monologue.
-
-Rules for "answer":
-- Provide the final answer grounded strictly in visible content and given text.
-- If information is missing or ambiguous, set "answer" to "insufficient information" and include steps noting what is missing (e.g., "Noted the license plate is unreadable due to blur.").
-- Multiple-choice: if options have letters, return only the single best LETTER (e.g., "B"); if unlabeled, return the exact option text verbatim.
-- Numeric: include required units; obey requested rounding; otherwise give exact/simplest form.
-
-What to notice in steps (express as sentences, not labels):
-- Objects & attributes (classes, colors, materials, states), logos/brands if clearly visible.
-- Positions & spatial relations (left/right/above/below/front/behind, proximity, alignment, orientation, foreground/background).
-- Depth cues (relative size, position in frame vs. horizon, sharpness/detail, shadow contact, occlusion order).
-- Scene & lighting/time cues (indoor/outdoor, daylight vs. night, weather indications, activity/no-activity).
-- Occlusion effects and how they affect certainty.
-- Text/OCR with exact casing/punctuation ("Read text: 'SPEED LIMIT 25'. ").
-- Counts & quantities for distinct instances; approximate only if visually justified.
-- Graphics/plots/diagrams: axes, ticks, units, legends; read exact values rather than guessing.
-
-Output formatting:
-- Output only the JSON object. No extra keys, comments, code fences, or prose.
-- Use double quotes for all strings; no trailing commas; any valid JSON whitespace is acceptable.
-
-Now follow the user instruction:
-
-User instruction: {USER_INSTRUCTION}"""
+                return "{USER_INSTRUCTION}"
             case "rec":
                 return "{Question} First output the thinking process in <think> </think> tags and then output the final answer in <answer> </answer> tags. Output the final answer in JSON format."
             case "ic":
@@ -239,29 +206,51 @@ User instruction: {USER_INSTRUCTION}"""
         from datetime import datetime
 
         completion_contents = [completion[0]["content"] for completion in completions]
+        problems = kwargs.get("problem", [])
+        solutions = kwargs.get("solution", [])
+        image_files = kwargs.get("image_file", [])
+        data_indices = kwargs.get("data_index", [])
         rewards = []
         current_time = datetime.now().strftime("%d-%H-%M-%S-%f")
 
-        for content in completion_contents:
+        for i, content in enumerate(completion_contents):
             reward = 0.0
+            parsed = None
+
             try:
-                # Try to extract JSON from the content
                 # Remove markdown code fences if present
                 content_cleaned = re.sub(r'```json\s*|\s*```', '', content).strip()
 
-                # Try to find JSON object in the content
-                json_match = re.search(r'\{[^{}]*"reasoning_steps"[^{}]*"answer"[^{}]*\}', content_cleaned, re.DOTALL)
-                if json_match:
-                    json_str = json_match.group(0)
-                    parsed = json.loads(json_str)
+                # Method 1: Try to parse the entire content as JSON
+                try:
+                    parsed = json.loads(content_cleaned)
+                except json.JSONDecodeError:
+                    # Method 2: Find outermost { } pair and extract that
+                    first_brace = content_cleaned.find('{')
+                    if first_brace != -1:
+                        # Find matching closing brace using brace counting
+                        brace_count = 0
+                        for idx in range(first_brace, len(content_cleaned)):
+                            if content_cleaned[idx] == '{':
+                                brace_count += 1
+                            elif content_cleaned[idx] == '}':
+                                brace_count -= 1
+                                if brace_count == 0:
+                                    json_str = content_cleaned[first_brace:idx+1]
 
-                    # Check if it has the required keys
+                                    # Fix trailing commas before parsing
+                                    json_str = re.sub(r',(\s*[\]}])', r'\1', json_str)
+
+                                    parsed = json.loads(json_str)
+                                    break
+
+                # Validate structure if we successfully parsed JSON
+                if parsed is not None:
+                    # Check if it has the required keys with correct types
                     if "reasoning_steps" in parsed and "answer" in parsed:
-                        # Check if reasoning_steps is a list
-                        if isinstance(parsed["reasoning_steps"], list):
-                            # Check if answer is a string
-                            if isinstance(parsed["answer"], str):
-                                reward = 1.0
+                        if isinstance(parsed["reasoning_steps"], list) and isinstance(parsed["answer"], str):
+                            reward = 1.0
+
             except (json.JSONDecodeError, Exception):
                 pass
 
@@ -270,9 +259,14 @@ User instruction: {USER_INSTRUCTION}"""
             if os.getenv("DEBUG_MODE") == "true":
                 log_path = os.getenv("LOG_PATH")
                 with open(log_path.replace(".txt", "_format_vqa.txt"), "a", encoding='utf-8') as f:
-                    f.write(f"------------- {current_time} Format VQA reward -------------\n")
+                    f.write(f"------------- {current_time} Format VQA reward: {int(reward)} -------------\n")
+                    f.write(f"Data Index: {data_indices[i] if i < len(data_indices) else 'N/A'}\n")
+                    f.write(f"Image File: {image_files[i] if i < len(image_files) else 'N/A'}\n")
+                    f.write(f"Problem: {problems[i] if i < len(problems) else 'N/A'}\n")
                     f.write(f"Content: {content}\n")
+                    f.write(f"Solution: {solutions[i] if i < len(solutions) else 'N/A'}\n")
                     f.write(f"Has valid format: {reward == 1.0}\n")
+                    f.write(f"\n")
 
         return rewards
 
@@ -298,28 +292,92 @@ User instruction: {USER_INSTRUCTION}"""
 
         completion_contents = [completion[0]["content"] for completion in completions]
         problems = kwargs.get("problem", [])
+        image_files = kwargs.get("image_file", [])
+        data_indices = kwargs.get("data_index", [])
         rewards = []
         current_time = datetime.now().strftime("%d-%H-%M-%S-%f")
 
         for i, (content, sol, problem) in enumerate(zip(completion_contents, solution, problems)):
             reward = 0.0
+            predicted_answer = ""
             try:
                 # Extract JSON from content
                 content_cleaned = re.sub(r'```json\s*|\s*```', '', content).strip()
-                json_match = re.search(r'\{[^{}]*"reasoning_steps"[^{}]*"answer"[^{}]*\}', content_cleaned, re.DOTALL)
 
-                if json_match:
-                    json_str = json_match.group(0)
-                    parsed = json.loads(json_str)
-                    predicted_answer = parsed.get("answer", "")
+                json_str = None
+                parsed = None
+
+                # Method 1: Try to parse the entire content as JSON
+                try:
+                    parsed = json.loads(content_cleaned)
+                    if "reasoning_steps" in parsed and "answer" in parsed:
+                        json_str = content_cleaned  # For logging purposes
+                except (json.JSONDecodeError, Exception):
+                    pass
+
+                # Method 2: Find outermost { } pair and extract that
+                if parsed is None:
+                    first_brace = content_cleaned.find('{')
+                    if first_brace != -1:
+                        # Find matching closing brace
+                        brace_count = 0
+                        for idx in range(first_brace, len(content_cleaned)):
+                            if content_cleaned[idx] == '{':
+                                brace_count += 1
+                            elif content_cleaned[idx] == '}':
+                                brace_count -= 1
+                                if brace_count == 0:
+                                    json_str = content_cleaned[first_brace:idx+1]
+                                    break
+
+                if json_str:
+                    # Fix common JSON issues
+                    # 1. Replace smart quotes with regular quotes
+                    json_str = json_str.replace('"', '"').replace('"', '"').replace("'", "'").replace("'", "'")
+
+                    # 2. Replace single quotes with double quotes for string values
+                    json_str = re.sub(r'''(?<=[:,\[])\s*'([^']*)'(?=\s*[,\]\}])''', r' "\1"', json_str)
+
+                    # 3. Add missing commas between array items
+                    json_str = re.sub(r'"\s*\n\s*"', '",\n    "', json_str)
+                    json_str = re.sub(r'"\s+(?=")', '", ', json_str)
+
+                    # 4. Remove trailing commas before closing brackets/braces
+                    json_str = re.sub(r',(\s*[\]}])', r'\1', json_str)
+
+                    # Try parsing (if not already parsed in Method 1)
+                    if parsed is None:
+                        try:
+                            parsed = json.loads(json_str)
+                        except json.JSONDecodeError:
+                            # If still fails, try more aggressive fixing
+                            json_str_fixed = json_str.replace("'", '"')
+                            # Try one more time with comma fixes
+                            json_str_fixed = re.sub(r'"\s*\n\s*"', '",\n    "', json_str_fixed)
+                            json_str_fixed = re.sub(r'"\s+(?=")', '", ', json_str_fixed)
+                            # Remove trailing commas
+                            json_str_fixed = re.sub(r',(\s*[\]}])', r'\1', json_str_fixed)
+                            parsed = json.loads(json_str_fixed)
+
+                    predicted_answer = parsed.get("answer", "") if parsed else ""
 
                     # Evaluate accuracy
-                    result = accuracy_calc.evaluate_single(problem, predicted_answer, sol)
-                    if result.is_correct:
-                        reward = result.confidence
+                    if predicted_answer:
+                        result = accuracy_calc.evaluate_single(problem, predicted_answer, sol)
+                        if result.is_correct:
+                            reward = result.confidence
 
-            except (json.JSONDecodeError, Exception):
-                pass
+            except (json.JSONDecodeError, Exception) as e:
+                # Log JSON errors in debug mode
+                if os.getenv("DEBUG_MODE") == "true":
+                    import traceback
+                    log_path = os.getenv("LOG_PATH")
+                    with open(log_path.replace(".txt", "_accuracy_errors.txt"), "a", encoding='utf-8') as f:
+                        f.write(f"------------- {current_time} JSON Parse Error -------------\n")
+                        f.write(f"Data Index: {data_indices[i] if i < len(data_indices) else 'N/A'}\n")
+                        f.write(f"Error: {str(e)}\n")
+                        f.write(f"Content: {content}\n")
+                        f.write(f"\n")
 
             rewards.append(reward)
 
@@ -327,48 +385,120 @@ User instruction: {USER_INSTRUCTION}"""
                 log_path = os.getenv("LOG_PATH")
                 with open(log_path.replace(".txt", "_accuracy_vqa.txt"), "a", encoding='utf-8') as f:
                     f.write(f"------------- {current_time} Accuracy VQA reward: {reward} -------------\n")
+                    f.write(f"Data Index: {data_indices[i] if i < len(data_indices) else 'N/A'}\n")
+                    f.write(f"Image File: {image_files[i] if i < len(image_files) else 'N/A'}\n")
                     f.write(f"Problem: {problem}\n")
                     f.write(f"Content: {content}\n")
-                    f.write(f"Solution: {sol}\n")
+                    f.write(f"Predicted Answer: {predicted_answer}\n")
+                    f.write(f"Ground Truth: {sol}\n")
+                    if reward == 0.0 and predicted_answer:
+                        f.write(f"⚠️ Note: Answer extracted but marked incorrect (check normalization/matching)\n")
+                    elif reward == 0.0:
+                        f.write(f"⚠️ Note: Failed to extract answer from JSON\n")
+                    f.write(f"\n")
 
         return rewards
 
     @staticmethod
     def vqa_reasoning_reward(completions, **kwargs):
-        """Calculate reasoning quality reward using mllm_evaluator for VQA task."""
+        """Calculate reasoning quality reward using simple text similarity for VQA task."""
         import json
         import re
         import os
         from datetime import datetime
 
-        # Initialize reasoning evaluator
-        reasoning_eval = MLLMReasoningEvaluator(model_name="all-MiniLM-L6-v2")
-
         completion_contents = [completion[0]["content"] for completion in completions]
         reference_steps_list = kwargs.get("reference_steps", [])
+        problems = kwargs.get("problem", [])
+        solutions = kwargs.get("solution", [])
+        image_files = kwargs.get("image_file", [])
+        data_indices = kwargs.get("data_index", [])
         rewards = []
         current_time = datetime.now().strftime("%d-%H-%M-%S-%f")
 
         for i, (content, ref_steps) in enumerate(zip(completion_contents, reference_steps_list)):
             reward = 0.0
+            predicted_steps = []
+            metrics_info = ""
             try:
                 # Extract JSON from content
                 content_cleaned = re.sub(r'```json\s*|\s*```', '', content).strip()
-                json_match = re.search(r'\{[^{}]*"reasoning_steps"[^{}]*"answer"[^{}]*\}', content_cleaned, re.DOTALL)
 
-                if json_match:
-                    json_str = json_match.group(0)
-                    parsed = json.loads(json_str)
-                    predicted_steps = parsed.get("reasoning_steps", [])
+                json_str = None
+                parsed = None
+
+                # Method 1: Try to parse the entire content as JSON
+                try:
+                    parsed = json.loads(content_cleaned)
+                    if "reasoning_steps" in parsed and "answer" in parsed:
+                        json_str = content_cleaned  # For logging purposes
+                except (json.JSONDecodeError, Exception):
+                    pass
+
+                # Method 2: Find outermost { } pair and extract that
+                if parsed is None:
+                    first_brace = content_cleaned.find('{')
+                    if first_brace != -1:
+                        # Find matching closing brace
+                        brace_count = 0
+                        for idx in range(first_brace, len(content_cleaned)):
+                            if content_cleaned[idx] == '{':
+                                brace_count += 1
+                            elif content_cleaned[idx] == '}':
+                                brace_count -= 1
+                                if brace_count == 0:
+                                    json_str = content_cleaned[first_brace:idx+1]
+                                    break
+
+                if json_str:
+                    # Fix common JSON issues
+                    # 1. Replace smart quotes with regular quotes
+                    json_str = json_str.replace('"', '"').replace('"', '"').replace("'", "'").replace("'", "'")
+
+                    # 2. Replace single quotes with double quotes for string values
+                    json_str = re.sub(r'''(?<=[:,\[])\s*'([^']*)'(?=\s*[,\]\}])''', r' "\1"', json_str)
+
+                    # 3. Add missing commas between array items (e.g., "item1" "item2" -> "item1", "item2")
+                    json_str = re.sub(r'"\s*\n\s*"', '",\n    "', json_str)
+                    json_str = re.sub(r'"\s+(?=")', '", ', json_str)
+
+                    # 4. Remove trailing commas before closing brackets/braces
+                    json_str = re.sub(r',(\s*[\]}])', r'\1', json_str)
+
+                    # Try parsing (if not already parsed in Method 1)
+                    if parsed is None:
+                        try:
+                            parsed = json.loads(json_str)
+                        except json.JSONDecodeError:
+                            # If still fails, try more aggressive fixing
+                            json_str_fixed = json_str.replace("'", '"')
+                            # Try one more time with comma fixes
+                            json_str_fixed = re.sub(r'"\s*\n\s*"', '",\n    "', json_str_fixed)
+                            json_str_fixed = re.sub(r'"\s+(?=")', '", ', json_str_fixed)
+                            # Remove trailing commas
+                            json_str_fixed = re.sub(r',(\s*[\]}])', r'\1', json_str_fixed)
+                            parsed = json.loads(json_str_fixed)
+
+                    predicted_steps = parsed.get("reasoning_steps", []) if parsed else []
+                    # Ensure predicted_steps is always a list
+                    if not isinstance(predicted_steps, list):
+                        predicted_steps = []
 
                     # Evaluate reasoning steps if both predicted and reference exist
                     if predicted_steps and ref_steps:
-                        metrics = reasoning_eval.evaluate_single(predicted_steps, ref_steps, verbose=False)
-                        # Use Match F1 as reward
-                        reward = metrics.match_f1
+                        # Use simple word-overlap similarity (robust in multi-GPU context)
+                        f1, matched_pred, matched_ref = best_match_f1(predicted_steps, ref_steps, threshold=0.3)
+                        reward = f1
+                        precision = matched_pred / len(predicted_steps) if predicted_steps else 0.0
+                        recall = matched_ref / len(ref_steps) if ref_steps else 0.0
+                        metrics_info = f"F1: {f1:.3f}, Precision: {precision:.3f}, Recall: {recall:.3f}, Matches: {matched_pred}/{len(predicted_steps)}"
+                    elif not predicted_steps:
+                        metrics_info = "No predicted steps extracted"
+                    elif not ref_steps:
+                        metrics_info = "No reference steps provided"
 
-            except (json.JSONDecodeError, Exception):
-                pass
+            except (json.JSONDecodeError, Exception) as e:
+                metrics_info = f"Error: {str(e)}"
 
             rewards.append(reward)
 
@@ -376,8 +506,15 @@ User instruction: {USER_INSTRUCTION}"""
                 log_path = os.getenv("LOG_PATH")
                 with open(log_path.replace(".txt", "_reasoning_vqa.txt"), "a", encoding='utf-8') as f:
                     f.write(f"------------- {current_time} Reasoning VQA reward: {reward} -------------\n")
+                    f.write(f"Data Index: {data_indices[i] if i < len(data_indices) else 'N/A'}\n")
+                    f.write(f"Image File: {image_files[i] if i < len(image_files) else 'N/A'}\n")
+                    f.write(f"Problem: {problems[i] if i < len(problems) else 'N/A'}\n")
                     f.write(f"Content: {content}\n")
-                    f.write(f"Reference steps: {ref_steps}\n")
+                    f.write(f"Solution: {solutions[i] if i < len(solutions) else 'N/A'}\n")
+                    f.write(f"Predicted steps ({len(predicted_steps)}): {predicted_steps}\n")
+                    f.write(f"Reference steps ({len(ref_steps) if ref_steps else 0}): {ref_steps}\n")
+                    f.write(f"Metrics: {metrics_info}\n")
+                    f.write(f"\n")
 
         return rewards
 

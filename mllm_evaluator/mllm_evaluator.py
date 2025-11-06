@@ -77,13 +77,14 @@ class MLLMReasoningEvaluator:
         self.debug_mode = debug_mode
         
         # Model-specific optimized thresholds (empirically determined)
+        # Lowered thresholds to account for different reasoning granularities
         self.model_thresholds = {
-            "all-MiniLM-L6-v2": 0.45,
-            "all-MiniLM-L12-v2": 0.47,
-            "all-mpnet-base-v2": 0.48,
-            "all-distilroberta-v1": 0.50,
-            "paraphrase-multilingual-MiniLM-L12-v2": 0.43,
-            "paraphrase-multilingual-mpnet-base-v2": 0.45
+            "all-MiniLM-L6-v2": 0.35,  # Lowered from 0.45 for VQA reasoning
+            "all-MiniLM-L12-v2": 0.37,  # Lowered from 0.47
+            "all-mpnet-base-v2": 0.38,  # Lowered from 0.48
+            "all-distilroberta-v1": 0.40,  # Lowered from 0.50
+            "paraphrase-multilingual-MiniLM-L12-v2": 0.33,  # Lowered from 0.43
+            "paraphrase-multilingual-mpnet-base-v2": 0.35  # Lowered from 0.45
         }
         
         if similarity_threshold is not None:

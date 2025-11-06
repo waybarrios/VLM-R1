@@ -1,38 +1,33 @@
 #!/bin/bash
 
-# VQA Training Script with DeepSpeed ZeRO-3 for Multi-GPU Support
-# This script trains Qwen2.5-VL-3B on VQA tasks with GRPO using DeepSpeed
+# Resume VQA Training Script - MEMORY OPTIMIZED
+# This script resumes training from a checkpoint with reduced memory usage
 #
-# REQUIREMENTS:
-# - Ollama must be running with gpt-oss:20b model
-#   Start with: ollama serve
-#   Pull model: ollama pull gpt-oss:20b
-# - transformers==4.52.4 (for Flash Attention support)
-# - datasets>=3.0.0
-# - deepspeed>=0.14.0
-#
-# DEEPSPEED OPTIMIZATIONS (ZeRO-3 for 4x A100 80GB):
-# - ZeRO Stage 3: Shards optimizer states, gradients, and parameters across GPUs
-# - Batch size: 2 per GPU (memory-safe configuration for 4 GPUs with ZeRO-3)
-# - Gradient accumulation: 4 (effective batch size = 4 GPUs × 2 batch × 4 accum = 32)
-# - num_generations: 4 (generates 4 completions per sample for GRPO)
-# - Max pixels: 12845056 (default) - ZeRO-3 handles memory efficiently
-# - Gradient checkpointing: enabled - additional memory savings
-#
-# IMPORTANT CONSTRAINT: Global batch size must be divisible by num_generations
-# - Global batch per step = 4 GPUs × 2 batch = 8
-# - 8 % 4 = 0 ✓ Valid configuration (also works with 2, 4, 8 generations)
-# - NOTE: 8 % 3 = 2 ✗ Invalid! num_generations=3 does NOT work with batch=2
-#
-# Effective batch size: 4 GPUs × 2 batch × 4 accum = 32 samples per update
-# Total completions per step: 32 × 4 = 128 completions (balanced exploration)
-# Memory usage: ~45-55 GB per GPU (safe with 15-25 GB headroom)
+# MEMORY OPTIMIZATIONS:
+# - Reduced per-device batch from 2 to 1 (50% memory reduction per batch)
+# - Increased gradient accumulation from 4 to 8 (maintains same effective batch size)
+# - Effective batch size stays at 32 (same as original)
+# - Total completions per step: 32 × 4 = 128 (same as original)
 
 # Configuration
 PROJECT_ROOT="/gpudata3/Wayner/VLM-R1"
 SRC_DIR="${PROJECT_ROOT}/src/open-r1-multimodal/src"
 MLLM_EVALUATOR_DIR="${PROJECT_ROOT}/mllm_evaluator"
 DEEPSPEED_CONFIG="${PROJECT_ROOT}/src/open-r1-multimodal/local_scripts/zero3.json"
+
+# CHECKPOINT TO RESUME FROM
+# Update this path to point to your checkpoint directory
+CHECKPOINT_PATH="${PROJECT_ROOT}/output/qwen2.5-vl-3b-vqa-deepspeed-20251104_172040/checkpoint-1000"
+
+# Verify checkpoint exists
+if [ ! -d "$CHECKPOINT_PATH" ]; then
+    echo "ERROR: Checkpoint directory not found: $CHECKPOINT_PATH"
+    echo "Please update CHECKPOINT_PATH in this script to point to your checkpoint."
+    echo ""
+    echo "Available checkpoints:"
+    find ${PROJECT_ROOT}/output -name "checkpoint-*" -type d 2>/dev/null
+    exit 1
+fi
 
 # Add both directories to PYTHONPATH
 export PYTHONPATH="${SRC_DIR}:${MLLM_EVALUATOR_DIR}:${PYTHONPATH}"
@@ -43,25 +38,30 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 # Training configuration
 MODEL="Qwen/Qwen2.5-VL-3B-Instruct"
 DATASET="/gpudata3/Wayner/reasoning/reasoning_train_with_reference_steps"
-OUTPUT="${PROJECT_ROOT}/output/qwen2.5-vl-3b-vqa-deepspeed-$(date +%Y%m%d_%H%M%S)"
+OUTPUT="${PROJECT_ROOT}/output/qwen2.5-vl-3b-vqa-deepspeed-20251104_172040"
 
 # GPU Configuration - Using 4 GPUs (0,1,2,3)
 GPU_IDS="0,1,2,3"
 export CUDA_VISIBLE_DEVICES=$GPU_IDS
 NUM_GPUS=4
 
-# Training hyperparameters
-PER_DEVICE_BATCH=2
-GRADIENT_ACCUM=4
-NUM_GENERATIONS=4
+# MEMORY-OPTIMIZED Training hyperparameters
+# Reduced batch size from 2 to 1 to avoid OOM
+PER_DEVICE_BATCH=1
+# Increased gradient accumulation from 4 to 8 to maintain effective batch size
+GRADIENT_ACCUM=8
+# REDUCED from 4 to 2 to prevent OOM during generation phase
+NUM_GENERATIONS=2
 LEARNING_RATE=1e-5
 NUM_EPOCHS=3
-SAVE_STEPS=500
+SAVE_STEPS=100
 LOGGING_STEPS=10
 SEED=42
 
-# Image processing parameters
-MAX_PIXELS=12845056
+# Image processing parameters - REDUCED TO PREVENT OOM
+# Original: 12845056 caused 31GB+ memory allocation in vision encoder
+# Reduced to 602112 (default for Qwen2.5-VL-3B) - 95% reduction
+MAX_PIXELS=602112
 MIN_PIXELS=3136
 
 # LLM Judge configuration
@@ -75,32 +75,26 @@ EFFECTIVE_BATCH=$(($NUM_GPUS * $PER_DEVICE_BATCH * $GRADIENT_ACCUM))
 CONSTRAINT_CHECK=$(($GLOBAL_BATCH % $NUM_GENERATIONS))
 TOTAL_COMPLETIONS=$(($EFFECTIVE_BATCH * $NUM_GENERATIONS))
 
-# Create output directory
-mkdir -p $OUTPUT
-
 # Debug mode - enables detailed logging for rewards
-# Log files will be created in OUTPUT directory:
-# - ${OUTPUT}/reward_format_vqa.txt (format/JSON validation)
-# - ${OUTPUT}/reward_accuracy_vqa.txt (accuracy scores)
-# - ${OUTPUT}/reward_reasoning_vqa.txt (reasoning quality scores)
 export DEBUG_MODE="true"
 export LOG_PATH="${OUTPUT}/reward.txt"
 
 echo "========================================"
-echo "Starting Multi-GPU VQA training with DeepSpeed ZeRO-3..."
+echo "Resuming Multi-GPU VQA training with DeepSpeed ZeRO-3..."
 echo "========================================"
 echo "Model: $MODEL"
 echo "Dataset: $DATASET"
 echo "Output: $OUTPUT"
+echo "Resume from: $CHECKPOINT_PATH"
 echo "GPUs: $GPU_IDS (count: $NUM_GPUS)"
 echo "DeepSpeed Config: $DEEPSPEED_CONFIG"
 echo ""
-echo "Batch Configuration:"
-echo "  - Per-device batch: $PER_DEVICE_BATCH"
-echo "  - Gradient accumulation: $GRADIENT_ACCUM"
+echo "ULTRA-LOW MEMORY Batch Configuration:"
+echo "  - Per-device batch: $PER_DEVICE_BATCH (REDUCED from 2 to save memory)"
+echo "  - Gradient accumulation: $GRADIENT_ACCUM (INCREASED from 4 to maintain effective batch)"
 echo "  - Global batch per step: $GLOBAL_BATCH ($NUM_GPUS GPUs × $PER_DEVICE_BATCH batch)"
 echo "  - Effective batch size: $EFFECTIVE_BATCH ($NUM_GPUS GPUs × $PER_DEVICE_BATCH batch × $GRADIENT_ACCUM accum)"
-echo "  - num_generations: $NUM_GENERATIONS"
+echo "  - num_generations: $NUM_GENERATIONS (REDUCED from 4 to 2 to save memory during generation)"
 echo "  - Total completions per step: $TOTAL_COMPLETIONS ($EFFECTIVE_BATCH samples × $NUM_GENERATIONS generations)"
 if [ $CONSTRAINT_CHECK -eq 0 ]; then
     echo "  - Constraint check: $GLOBAL_BATCH % $NUM_GENERATIONS = $CONSTRAINT_CHECK ✅ VALID"
@@ -113,10 +107,12 @@ else
 fi
 echo ""
 echo "Memory Configuration:"
-echo "  - Max Pixels: $MAX_PIXELS"
+echo "  - Max Pixels: $MAX_PIXELS (REDUCED from 12845056 to prevent vision encoder OOM)"
 echo "  - Min Pixels: $MIN_PIXELS"
 echo "  - Gradient Checkpointing: ENABLED"
 echo "  - ZeRO Stage: 3 (parameter sharding)"
+echo "  - Memory optimization: PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True"
+echo "  - CUDA cache clearing: ENABLED after generation"
 echo ""
 echo "Training Configuration:"
 echo "  - Learning rate: $LEARNING_RATE"
@@ -126,14 +122,9 @@ echo "  - Logging steps: $LOGGING_STEPS"
 echo "  - Seed: $SEED (with shuffle)"
 echo "  - LLM Judge: ENABLED ($LLM_JUDGE_MODEL)"
 echo "  - Debug Mode: ENABLED"
-echo ""
-echo "Debug Logs:"
-echo "  - Format rewards: ${OUTPUT}/reward_format_vqa.txt"
-echo "  - Accuracy rewards: ${OUTPUT}/reward_accuracy_vqa.txt"
-echo "  - Reasoning rewards: ${OUTPUT}/reward_reasoning_vqa.txt"
 echo "========================================"
 
-# Run training with DeepSpeed
+# Run training with DeepSpeed - RESUME FROM CHECKPOINT
 accelerate launch \
     --num_processes $NUM_GPUS \
     --num_machines 1 \
@@ -155,6 +146,7 @@ accelerate launch \
     --llm_judge_model "$LLM_JUDGE_MODEL" \
     --llm_judge_base_url "$LLM_JUDGE_BASE_URL" \
     --output_dir $OUTPUT \
+    --resume_from_checkpoint $CHECKPOINT_PATH \
     --seed $SEED \
     --shuffle_train_dataset \
     --num_train_epochs $NUM_EPOCHS \
@@ -169,10 +161,10 @@ accelerate launch \
     --min_pixels $MIN_PIXELS \
     --bf16 \
     --deepspeed $DEEPSPEED_CONFIG \
-    2>&1 | tee $OUTPUT/training.log
+    2>&1 | tee -a $OUTPUT/training_resume.log
 
 echo "========================================"
-echo "Training completed!"
+echo "Training resumed and completed!"
 echo "Output saved to: $OUTPUT"
 echo ""
 echo "Debug reward logs saved to:"

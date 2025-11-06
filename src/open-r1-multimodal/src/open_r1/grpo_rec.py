@@ -46,6 +46,18 @@ import numpy as np
 import torch
 from datasets import load_from_disk
 
+# PyTorch 2.6 compatibility fix for DeepSpeed checkpoint loading
+# PyTorch 2.6 changed torch.load default to weights_only=True, but DeepSpeed
+# checkpoints contain non-tensor objects that require weights_only=False
+import functools
+_original_torch_load = torch.load
+@functools.wraps(_original_torch_load)
+def _torch_load_with_compat(*args, **kwargs):
+    if 'weights_only' not in kwargs:
+        kwargs['weights_only'] = False
+    return _original_torch_load(*args, **kwargs)
+torch.load = _torch_load_with_compat
+
 from open_r1.qwen2_5vl_monkey_patch import monkey_patch_qwen2_5vl_flash_attn, monkey_patch_qwen2_5vl_forward
 monkey_patch_qwen2_5vl_flash_attn()
 
@@ -262,19 +274,58 @@ class LazySupervisedDataset(Dataset):
             else:
                 formatted_options = ""
 
+            # Format user question with options/choices if they exist
             user_question = f"{example['question']}\n\n{formatted_options}".strip()
-            user_instruction = self.question_template.replace("{USER_INSTRUCTION}", user_question)
 
             # Image is already PIL Image from HuggingFace dataset
             image = example['image']
 
-            # Create prompt without system message
+            # System prompt with comprehensive JSON format instructions
+            system_prompt = """You are a vision-language model. First, analyze the provided image(s) and any user text silently. Do NOT reveal your internal reasoning.
+
+Return ONLY a single, valid JSON object with this exact schema:
+{"reasoning_steps": [], "answer": ""}
+
+Rules for "reasoning_steps":
+- Decide the number of steps based on task complexity; include enough to make the answer evident without filler.
+- Include some inference from visual information, always anchored to visible cues.
+- Write single-clause sentences, each adding a new, directly checkable fact or cue-based inference.
+- You may include cautious, visually grounded commonsense using words such as "appears", "suggests", or "likely", but always anchor it to visible cues (lighting/shadows; perspective/vanishing lines/horizon/tilt; scale/relative size; focus/DOF; parallax; occlusion/contact shadows; reflections/transparency; material/texture; symmetry/patterns/alignment; position/orientation/foreground–background; density/motion cues; human pose/gaze/gesture; interactions/affordances; object state; physics plausibility; signage/text/logos/typography; numbers/units; plots/charts: type, axes/ticks/units, scale (lin/log), legend↔series, gridlines/baseline, error bars/CI, trendlines, outliers/binning, colorbar; maps: scale bar, north arrow; math/geometry: labels/givens, unit checks, angle rules, Pythagorean, distance/slope, transformations, area/volume, circle theorems, trig (incl. sine/cosine laws), vectors, systems/quadratics, combinatorics, logs/exponents, probability/statistics, exact forms, conversions, plots, graphs, math equations, diagrams).
+- Keep each step ≤14 words. No multi-sentence items. No chains like "because/therefore". No internal monologue.
+
+Rules for "answer":
+- Provide the final answer grounded strictly in visible content and given text.
+- If information is missing or ambiguous, set "answer" to "insufficient information" and include steps noting what is missing (e.g., "Noted the license plate is unreadable due to blur.").
+- Multiple-choice: if options have letters, return only the single best LETTER (e.g., "B"); if unlabeled, return the exact option text verbatim.
+- Numeric: include required units; obey requested rounding; otherwise give exact/simplest form.
+
+What to notice in steps (express as sentences, not labels):
+- Objects & attributes (classes, colors, materials, states), logos/brands if clearly visible.
+- Positions & spatial relations (left/right/above/below/front/behind, proximity, alignment, orientation, foreground/background).
+- Depth cues (relative size, position in frame vs. horizon, sharpness/detail, shadow contact, occlusion order).
+- Scene & lighting/time cues (indoor/outdoor, daylight vs. night, weather indications, activity/no-activity).
+- Occlusion effects and how they affect certainty.
+- Text/OCR with exact casing/punctuation ("Read text: 'SPEED LIMIT 25'. ").
+- Counts & quantities for distinct instances; approximate only if visually justified.
+- Graphics/plots/diagrams: axes, ticks, units, legends; read exact values rather than guessing.
+
+Output formatting:
+- Output only the JSON object. No extra keys, comments, code fences, or prose.
+- Use double quotes for all strings; no trailing commas; any valid JSON whitespace is acceptable."""
+
+            # Create prompt with system message (instructions) and user message (question only)
             prompt = [
+                {
+                    "role": "system",
+                    "content": [
+                        {"type": "text", "text": system_prompt},
+                    ],
+                },
                 {
                     "role": "user",
                     "content": [
                         {"type": "image"},
-                        {"type": "text", "text": user_instruction},
+                        {"type": "text", "text": user_question},
                     ],
                 },
             ]
@@ -285,6 +336,8 @@ class LazySupervisedDataset(Dataset):
                 'solution': example['answer'],
                 'reference_steps': example.get('reference_steps', []),
                 'prompt': prompt,
+                'image_file': f"{example.get('source', 'unknown')}_{i}",
+                'data_index': i,
             }
         else:
             # Original JSON/JSONL format
@@ -329,6 +382,8 @@ class LazySupervisedDataset(Dataset):
                 'problem': example['problem'],
                 'solution': example['solution'],
                 'prompt': make_conversation_image(example)['prompt'] if 'image' in example else make_conversation(example)['prompt'],
+                'image_file': example.get('image', 'no_image'),
+                'data_index': i,
             }
 
 
@@ -387,7 +442,13 @@ def main(script_args, training_args, model_args):
     )
 
     # Train and push the model to the Hub
-    trainer.train()
+    # Check for checkpoint to resume from
+    checkpoint = None
+    if training_args.resume_from_checkpoint is not None:
+        checkpoint = training_args.resume_from_checkpoint
+        print(f"Resuming training from checkpoint: {checkpoint}")
+
+    trainer.train(resume_from_checkpoint=checkpoint)
 
     # Save and push to hub
     trainer.save_model(training_args.output_dir)

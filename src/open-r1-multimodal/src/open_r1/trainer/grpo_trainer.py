@@ -580,7 +580,7 @@ class VLMGRPOTrainer(Trainer):
         # Generate completions
         with unwrap_model_for_generation(model, self.accelerator) as unwrapped_model:
             generate_returned_result = unwrapped_model.generate(
-                **{k: v for k, v in prompt_inputs.items() if k not in self.vlm_module.get_non_generate_params()}, 
+                **{k: v for k, v in prompt_inputs.items() if k not in self.vlm_module.get_non_generate_params()},
                 generation_config=self.generation_config
             )
             prompt_length = prompt_ids.size(1)
@@ -593,6 +593,9 @@ class VLMGRPOTrainer(Trainer):
                 # So the returned result of the `generate` method only contains the completion ids
                 completion_ids = generate_returned_result
                 prompt_completion_ids = torch.cat([prompt_ids, completion_ids], dim=1)
+
+        # Clear CUDA cache after generation to prevent memory fragmentation
+        torch.cuda.empty_cache()
 
         # Mask everything after the first EOS token
         is_eos = completion_ids == self.processing_class.eos_token_id
