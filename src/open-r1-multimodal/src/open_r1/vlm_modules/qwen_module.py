@@ -24,6 +24,9 @@ class Qwen2VLModule(VLMBaseModule):
     _sentence_transformer_model = None
     _sentence_transformer_pid = None
 
+    # Semantic Process Reward (SPR) configuration
+    _semantic_similarity_threshold = 0.70
+
     def __init__(self):
         super().__init__()
 
@@ -57,6 +60,16 @@ class Qwen2VLModule(VLMBaseModule):
                 cls._sentence_transformer_pid = current_pid
 
         return cls._sentence_transformer_model
+
+    @classmethod
+    def configure_semantic_reward(cls, threshold: float = 0.70):
+        """Configure Semantic Process Reward (SPR) threshold.
+
+        SPR uses SentenceTransformer embeddings + cosine similarity instead of word overlap.
+        This captures semantic equivalence: "green light" ≈ "traffic signal shows green"
+        """
+        cls._semantic_similarity_threshold = threshold
+        print(f"✓ Semantic Process Reward configured: threshold={threshold}")
 
     @classmethod
     def get_reasoning_evaluator(cls):
@@ -667,6 +680,89 @@ class Qwen2VLModule(VLMBaseModule):
         return rewards
 
     @staticmethod
+    def vqa_reasoning_reward_semantic(completions, **kwargs):
+        """Calculate reasoning reward using SEMANTIC similarity (Semantic Process Reward).
+
+        Uses SentenceTransformer (CPU-only) + cosine similarity instead of word overlap.
+        Algorithm is the same as MLLMReasoningEvaluator but with pre-initialized model
+        for DeepSpeed compatibility.
+
+        Benefits over word overlap:
+        - "The light is green" ≈ "Traffic signal shows green" (captures equivalence)
+        - Lower training variance, more stable gradients
+        - Aligned with CRYSTAL thesis: reasoning quality matters
+        """
+        import os
+        from datetime import datetime
+
+        completion_contents = [completion[0]["content"] for completion in completions]
+        reference_steps_list = kwargs.get("reference_steps", [])
+        data_indices = kwargs.get("data_index", [])
+        rewards = []
+        current_time = datetime.now().strftime("%d-%H-%M-%S-%f")
+
+        # Get CPU-only SentenceTransformer (process-local for DeepSpeed)
+        st_model = Qwen2VLModule.get_sentence_transformer()
+        threshold = Qwen2VLModule._semantic_similarity_threshold
+
+        for i, (content, ref_steps) in enumerate(zip(completion_contents, reference_steps_list)):
+            reward = 0.0
+            predicted_steps = []
+            metrics_info = ""
+
+            # Parse and validate JSON
+            parsed_data, is_valid, error_msg = Qwen2VLModule._parse_and_validate_json(content)
+
+            if not is_valid:
+                metrics_info = f"Validation failed: {error_msg}"
+                rewards.append(reward)
+                continue
+
+            predicted_steps = parsed_data["reasoning_steps"]
+
+            # Evaluate with SEMANTIC similarity
+            if ref_steps and st_model is not None:
+                ref_steps_cleaned = [str(s).strip() for s in ref_steps if s and str(s).strip()]
+
+                if ref_steps_cleaned:
+                    try:
+                        from simple_similarity import semantic_match_f1
+                        f1, matched_pred, matched_ref = semantic_match_f1(
+                            predicted_steps, ref_steps_cleaned,
+                            model=st_model, threshold=threshold
+                        )
+                        reward = f1
+                        precision = matched_pred / len(predicted_steps) if predicted_steps else 0.0
+                        recall = matched_ref / len(ref_steps_cleaned) if ref_steps_cleaned else 0.0
+                        metrics_info = f"Semantic F1={f1:.3f}, P={precision:.3f}, R={recall:.3f}"
+                    except Exception as e:
+                        # Fallback to word overlap
+                        from simple_similarity import best_match_f1
+                        f1, _, _ = best_match_f1(predicted_steps, ref_steps_cleaned, threshold=0.45)
+                        reward = f1
+                        metrics_info = f"Fallback: {str(e)[:30]}"
+            elif st_model is None:
+                # SentenceTransformer unavailable, fallback
+                if ref_steps:
+                    ref_steps_cleaned = [str(s).strip() for s in ref_steps if s and str(s).strip()]
+                    if ref_steps_cleaned:
+                        from simple_similarity import best_match_f1
+                        f1, _, _ = best_match_f1(predicted_steps, ref_steps_cleaned, threshold=0.45)
+                        reward = f1
+                        metrics_info = "Fallback: no SentenceTransformer"
+
+            rewards.append(reward)
+
+            if os.getenv("DEBUG_MODE") == "true":
+                log_path = os.getenv("LOG_PATH")
+                with open(log_path.replace(".txt", "_reasoning_semantic.txt"), "a", encoding='utf-8') as f:
+                    f.write(f"------------- {current_time} Semantic reward: {reward:.3f} -------------\n")
+                    f.write(f"Index: {data_indices[i] if i < len(data_indices) else 'N/A'}\n")
+                    f.write(f"Metrics: {metrics_info}\n\n")
+
+        return rewards
+
+    @staticmethod
     def select_reward_func(func: str, task_type: str):
         if func == "accuracy":
             match task_type:
@@ -688,6 +784,13 @@ class Qwen2VLModule(VLMBaseModule):
             match task_type:
                 case "vqa":
                     return Qwen2VLModule.vqa_reasoning_reward
+                case _:
+                    raise ValueError(f"Unsupported reward function: {func} for task type: {task_type}")
+        elif func == "reasoning_semantic":
+            # Semantic Process Reward - uses SentenceTransformer instead of word overlap
+            match task_type:
+                case "vqa":
+                    return Qwen2VLModule.vqa_reasoning_reward_semantic
                 case _:
                     raise ValueError(f"Unsupported reward function: {func} for task type: {task_type}")
         else:

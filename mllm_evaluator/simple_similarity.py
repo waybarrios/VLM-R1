@@ -1,11 +1,12 @@
 """
 Simple text similarity metrics that work reliably in multi-GPU environments.
-No neural networks, no CUDA dependencies - just pure Python.
+Includes both word overlap (pure Python) and semantic similarity (SentenceTransformer on CPU).
 """
 
-from typing import List, Tuple
+from typing import List, Tuple, Optional, Any
 from collections import Counter
 import re
+import numpy as np
 
 
 def tokenize(text: str) -> List[str]:
@@ -55,6 +56,73 @@ def word_overlap_similarity(text1: str, text2: str) -> float:
     denom = (len(tokens1) * len(tokens2)) ** 0.5
 
     return common / denom if denom > 0 else 0.0
+
+
+def semantic_match_f1(
+    predicted_steps: List[str],
+    reference_steps: List[str],
+    model: Any,  # SentenceTransformer instance (CPU-only for DeepSpeed)
+    threshold: float = 0.70
+) -> Tuple[float, int, int]:
+    """
+    Calculate F1 score using SEMANTIC similarity (SentenceTransformer + cosine).
+
+    Reuses the same algorithm as MLLMReasoningEvaluator but takes a pre-initialized
+    model as parameter for DeepSpeed compatibility (CPU-only, process-local).
+
+    This captures semantic equivalence that word overlap misses:
+    - "The light is green" ≈ "Traffic signal shows green" (HIGH score)
+    - Word overlap would give LOW score due to different words
+
+    Args:
+        predicted_steps: List of predicted reasoning steps
+        reference_steps: List of reference reasoning steps
+        model: SentenceTransformer model (must be CPU-only for DeepSpeed)
+        threshold: Cosine similarity threshold (0.70 recommended)
+
+    Returns:
+        (f1_score, matched_predictions, matched_references)
+    """
+    if not predicted_steps or not reference_steps:
+        return 0.0, 0, 0
+
+    # Compute embeddings (same as MLLMReasoningEvaluator._compute_embeddings)
+    pred_embeddings = model.encode(predicted_steps, convert_to_tensor=False, show_progress_bar=False)
+    ref_embeddings = model.encode(reference_steps, convert_to_tensor=False, show_progress_bar=False)
+
+    # Compute cosine similarity matrix (same as MLLMReasoningEvaluator._compute_similarity_matrix)
+    pred_norm = pred_embeddings / (np.linalg.norm(pred_embeddings, axis=1, keepdims=True) + 1e-8)
+    ref_norm = ref_embeddings / (np.linalg.norm(ref_embeddings, axis=1, keepdims=True) + 1e-8)
+    similarity_matrix = np.dot(pred_norm, ref_norm.T)
+
+    # Greedy matching (same as MLLMReasoningEvaluator._find_matches)
+    similarities = []
+    for i in range(len(predicted_steps)):
+        for j in range(len(reference_steps)):
+            if similarity_matrix[i, j] > threshold:
+                similarities.append((similarity_matrix[i, j], i, j))
+
+    similarities.sort(reverse=True)
+
+    matched_preds = set()
+    matched_refs = set()
+
+    for sim, pred_idx, ref_idx in similarities:
+        if pred_idx not in matched_preds and ref_idx not in matched_refs:
+            matched_preds.add(pred_idx)
+            matched_refs.add(ref_idx)
+
+    # Calculate F1 (same as MLLMReasoningEvaluator.evaluate_single)
+    n_pred = len(predicted_steps)
+    n_ref = len(reference_steps)
+    n_matched_pred = len(matched_preds)
+    n_matched_ref = len(matched_refs)
+
+    precision = n_matched_pred / n_pred if n_pred > 0 else 0.0
+    recall = n_matched_ref / n_ref if n_ref > 0 else 0.0
+    f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+
+    return f1, n_matched_pred, n_matched_ref
 
 
 def best_match_f1(predicted_steps: List[str],

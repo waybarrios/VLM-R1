@@ -117,6 +117,15 @@ class GRPOScriptArguments(ScriptArguments):
         default=True,
         metadata={"help": "Whether to shuffle the training dataset"},
     )
+    # Semantic Process Reward (SPR) settings
+    use_semantic_reasoning_reward: bool = field(
+        default=False,
+        metadata={"help": "Use semantic similarity (SentenceTransformer) instead of word overlap for reasoning reward"},
+    )
+    semantic_similarity_threshold: float = field(
+        default=0.70,
+        metadata={"help": "Cosine similarity threshold for semantic matching (default: 0.70)"},
+    )
 
 @dataclass
 class GRPOModelConfig(ModelConfig):
@@ -409,6 +418,16 @@ def main(script_args, training_args, model_args):
             llm_judge_base_url=script_args.llm_judge_base_url
         )
         print(f"LLM Judge configured: use_llm_judge={script_args.use_llm_judge}, model={script_args.llm_judge_model}")
+
+    # Configure Semantic Process Reward (SPR) if enabled
+    if script_args.use_semantic_reasoning_reward:
+        vlm_module_cls.configure_semantic_reward(threshold=script_args.semantic_similarity_threshold)
+        # Replace 'reasoning' with 'reasoning_semantic' in reward_funcs
+        script_args.reward_funcs = [
+            "reasoning_semantic" if f == "reasoning" else f
+            for f in script_args.reward_funcs
+        ]
+        print(f"✓ Semantic Process Reward ENABLED (threshold={script_args.semantic_similarity_threshold})")
 
     # Load the reward functions based on task type
     reward_funcs = [vlm_module_cls.select_reward_func(func, script_args.task_type) for func in script_args.reward_funcs]
