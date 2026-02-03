@@ -1,0 +1,154 @@
+{
+  "experiment_info": {
+    "name": "GRPO Answer-Only vs Composite Comparison",
+    "date": "2026-02-02",
+    "dataset": "CRYSTAL Reasoning Test",
+    "total_samples": 6372,
+    "base_model": "Qwen2.5-VL-3B-Instruct"
+  },
+  "answer_only_results": {
+    "checkpoint-150": {
+      "step": 150,
+      "accuracy": 0.3799,
+      "correct": 2421,
+      "match_f1": 0.4061,
+      "precision": 0.7307,
+      "recall": 0.2953,
+      "avg_pred_steps": 3.64
+    },
+    "checkpoint-300": {
+      "step": 300,
+      "accuracy": 0.4256,
+      "correct": 2712,
+      "match_f1": 0.4110,
+      "precision": 0.7533,
+      "recall": 0.2971,
+      "avg_pred_steps": 3.62
+    },
+    "checkpoint-600": {
+      "step": 600,
+      "accuracy": 0.4407,
+      "correct": 2809,
+      "match_f1": 0.4361,
+      "precision": 0.7899,
+      "recall": 0.3164,
+      "avg_pred_steps": 4.00
+    },
+    "checkpoint-900": {
+      "step": 900,
+      "accuracy": 0.4311,
+      "correct": 2747,
+      "match_f1": 0.3969,
+      "precision": 0.7939,
+      "recall": 0.2776,
+      "avg_pred_steps": 3.39
+    },
+    "checkpoint-1200": {
+      "step": 1200,
+      "accuracy": 0.4432,
+      "correct": 2824,
+      "match_f1": 0.4254,
+      "precision": 0.7975,
+      "recall": 0.3065,
+      "avg_pred_steps": 3.81
+    },
+    "checkpoint-1400": {
+      "step": 1400,
+      "accuracy": 0.4490,
+      "correct": 2861,
+      "match_f1": 0.4332,
+      "precision": 0.8017,
+      "recall": 0.3125,
+      "avg_pred_steps": 3.85
+    },
+    "checkpoint-1500": {
+      "step": 1500,
+      "accuracy": 0.4430,
+      "correct": 2823,
+      "match_f1": 0.4290,
+      "precision": 0.8027,
+      "recall": 0.3079,
+      "avg_pred_steps": 3.78
+    }
+  },
+  "composite_results": {
+    "baseline": {
+      "step": -1,
+      "accuracy": 0.3985,
+      "match_f1": 0.4802,
+      "precision": 0.8983,
+      "recall": 0.3466,
+      "avg_pred_steps": 3.73
+    },
+    "checkpoint-300": {
+      "step": 300,
+      "accuracy": 0.2891,
+      "match_f1": 0.5071,
+      "precision": 0.9672,
+      "recall": 0.3590,
+      "avg_pred_steps": 3.77
+    },
+    "checkpoint-600": {
+      "step": 600,
+      "accuracy": 0.2698,
+      "match_f1": 0.3045,
+      "precision": 0.9266,
+      "recall": 0.1889,
+      "avg_pred_steps": 1.93
+    },
+    "checkpoint-900": {
+      "step": 900,
+      "accuracy": 0.3983,
+      "match_f1": 0.4726,
+      "precision": 0.9494,
+      "recall": 0.3299,
+      "avg_pred_steps": 3.55
+    },
+    "checkpoint-1200": {
+      "step": 1200,
+      "accuracy": 0.3704,
+      "match_f1": 0.4798,
+      "precision": 0.9438,
+      "recall": 0.3352,
+      "avg_pred_steps": 3.55
+    },
+    "checkpoint-1400": {
+      "step": 1400,
+      "accuracy": 0.4492,
+      "match_f1": 0.4264,
+      "precision": 0.9831,
+      "recall": 0.2839,
+      "avg_pred_steps": 3.00
+    },
+    "checkpoint-1500": {
+      "step": 1500,
+      "accuracy": 0.4479,
+      "match_f1": 0.4102,
+      "precision": 0.9745,
+      "recall": 0.2704,
+      "avg_pred_steps": 2.85
+    }
+  },
+  "comparison_summary": {
+    "best_answer_only": {
+      "checkpoint": "checkpoint-1400",
+      "accuracy": 0.4490,
+      "match_f1": 0.4332
+    },
+    "best_composite": {
+      "checkpoint": "checkpoint-1400",
+      "accuracy": 0.4492,
+      "match_f1": 0.4264
+    },
+    "accuracy_difference": -0.0002,
+    "f1_difference": 0.0068,
+    "conclusion": "No significant difference in final performance. Answer-only is more stable during training."
+  },
+  "key_findings": [
+    "Answer-only converges ~3x faster to competitive performance",
+    "Answer-only has lower training variance (2.3% vs 6.8%)",
+    "Both approaches reach ~44.9% accuracy at convergence",
+    "Model generates reasoning steps even without reasoning reward",
+    "Answer-only generates more consistent step counts (3.4-4.0 vs 1.9-3.8)"
+  ]
+}

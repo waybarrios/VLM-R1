@@ -1,0 +1,43 @@
+{
+  "experiment_info": {
+    "predictions_dir": "predictions/checkpoint-1500",
+    "dataset_path": "/gpudata3/Wayner/reasoning/reasoning_test_with_reference_steps_updated_v27",
+    "use_judge": false,
+    "judge_model": null,
+    "num_gpus": 1,
+    "total_samples": 6372
+  },
+  "accuracy_metrics": {
+    "overall_accuracy": 0.4430320150659134,
+    "correct_samples": 2823,
+    "total_samples": 6372,
+    "average_confidence": 0.521217827997489,
+    "median_confidence": 0.7
+  },
+  "match_f1_metrics": {
+    "average_match_f1": 0.42902112631173844,
+    "std_match_f1": 0.21228466822533812,
+    "median_match_f1": 0.4615384615384615,
+    "average_precision": 0.8026694950696885,
+    "std_precision": 0.3466551194395958,
+    "average_recall": 0.3079492634013692,
+    "std_recall": 0.18078090898455948
+  },
+  "step_matching_details": {
+    "avg_predicted_steps": 3.779190207156309,
+    "avg_reference_steps": 11.564030131826742,
+    "avg_matched_predictions": 3.433145009416196,
+    "avg_matched_references": 3.433145009416196,
+    "avg_similarity": 0.33679324124892385,
+    "avg_max_similarity": 0.6653962984765317
+  },
+  "match_type_breakdown": {
+    "exact": 3023,
+    "numeric_mismatch": 1286,
+    "placeholder": 813,
+    "choice": 443,
+    "yes_no": 381,
+    "numeric_exact": 300,
+    "numeric_rounded": 126
+  }
+}

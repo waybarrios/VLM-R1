@@ -1,0 +1,43 @@
+{
+  "experiment_info": {
+    "predictions_dir": "/gpudata3/Wayner/VLM-R1/predictions_final/checkpoint-400",
+    "dataset_path": "/gpudata3/Wayner/reasoning/reasoning_test_with_reference_steps_updated_v27",
+    "model_name": "all-distilroberta-v1",
+    "threshold": 0.35,
+    "num_gpus": 2,
+    "total_samples": 6372
+  },
+  "accuracy_metrics": {
+    "overall_accuracy": 0.3041431261770245,
+    "correct_samples": 1938,
+    "total_samples": 6372,
+    "average_confidence": 0.6958568738229756,
+    "median_confidence": 1.0
+  },
+  "match_f1_metrics": {
+    "average_match_f1": 0.328553027787657,
+    "std_match_f1": 0.1000185010248702,
+    "median_match_f1": 0.3076923076923077,
+    "average_precision": 0.9927809165097301,
+    "std_precision": 0.07534561413596412,
+    "average_recall": 0.2041118547194418,
+    "std_recall": 0.09565067655940375
+  },
+  "step_matching_details": {
+    "avg_predicted_steps": 2.0880414312617703,
+    "avg_reference_steps": 11.564030131826742,
+    "avg_matched_predictions": 2.082077840552417,
+    "avg_matched_references": 2.082077840552417,
+    "avg_similarity": 0.9957627483736549,
+    "avg_max_similarity": 0.9957629382909654
+  },
+  "match_type_breakdown": {
+    "exact": 2274,
+    "choice": 1935,
+    "numeric_mismatch": 1356,
+    "yes_no": 431,
+    "numeric_exact": 231,
+    "numeric_rounded": 118,
+    "placeholder": 27
+  }
+}

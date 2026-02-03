@@ -1,0 +1,8 @@
+checkpoint,step,accuracy,accuracy_correct,accuracy_total,match_f1_mean,match_f1_std,precision_mean,recall_mean,avg_pred_steps,avg_ref_steps,training_type
+checkpoint-150,150,0.3799,2421,6372,0.4061,0.2414,0.7307,0.2953,3.64,11.56,answer_only
+checkpoint-300,300,0.4256,2712,6372,0.4110,0.2302,0.7533,0.2971,3.62,11.56,answer_only
+checkpoint-600,600,0.4407,2809,6372,0.4361,0.2218,0.7899,0.3164,4.00,11.56,answer_only
+checkpoint-900,900,0.4311,2747,6372,0.3969,0.2068,0.7939,0.2776,3.39,11.56,answer_only
+checkpoint-1200,1200,0.4432,2824,6372,0.4254,0.2176,0.7975,0.3065,3.81,11.56,answer_only
+checkpoint-1400,1400,0.4490,2861,6372,0.4332,0.2134,0.8017,0.3125,3.85,11.56,answer_only
+checkpoint-1500,1500,0.4430,2823,6372,0.4290,0.2123,0.8027,0.3079,3.78,11.56,answer_only

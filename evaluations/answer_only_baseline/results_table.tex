@@ -1,0 +1,45 @@
+% LaTeX table for Answer-Only vs Composite GRPO comparison
+% Use in paper with \input{results_table.tex}
+
+\begin{table}[htbp]
+\centering
+\caption{GRPO Training: Answer-Only vs Composite Reward Comparison on CRYSTAL Dataset (6,372 samples)}
+\label{tab:answer_only_vs_composite}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Checkpoint} & \multicolumn{2}{c}{\textbf{Accuracy (\%)}} & \multicolumn{2}{c}{\textbf{Match F1}} & \textbf{$\Delta$ Acc} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+& Answer-Only & Composite & Answer-Only & Composite & \\
+\midrule
+Baseline & -- & 39.85 & -- & 0.480 & -- \\
+ckpt-150 & 37.99 & -- & 0.406 & -- & -- \\
+ckpt-300 & 42.56 & 28.91 & 0.411 & 0.507 & +13.65 \\
+ckpt-600 & 44.07 & 26.98 & 0.436 & 0.305 & +17.09 \\
+ckpt-900 & 43.11 & 39.83 & 0.397 & 0.473 & +3.28 \\
+ckpt-1200 & 44.32 & 37.04 & 0.425 & 0.480 & +7.28 \\
+ckpt-1400 & \textbf{44.90} & \textbf{44.92} & 0.433 & 0.426 & -0.02 \\
+ckpt-1500 & 44.30 & 44.79 & 0.429 & 0.410 & -0.49 \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\footnotesize
+\textit{Note:} Answer-only training converges faster and with less variance while achieving comparable final performance.
+\end{table}
+
+% Compact version for space constraints
+\begin{table}[htbp]
+\centering
+\caption{Answer-Only vs Composite GRPO: Key Metrics}
+\label{tab:answer_only_compact}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Answer-Only} & \textbf{Composite} \\
+\midrule
+Best Accuracy & 44.90\% & 44.92\% \\
+Best Match F1 & 0.436 & 0.507 \\
+Avg Steps Generated & 3.6--4.0 & 1.9--3.8 \\
+Training Variance ($\sigma$) & 2.3\% & 6.8\% \\
+Steps to 42\% Acc & 300 & 1000 \\
+\bottomrule
+\end{tabular}
+\end{table}

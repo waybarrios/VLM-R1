@@ -68,11 +68,25 @@ class MLLMReasoningEvaluator:
             self.device = "cuda" if torch.cuda.is_available() else "cpu"
         else:
             self.device = device
-            
+
         if debug_mode:
             print(f"Initializing MLLM Evaluator on device: {self.device}")
-        
-        self.model = SentenceTransformer(model_name, device=self.device)
+
+        # Load model with explicit device to avoid multi-process tensor shape issues
+        # Set cache folder to avoid conflicts in multi-process environments
+        import os
+        cache_folder = os.path.expanduser("~/.cache/sentence_transformers")
+
+        self.model = SentenceTransformer(
+            model_name,
+            device=self.device,
+            cache_folder=cache_folder
+        )
+
+        # Ensure model is in eval mode and on correct device
+        self.model.eval()
+        if hasattr(self.model, '_first_module'):
+            self.model._first_module().to(self.device)
         self.model_name = model_name
         self.debug_mode = debug_mode
         

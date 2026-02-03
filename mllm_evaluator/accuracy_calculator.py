@@ -33,10 +33,18 @@ class AnswerNormalizer:
         if not isinstance(text, str):
             text = str(text)
         text = text.strip().lower()
+
+        # Normalize all types of quotes and apostrophes to standard ASCII
+        # Smart quotes: ' ' " " (U+2018, U+2019, U+201C, U+201D)
+        # to ASCII: ' " (U+0027, U+0022)
+        text = text.replace(''', "'").replace(''', "'")  # Smart single quotes
+        text = text.replace('"', '"').replace('"', '"')  # Smart double quotes
+        text = text.replace('`', "'")  # Backtick to apostrophe
+
         # Remove periods that are NOT part of decimal numbers (e.g., sentence-ending periods)
         text = re.sub(r'(?<!\d)\.(?!\d)', '', text)  # Remove periods not between digits
-        # Remove other common punctuation
-        text = re.sub(r'[,()\[\]{}]', '', text)
+        # Remove other common punctuation (including quotes and apostrophes for comparison)
+        text = re.sub(r'''[,()"\[\]{}']''', '', text)
         text = re.sub(r'\s+', ' ', text)
         return text
     

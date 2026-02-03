@@ -10,9 +10,7 @@ import os
 
 # Import from mllm_evaluator (added to PYTHONPATH by training script)
 from accuracy_calculator import AccuracyCalculator
-# Use simple similarity instead of neural-network based evaluator
-# to avoid GPU conflicts in DeepSpeed multi-GPU context
-from simple_similarity import best_match_f1
+from mllm_evaluator import MLLMReasoningEvaluator
 
 class Qwen2VLModule(VLMBaseModule):
     # Class variables for LLM judge configuration
@@ -20,8 +18,91 @@ class Qwen2VLModule(VLMBaseModule):
     _llm_judge_model = "gpt-oss:20b"
     _llm_judge_base_url = "http://localhost:11434/v1"
 
+    # Class variable for reasoning evaluator (process-local to avoid threading issues)
+    _reasoning_evaluator = None
+    _evaluator_process_id = None
+    _sentence_transformer_model = None
+    _sentence_transformer_pid = None
+
     def __init__(self):
         super().__init__()
+
+    @classmethod
+    def get_sentence_transformer(cls):
+        """Get or initialize SentenceTransformer model (process-local, CPU-only)."""
+        import os
+        current_pid = os.getpid()
+
+        # Reinitialize if we're in a different process (DeepSpeed fork)
+        if cls._sentence_transformer_model is None or cls._sentence_transformer_pid != current_pid:
+            try:
+                from sentence_transformers import SentenceTransformer
+                import torch
+
+                # Use CPU only to avoid CUDA tensor shape issues in multi-process
+                device = "cpu"
+
+                # Disable tokenizer parallelism warnings
+                os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+                # Load model on CPU
+                cls._sentence_transformer_model = SentenceTransformer("all-MiniLM-L6-v2", device=device)
+                cls._sentence_transformer_model.eval()
+                cls._sentence_transformer_pid = current_pid
+
+                print(f"✓ SentenceTransformer initialized for PID {current_pid} (device=cpu)")
+            except Exception as e:
+                print(f"⚠ SentenceTransformer initialization failed for PID {current_pid}: {e}")
+                cls._sentence_transformer_model = None
+                cls._sentence_transformer_pid = current_pid
+
+        return cls._sentence_transformer_model
+
+    @classmethod
+    def get_reasoning_evaluator(cls):
+        """Get or initialize the reasoning evaluator (process-local singleton)."""
+        import os
+        import torch
+        current_pid = os.getpid()
+
+        # Reinitialize if we're in a different process (DeepSpeed fork)
+        if cls._reasoning_evaluator is None or cls._evaluator_process_id != current_pid:
+            # Clean up old evaluator if exists
+            if cls._reasoning_evaluator is not None:
+                try:
+                    del cls._reasoning_evaluator
+                    if torch.cuda.is_available():
+                        torch.cuda.empty_cache()
+                except:
+                    pass
+
+            try:
+                # Determine device: use local GPU for this process
+                # DeepSpeed assigns each process a local rank, use that GPU
+                local_rank = int(os.environ.get("LOCAL_RANK", "0"))
+                device = f"cuda:{local_rank}" if torch.cuda.is_available() else "cpu"
+
+                # Force fresh model load by setting environment variable
+                # This prevents issues with model state being inherited from parent process
+                os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+                # Initialize with GPU to avoid CPU tensor shape issues in multi-process context
+                # Use threshold 0.45 (original, stricter than model-optimized 0.35)
+                cls._reasoning_evaluator = MLLMReasoningEvaluator(
+                    model_name="all-MiniLM-L6-v2",
+                    similarity_threshold=0.45,  # Original threshold (stricter matching)
+                    device=device,  # Use local GPU to avoid CPU multi-process tensor issues
+                    debug_mode=False
+                )
+                cls._evaluator_process_id = current_pid
+                print(f"✓ MLLMReasoningEvaluator initialized for PID {current_pid} (device={device}, threshold={cls._reasoning_evaluator.similarity_threshold:.3f})")
+            except Exception as init_error:
+                print(f"⚠ MLLMReasoningEvaluator initialization failed for PID {current_pid}: {init_error}")
+                print(f"  Will use simple_similarity fallback for this process")
+                cls._reasoning_evaluator = None
+                cls._evaluator_process_id = current_pid
+
+        return cls._reasoning_evaluator
 
     @classmethod
     def configure_llm_judge(cls, use_llm_judge=False, llm_judge_model="gpt-oss:20b", llm_judge_base_url="http://localhost:11434/v1"):
@@ -248,8 +329,13 @@ class Qwen2VLModule(VLMBaseModule):
                 if parsed is not None:
                     # Check if it has the required keys with correct types
                     if "reasoning_steps" in parsed and "answer" in parsed:
+                        # Check that reasoning_steps is a list AND all items are strings (not objects)
                         if isinstance(parsed["reasoning_steps"], list) and isinstance(parsed["answer"], str):
-                            reward = 1.0
+                            # Additional validation: must have at least 1 string in reasoning_steps
+                            if len(parsed["reasoning_steps"]) > 0:
+                                all_strings = all(isinstance(step, str) for step in parsed["reasoning_steps"])
+                                if all_strings:
+                                    reward = 1.0
 
             except (json.JSONDecodeError, Exception):
                 pass
@@ -400,10 +486,98 @@ class Qwen2VLModule(VLMBaseModule):
         return rewards
 
     @staticmethod
-    def vqa_reasoning_reward(completions, **kwargs):
-        """Calculate reasoning quality reward using simple text similarity for VQA task."""
+    def _parse_and_validate_json(content: str):
+        """Parse and validate JSON from model output.
+
+        Returns:
+            tuple: (parsed_dict, is_valid, error_message)
+        """
         import json
         import re
+
+        # Remove markdown code blocks
+        content_cleaned = re.sub(r'```json\s*|\s*```', '', content).strip()
+
+        json_str = None
+        parsed = None
+
+        # Method 1: Try to parse entire content as JSON
+        try:
+            parsed = json.loads(content_cleaned)
+            json_str = content_cleaned
+        except (json.JSONDecodeError, Exception):
+            pass
+
+        # Method 2: Extract outermost { } pair
+        if parsed is None:
+            first_brace = content_cleaned.find('{')
+            if first_brace != -1:
+                brace_count = 0
+                for idx in range(first_brace, len(content_cleaned)):
+                    if content_cleaned[idx] == '{':
+                        brace_count += 1
+                    elif content_cleaned[idx] == '}':
+                        brace_count -= 1
+                        if brace_count == 0:
+                            json_str = content_cleaned[first_brace:idx+1]
+                            break
+
+        if json_str:
+            # Fix common JSON issues
+            json_str = json_str.replace('"', '"').replace('"', '"').replace("'", "'").replace("'", "'")
+            json_str = re.sub(r'''(?<=[:,\[])\s*'([^']*)'(?=\s*[,\]\}])''', r' "\1"', json_str)
+            json_str = re.sub(r'"\s*\n\s*"', '",\n    "', json_str)
+            json_str = re.sub(r'"\s+(?=")', '", ', json_str)
+            json_str = re.sub(r',(\s*[\]}])', r'\1', json_str)
+
+            # Try parsing
+            if parsed is None:
+                try:
+                    parsed = json.loads(json_str)
+                except json.JSONDecodeError as e:
+                    return None, False, f"JSON parse error: {str(e)}"
+
+        # Validate structure
+        if parsed is None:
+            return None, False, "No valid JSON found"
+
+        if not isinstance(parsed, dict):
+            return None, False, "JSON is not an object"
+
+        # Check required keys
+        if "reasoning_steps" not in parsed:
+            return None, False, "Missing 'reasoning_steps' key"
+
+        if "answer" not in parsed:
+            return None, False, "Missing 'answer' key"
+
+        # Validate types
+        if not isinstance(parsed["reasoning_steps"], list):
+            return None, False, "'reasoning_steps' must be a list"
+
+        if not isinstance(parsed["answer"], str):
+            return None, False, "'answer' must be a string"
+
+        # Validate that all items in reasoning_steps are strings (not objects/dicts)
+        for idx, step in enumerate(parsed["reasoning_steps"]):
+            if not isinstance(step, str):
+                return None, False, f"'reasoning_steps[{idx}]' must be a string, not {type(step).__name__}"
+
+        # Clean and validate reasoning steps
+        reasoning_steps = [s.strip() for s in parsed["reasoning_steps"] if s and s.strip()]
+
+        if not reasoning_steps:
+            return None, False, "'reasoning_steps' is empty or contains no valid strings"
+
+        # Return validated data
+        return {
+            "reasoning_steps": reasoning_steps,
+            "answer": parsed["answer"].strip()
+        }, True, None
+
+    @staticmethod
+    def vqa_reasoning_reward(completions, **kwargs):
+        """Calculate reasoning quality reward using mllm_evaluator (neural semantic similarity)."""
         import os
         from datetime import datetime
 
@@ -420,85 +594,59 @@ class Qwen2VLModule(VLMBaseModule):
             reward = 0.0
             predicted_steps = []
             metrics_info = ""
-            try:
-                # Extract JSON from content
-                content_cleaned = re.sub(r'```json\s*|\s*```', '', content).strip()
 
-                json_str = None
-                parsed = None
+            # Step 1: Parse and validate JSON
+            parsed_data, is_valid, error_msg = Qwen2VLModule._parse_and_validate_json(content)
 
-                # Method 1: Try to parse the entire content as JSON
+            if not is_valid:
+                # JSON validation failed
+                metrics_info = f"Validation failed: {error_msg}"
+                rewards.append(reward)
+
+                if os.getenv("DEBUG_MODE") == "true":
+                    log_path = os.getenv("LOG_PATH")
+                    with open(log_path.replace(".txt", "_reasoning_vqa.txt"), "a", encoding='utf-8') as f:
+                        f.write(f"------------- {current_time} Reasoning VQA reward: {reward} -------------\n")
+                        f.write(f"Data Index: {data_indices[i] if i < len(data_indices) else 'N/A'}\n")
+                        f.write(f"Image File: {image_files[i] if i < len(image_files) else 'N/A'}\n")
+                        f.write(f"Problem: {problems[i] if i < len(problems) else 'N/A'}\n")
+                        f.write(f"Content: {content}\n")
+                        f.write(f"Solution: {solutions[i] if i < len(solutions) else 'N/A'}\n")
+                        f.write(f"Predicted steps (0): []\n")
+                        f.write(f"Reference steps ({len(ref_steps) if ref_steps else 0}): {ref_steps}\n")
+                        f.write(f"Metrics: {metrics_info}\n\n")
+                continue
+
+            # Step 2: Extract validated data
+            predicted_steps = parsed_data["reasoning_steps"]
+
+            # Step 3: Evaluate reasoning if reference steps exist
+            if ref_steps:
+                # Clean reference steps
+                ref_steps_cleaned = [str(s).strip() for s in ref_steps if s and str(s).strip()]
+
+                if not ref_steps_cleaned:
+                    metrics_info = "No valid reference steps"
+                    rewards.append(reward)
+                    continue
+
+                # Use simple_similarity for training (word overlap with threshold 0.45)
+                # Neural semantic similarity (mllm_evaluator) is not compatible with
+                # DeepSpeed's multi-process forking, causing 'weight' must be 2-D errors
+                # For inference evaluation, use evaluate_predictions.py which uses mllm_evaluator
+                from simple_similarity import best_match_f1
                 try:
-                    parsed = json.loads(content_cleaned)
-                    if "reasoning_steps" in parsed and "answer" in parsed:
-                        json_str = content_cleaned  # For logging purposes
-                except (json.JSONDecodeError, Exception):
-                    pass
-
-                # Method 2: Find outermost { } pair and extract that
-                if parsed is None:
-                    first_brace = content_cleaned.find('{')
-                    if first_brace != -1:
-                        # Find matching closing brace
-                        brace_count = 0
-                        for idx in range(first_brace, len(content_cleaned)):
-                            if content_cleaned[idx] == '{':
-                                brace_count += 1
-                            elif content_cleaned[idx] == '}':
-                                brace_count -= 1
-                                if brace_count == 0:
-                                    json_str = content_cleaned[first_brace:idx+1]
-                                    break
-
-                if json_str:
-                    # Fix common JSON issues
-                    # 1. Replace smart quotes with regular quotes
-                    json_str = json_str.replace('"', '"').replace('"', '"').replace("'", "'").replace("'", "'")
-
-                    # 2. Replace single quotes with double quotes for string values
-                    json_str = re.sub(r'''(?<=[:,\[])\s*'([^']*)'(?=\s*[,\]\}])''', r' "\1"', json_str)
-
-                    # 3. Add missing commas between array items (e.g., "item1" "item2" -> "item1", "item2")
-                    json_str = re.sub(r'"\s*\n\s*"', '",\n    "', json_str)
-                    json_str = re.sub(r'"\s+(?=")', '", ', json_str)
-
-                    # 4. Remove trailing commas before closing brackets/braces
-                    json_str = re.sub(r',(\s*[\]}])', r'\1', json_str)
-
-                    # Try parsing (if not already parsed in Method 1)
-                    if parsed is None:
-                        try:
-                            parsed = json.loads(json_str)
-                        except json.JSONDecodeError:
-                            # If still fails, try more aggressive fixing
-                            json_str_fixed = json_str.replace("'", '"')
-                            # Try one more time with comma fixes
-                            json_str_fixed = re.sub(r'"\s*\n\s*"', '",\n    "', json_str_fixed)
-                            json_str_fixed = re.sub(r'"\s+(?=")', '", ', json_str_fixed)
-                            # Remove trailing commas
-                            json_str_fixed = re.sub(r',(\s*[\]}])', r'\1', json_str_fixed)
-                            parsed = json.loads(json_str_fixed)
-
-                    predicted_steps = parsed.get("reasoning_steps", []) if parsed else []
-                    # Ensure predicted_steps is always a list
-                    if not isinstance(predicted_steps, list):
-                        predicted_steps = []
-
-                    # Evaluate reasoning steps if both predicted and reference exist
-                    if predicted_steps and ref_steps:
-                        # Use simple word-overlap similarity (robust in multi-GPU context)
-                        f1, matched_pred, matched_ref = best_match_f1(predicted_steps, ref_steps, threshold=0.3)
-                        reward = f1
-                        precision = matched_pred / len(predicted_steps) if predicted_steps else 0.0
-                        recall = matched_ref / len(ref_steps) if ref_steps else 0.0
-                        metrics_info = f"F1: {f1:.3f}, Precision: {precision:.3f}, Recall: {recall:.3f}, Matches: {matched_pred}/{len(predicted_steps)}"
-                    elif not predicted_steps:
-                        metrics_info = "No predicted steps extracted"
-                    elif not ref_steps:
-                        metrics_info = "No reference steps provided"
-
-            except (json.JSONDecodeError, Exception) as e:
-                metrics_info = f"Error: {str(e)}"
+                    f1, matched_pred, matched_ref = best_match_f1(predicted_steps, ref_steps_cleaned, threshold=0.45)
+                    reward = f1
+                    precision = matched_pred / len(predicted_steps) if predicted_steps else 0.0
+                    recall = matched_ref / len(ref_steps_cleaned) if ref_steps_cleaned else 0.0
+                    metrics_info = (f"F1: {f1:.3f}, Precision: {precision:.3f}, Recall: {recall:.3f}, "
+                                  f"Matches: {matched_pred}/{len(predicted_steps)}")
+                except Exception as eval_error:
+                    reward = 0.0
+                    metrics_info = f"Eval error: {str(eval_error)[:50]}"
+            else:
+                metrics_info = "No reference steps provided"
 
             rewards.append(reward)
 

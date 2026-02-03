@@ -50,22 +50,29 @@ GPU_IDS="0,1,2,3"
 export CUDA_VISIBLE_DEVICES=$GPU_IDS
 NUM_GPUS=4
 
-# Training hyperparameters
-PER_DEVICE_BATCH=2
-GRADIENT_ACCUM=4
+# Training hyperparameters - OPTIMIZED FOR SPEED (Opción 3: Balance)
+# Changed from batch=2/accum=4 to batch=4/accum=2 for 2x speed
+# Effective batch size = 4 GPUs × 4 batch × 2 accum = 32 (same as original)
+# Gradient checkpointing: ENABLED (memory safety)
+PER_DEVICE_BATCH=4
+GRADIENT_ACCUM=2
 NUM_GENERATIONS=4
 LEARNING_RATE=1e-5
-NUM_EPOCHS=3
-SAVE_STEPS=500
-LOGGING_STEPS=10
+NUM_EPOCHS=2
+SAVE_STEPS=100
+LOGGING_STEPS=2  # Log every 2 steps for detailed monitoring
 SEED=42
 
-# Image processing parameters
-MAX_PIXELS=12845056
+# Image processing parameters - REDUCED FOR MEMORY SAFETY
+# Using 602112 (default for Qwen2.5-VL-3B) to prevent OOM
+# Original 12845056 caused 31GB+ memory allocation in vision encoder
+MAX_PIXELS=602112
 MIN_PIXELS=3136
 
 # LLM Judge configuration
-USE_LLM_JUDGE=true
+# DISABLED during training for speed (50-70% faster) and memory (saves 18GB on GPU 0)
+# Use evaluate_predictions.py with --use_llm_judge for final evaluation
+USE_LLM_JUDGE=false
 LLM_JUDGE_MODEL="gpt-oss:20b"
 LLM_JUDGE_BASE_URL="http://localhost:11434/v1"
 
@@ -113,7 +120,7 @@ else
 fi
 echo ""
 echo "Memory Configuration:"
-echo "  - Max Pixels: $MAX_PIXELS"
+echo "  - Max Pixels: $MAX_PIXELS (memory-safe: 602k instead of 12.8M)"
 echo "  - Min Pixels: $MIN_PIXELS"
 echo "  - Gradient Checkpointing: ENABLED"
 echo "  - ZeRO Stage: 3 (parameter sharding)"
@@ -124,7 +131,7 @@ echo "  - Epochs: $NUM_EPOCHS"
 echo "  - Save steps: $SAVE_STEPS"
 echo "  - Logging steps: $LOGGING_STEPS"
 echo "  - Seed: $SEED (with shuffle)"
-echo "  - LLM Judge: ENABLED ($LLM_JUDGE_MODEL)"
+echo "  - LLM Judge: $USE_LLM_JUDGE  ($LLM_JUDGE_MODEL)"
 echo "  - Debug Mode: ENABLED"
 echo ""
 echo "Debug Logs:"
@@ -132,6 +139,12 @@ echo "  - Format rewards: ${OUTPUT}/reward_format_vqa.txt"
 echo "  - Accuracy rewards: ${OUTPUT}/reward_accuracy_vqa.txt"
 echo "  - Reasoning rewards: ${OUTPUT}/reward_reasoning_vqa.txt"
 echo "========================================"
+
+# Build LLM judge arguments conditionally
+LLM_JUDGE_ARGS=""
+if [ "$USE_LLM_JUDGE" = "true" ]; then
+    LLM_JUDGE_ARGS="--use_llm_judge --llm_judge_model $LLM_JUDGE_MODEL --llm_judge_base_url $LLM_JUDGE_BASE_URL"
+fi
 
 # Run training with DeepSpeed
 accelerate launch \
@@ -151,9 +164,8 @@ accelerate launch \
     --use_huggingface_dataset \
     --task_type "vqa" \
     --reward_funcs "format" "accuracy" "reasoning" \
-    --use_llm_judge \
-    --llm_judge_model "$LLM_JUDGE_MODEL" \
-    --llm_judge_base_url "$LLM_JUDGE_BASE_URL" \
+    --reward_weights 3.0 1.0 3.0 \
+    $LLM_JUDGE_ARGS \
     --output_dir $OUTPUT \
     --seed $SEED \
     --shuffle_train_dataset \
