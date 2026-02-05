@@ -126,6 +126,24 @@ class GRPOScriptArguments(ScriptArguments):
         default=0.70,
         metadata={"help": "Cosine similarity threshold for semantic matching (default: 0.70)"},
     )
+    # Causal Intervention Reward (CIR) settings
+    use_causal_reasoning_reward: bool = field(
+        default=False,
+        metadata={"help": "Use Causal Intervention Reward instead of word overlap for reasoning"},
+    )
+    causal_answer_weight: float = field(
+        default=0.6,
+        metadata={"help": "Weight for answer correctness in CIR (default: 0.6)"},
+    )
+    causal_step_weight: float = field(
+        default=0.4,
+        metadata={"help": "Weight for step alignment in CIR (default: 0.4)"},
+    )
+    # PCGrad settings for gradient conflict resolution
+    use_pcgrad: bool = field(
+        default=False,
+        metadata={"help": "Use PCGrad to resolve gradient conflicts between accuracy and reasoning"},
+    )
 
 @dataclass
 class GRPOModelConfig(ModelConfig):
@@ -427,7 +445,24 @@ def main(script_args, training_args, model_args):
             "reasoning_semantic" if f == "reasoning" else f
             for f in script_args.reward_funcs
         ]
-        print(f"✓ Semantic Process Reward ENABLED (threshold={script_args.semantic_similarity_threshold})")
+        print(f"Semantic Process Reward ENABLED (threshold={script_args.semantic_similarity_threshold})")
+
+    # Configure Causal Intervention Reward (CIR) if enabled
+    if script_args.use_causal_reasoning_reward:
+        vlm_module_cls.configure_causal_reward(
+            answer_weight=script_args.causal_answer_weight,
+            step_weight=script_args.causal_step_weight
+        )
+        # Replace 'reasoning' with 'reasoning_causal' in reward_funcs
+        script_args.reward_funcs = [
+            "reasoning_causal" if f == "reasoning" else f
+            for f in script_args.reward_funcs
+        ]
+        print(f"Causal Intervention Reward ENABLED (answer_weight={script_args.causal_answer_weight}, step_weight={script_args.causal_step_weight})")
+
+    # Configure PCGrad for gradient conflict resolution
+    if script_args.use_pcgrad:
+        print("PCGrad ENABLED for gradient conflict resolution between accuracy and reasoning")
 
     # Load the reward functions based on task type
     reward_funcs = [vlm_module_cls.select_reward_func(func, script_args.task_type) for func in script_args.reward_funcs]

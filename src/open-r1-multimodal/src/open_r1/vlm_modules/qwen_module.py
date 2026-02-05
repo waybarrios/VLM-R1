@@ -701,8 +701,7 @@ class Qwen2VLModule(VLMBaseModule):
         rewards = []
         current_time = datetime.now().strftime("%d-%H-%M-%S-%f")
 
-        # Get CPU-only SentenceTransformer (process-local for DeepSpeed)
-        st_model = Qwen2VLModule.get_sentence_transformer()
+        # Get threshold (model is managed internally by semantic_match_f1)
         threshold = Qwen2VLModule._semantic_similarity_threshold
 
         for i, (content, ref_steps) in enumerate(zip(completion_contents, reference_steps_list)):
@@ -720,36 +719,29 @@ class Qwen2VLModule(VLMBaseModule):
 
             predicted_steps = parsed_data["reasoning_steps"]
 
-            # Evaluate with SEMANTIC similarity
-            if ref_steps and st_model is not None:
+            # Evaluate with SEMANTIC similarity (uses process-local model internally)
+            if ref_steps:
                 ref_steps_cleaned = [str(s).strip() for s in ref_steps if s and str(s).strip()]
 
                 if ref_steps_cleaned:
                     try:
                         from simple_similarity import semantic_match_f1
+                        # semantic_match_f1 handles model internally with process-local caching
                         f1, matched_pred, matched_ref = semantic_match_f1(
                             predicted_steps, ref_steps_cleaned,
-                            model=st_model, threshold=threshold
+                            model=None,  # Use process-local model
+                            threshold=threshold
                         )
                         reward = f1
                         precision = matched_pred / len(predicted_steps) if predicted_steps else 0.0
                         recall = matched_ref / len(ref_steps_cleaned) if ref_steps_cleaned else 0.0
                         metrics_info = f"Semantic F1={f1:.3f}, P={precision:.3f}, R={recall:.3f}"
                     except Exception as e:
-                        # Fallback to word overlap
+                        # Fallback to word overlap if semantic fails
                         from simple_similarity import best_match_f1
                         f1, _, _ = best_match_f1(predicted_steps, ref_steps_cleaned, threshold=0.45)
                         reward = f1
                         metrics_info = f"Fallback: {str(e)[:30]}"
-            elif st_model is None:
-                # SentenceTransformer unavailable, fallback
-                if ref_steps:
-                    ref_steps_cleaned = [str(s).strip() for s in ref_steps if s and str(s).strip()]
-                    if ref_steps_cleaned:
-                        from simple_similarity import best_match_f1
-                        f1, _, _ = best_match_f1(predicted_steps, ref_steps_cleaned, threshold=0.45)
-                        reward = f1
-                        metrics_info = "Fallback: no SentenceTransformer"
 
             rewards.append(reward)
 
@@ -759,6 +751,65 @@ class Qwen2VLModule(VLMBaseModule):
                     f.write(f"------------- {current_time} Semantic reward: {reward:.3f} -------------\n")
                     f.write(f"Index: {data_indices[i] if i < len(data_indices) else 'N/A'}\n")
                     f.write(f"Metrics: {metrics_info}\n\n")
+
+        return rewards
+
+    # Causal reward configuration
+    _causal_answer_weight = 0.6
+    _causal_step_weight = 0.4
+
+    @classmethod
+    def configure_causal_reward(cls, answer_weight: float = 0.6, step_weight: float = 0.4):
+        """Configure Causal Intervention Reward weights."""
+        cls._causal_answer_weight = answer_weight
+        cls._causal_step_weight = step_weight
+        print(f"Causal Intervention Reward configured: answer_weight={answer_weight}, step_weight={step_weight}")
+
+    @staticmethod
+    def vqa_causal_reasoning_reward(completions, **kwargs):
+        """
+        Causal Intervention Reward (CIR) for reasoning quality.
+
+        Rewards reasoning steps based on their causal necessity for the correct answer.
+        Uses a multiplicative interaction between answer correctness and step alignment
+        to ensure both are required for high rewards.
+
+        This addresses the "correct answer, wrong reasoning" problem by penalizing
+        cases where the answer is correct but reasoning doesn't align with reference.
+        """
+        import os
+        from datetime import datetime
+
+        try:
+            from causal_reward import causal_intervention_reward
+        except ImportError:
+            import sys
+            sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', 'mllm_evaluator'))
+            from causal_reward import causal_intervention_reward
+
+        completion_contents = [completion[0]["content"] for completion in completions]
+        reference_steps_list = kwargs.get("reference_steps", [])
+        ground_truths = kwargs.get("ground_truth", kwargs.get("answer", []))
+        data_indices = kwargs.get("data_index", [])
+
+        # Prepare completions in expected format
+        formatted_completions = [[{"content": c}] for c in completion_contents]
+
+        # Get configured weights
+        answer_weight = Qwen2VLModule._causal_answer_weight
+        step_weight = Qwen2VLModule._causal_step_weight
+
+        # Compute rewards
+        rewards = causal_intervention_reward(
+            completions=formatted_completions,
+            ground_truths=ground_truths,
+            reference_steps=reference_steps_list,
+            data_indices=data_indices,
+            answer_weight=answer_weight,
+            step_weight=step_weight,
+            debug_mode=os.getenv("DEBUG_MODE") == "true",
+            log_path=os.getenv("LOG_PATH")
+        )
 
         return rewards
 
@@ -791,6 +842,13 @@ class Qwen2VLModule(VLMBaseModule):
             match task_type:
                 case "vqa":
                     return Qwen2VLModule.vqa_reasoning_reward_semantic
+                case _:
+                    raise ValueError(f"Unsupported reward function: {func} for task type: {task_type}")
+        elif func == "reasoning_causal":
+            # Causal Intervention Reward - rewards causally necessary reasoning steps
+            match task_type:
+                case "vqa":
+                    return Qwen2VLModule.vqa_causal_reasoning_reward
                 case _:
                     raise ValueError(f"Unsupported reward function: {func} for task type: {task_type}")
         else:
