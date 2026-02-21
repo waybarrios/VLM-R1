@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "model": "minicpm_v_8b",
+    "encoder": "all-MiniLM-L6-v2",
+    "threshold": 0.3,
+    "gpu": 0
+  },
+  "results": {
+    "encoder": "all-MiniLM-L6-v2",
+    "threshold": 0.3,
+    "num_samples": 6372,
+    "match_f1": {
+      "mean": 0.20084926922180046,
+      "std": 0.1715390774353905,
+      "median": 0.2,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "precision": {
+      "mean": 0.6618043666419373,
+      "std": 0.4615544562313251
+    },
+    "recall": {
+      "mean": 0.12494224769871719,
+      "std": 0.12550846685435385
+    },
+    "num_predicted_steps": {
+      "mean": 1.307909604519774
+    },
+    "num_reference_steps": {
+      "mean": 11.564030131826742
+    }
+  }
+}

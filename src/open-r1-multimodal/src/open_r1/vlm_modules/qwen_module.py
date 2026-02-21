@@ -787,10 +787,25 @@ class Qwen2VLModule(VLMBaseModule):
             sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', 'mllm_evaluator'))
             from causal_reward import causal_intervention_reward
 
-        completion_contents = [completion[0]["content"] for completion in completions]
+        try:
+            completion_contents = [completion[0]["content"] for completion in completions]
+        except (KeyError, IndexError, TypeError) as e:
+            print(f"Warning: Error extracting completion contents: {e}")
+            return [0.0] * len(completions)
+
         reference_steps_list = kwargs.get("reference_steps", [])
-        ground_truths = kwargs.get("ground_truth", kwargs.get("answer", []))
+        # Try multiple keys for ground truth (dataset uses 'solution')
+        ground_truths = kwargs.get("ground_truth", kwargs.get("answer", kwargs.get("solution", [])))
         data_indices = kwargs.get("data_index", [])
+
+        # Ensure ground_truths is a list of strings
+        if not isinstance(ground_truths, list):
+            ground_truths = [ground_truths] * len(completions)
+        ground_truths = [str(gt) if gt is not None else "" for gt in ground_truths]
+
+        # Ensure reference_steps_list is properly formatted
+        if not isinstance(reference_steps_list, list):
+            reference_steps_list = [[]] * len(completions)
 
         # Prepare completions in expected format
         formatted_completions = [[{"content": c}] for c in completion_contents]
@@ -799,17 +814,21 @@ class Qwen2VLModule(VLMBaseModule):
         answer_weight = Qwen2VLModule._causal_answer_weight
         step_weight = Qwen2VLModule._causal_step_weight
 
-        # Compute rewards
-        rewards = causal_intervention_reward(
-            completions=formatted_completions,
-            ground_truths=ground_truths,
-            reference_steps=reference_steps_list,
-            data_indices=data_indices,
-            answer_weight=answer_weight,
-            step_weight=step_weight,
-            debug_mode=os.getenv("DEBUG_MODE") == "true",
-            log_path=os.getenv("LOG_PATH")
-        )
+        try:
+            # Compute rewards
+            rewards = causal_intervention_reward(
+                completions=formatted_completions,
+                ground_truths=ground_truths,
+                reference_steps=reference_steps_list,
+                data_indices=data_indices,
+                answer_weight=answer_weight,
+                step_weight=step_weight,
+                debug_mode=os.getenv("DEBUG_MODE") == "true",
+                log_path=os.getenv("LOG_PATH")
+            )
+        except Exception as e:
+            print(f"Warning: CIR computation failed: {e}")
+            rewards = [0.0] * len(completions)
 
         return rewards
 

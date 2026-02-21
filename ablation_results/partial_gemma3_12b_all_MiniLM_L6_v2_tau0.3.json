@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "model": "gemma3_12b",
+    "encoder": "all-MiniLM-L6-v2",
+    "threshold": 0.3,
+    "gpu": 0
+  },
+  "results": {
+    "encoder": "all-MiniLM-L6-v2",
+    "threshold": 0.3,
+    "num_samples": 6372,
+    "match_f1": {
+      "mean": 0.5501533979274206,
+      "std": 0.26310222922556875,
+      "median": 0.625,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "precision": {
+      "mean": 0.7707215787530609,
+      "std": 0.3550348822908041
+    },
+    "recall": {
+      "mean": 0.450470826957733,
+      "std": 0.24325635767006287
+    },
+    "num_predicted_steps": {
+      "mean": 5.508631512868801
+    },
+    "num_reference_steps": {
+      "mean": 11.564030131826742
+    }
+  }
+}

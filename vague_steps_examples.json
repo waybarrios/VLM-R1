@@ -1,0 +1,421 @@
+{
+  "summary": {
+    "total_candidates": 146,
+    "avg_baseline_vague_ratio": 0.8655357389946431,
+    "avg_grpo_vague_ratio": 0.0
+  },
+  "top_examples": [
+    {
+      "idx": 413,
+      "baseline_steps": 10,
+      "grpo_steps": 3,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 10,
+      "baseline_repetitive": true,
+      "baseline_reasoning": [
+        "Noted the pedestrian is wearing a yellow jacket and black pants.",
+        "Noted the sedan is a dark color.",
+        "Noted the pedestrian is standing on the sidewalk.",
+        "Noted the sedan is parked on the street.",
+        "Noted the sidewalk is made of concrete.",
+        "Noted the pedestrian is closer to the sidewalk than the sedan.",
+        "Noted the pedestrian is closer to the camera than the sedan.",
+        "Noted the pedestrian is closer to the camera than the sidewalk.",
+        "Noted the pedestrian is closer to the camera than the sedan.",
+        "Noted the pedestrian is closer to the camera than the sidewalk."
+      ],
+      "grpo_reasoning": [
+        "The pedestrian is standing at the crosswalk.",
+        "The sedan is parked on the road.",
+        "The pedestrian is closer to the right side of the frame."
+      ],
+      "question": "How many meters apart are the pedestrian and the sedan closest to the right of the frame?\n\nA. 5 meters\nB. 10 meters\nC. 20 meters\nPlease answer directly with only the letter of the correct option and nothing else.",
+      "ground_truth": "B",
+      "baseline_answer": "B",
+      "grpo_answer": "B. 10 meters"
+    },
+    {
+      "idx": 646,
+      "baseline_steps": 5,
+      "grpo_steps": 2,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 5,
+      "baseline_repetitive": false,
+      "baseline_reasoning": [
+        "Noted the telescope is on a tripod.",
+        "Noted the fake tree is on the window sill.",
+        "Noted the telescope is pointing towards the snowy landscape.",
+        "Noted the fake tree is in front of the telescope.",
+        "Noted the telescope is to the left of the fake tree."
+      ],
+      "grpo_reasoning": [
+        "The telescope is positioned on the window sill.",
+        "The telescope is placed in front of the fake tree on the window sill."
+      ],
+      "question": "Where is the telescope relative to the tree?\nA. The telescope is to the right of the fake tree on the window sill.\nB. The telescope is behind the fake tree in the window sill.\nC. The telescope is to the left of the fake tree on the window sill.\nPlease answer directly with only the letter of the correct option and nothing else.",
+      "ground_truth": "C",
+      "baseline_answer": "C",
+      "grpo_answer": "B. The telescope is behind the fake tree in the window sill."
+    },
+    {
+      "idx": 1011,
+      "baseline_steps": 8,
+      "grpo_steps": 2,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 8,
+      "baseline_repetitive": false,
+      "baseline_reasoning": [
+        "Noted the rectangle has dimensions 4 cm x 16 cm.",
+        "Noted point C coincides with point A after folding.",
+        "Noted the folded shape forms a quadrilateral ANMD'.",
+        "Noted the area of the rectangle is 4 cm x 16 cm.",
+        "Noted the folded shape is symmetrical.",
+        "Noted the folded shape forms a right triangle.",
+        "Noted the folded shape forms a quadrilateral ANMD'.",
+        "Noted the area of the quadrilateral ANMD' is half the area of the rectangle."
+      ],
+      "grpo_reasoning": [
+        "The area of the quadrilateral ANMD' is 30 cm\u00b2.",
+        "The quadrilateral ANMD' is formed by folding the paper along the line MN."
+      ],
+      "question": "A rectangular piece of paper $A B C D$ with the measurements $4 \\mathrm{~cm} \\times 16 \\mathrm{~cm}$ is folded along the line $\\mathrm{MN}$ so that point $C$ coincides with point $A$ as shown. How big is the area of the quadrilateral ANMD'?\n<image1>",
+      "ground_truth": "C",
+      "baseline_answer": "B) 30 cm\u00b2",
+      "grpo_answer": "B) 30 cm\u00b2"
+    },
+    {
+      "idx": 1094,
+      "baseline_steps": 6,
+      "grpo_steps": 3,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 6,
+      "baseline_repetitive": false,
+      "baseline_reasoning": [
+        "Noted the diagram shows two squares with side lengths a and b.",
+        "Noted the grey triangle is formed by the sides of the squares.",
+        "Noted the area of the grey triangle can be calculated using the formula for the area of a right triangle.",
+        "Noted the area of the grey triangle is half the product of the lengths of the two sides.",
+        "Noted the lengths of the sides are a and b.",
+        "Noted the formula for the area of the grey triangle is 1/2 * a * b."
+      ],
+      "grpo_reasoning": [
+        "The area of the grey triangle is half the sum of the areas of the two squares.",
+        "The area of the grey triangle is half the sum of the areas of the two squares.",
+        "The area of the grey triangle is half the sum of the areas of the two squares."
+      ],
+      "question": "The diagram shows two adjoining squares with side lengths $a$ and $b$ (with $a<b$). How big is the area of the grey triangle?\n<image1>",
+      "ground_truth": "B",
+      "baseline_answer": "A) \u221a(a * b)",
+      "grpo_answer": "E) \\frac{1}{2}\\left(a^{2}+b^{2}\\right)"
+    },
+    {
+      "idx": 1220,
+      "baseline_steps": 11,
+      "grpo_steps": 3,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 11,
+      "baseline_repetitive": false,
+      "baseline_reasoning": [
+        "Noted the perimeter of the lawn is 20 m.",
+        "Noted the perimeter of the flowerbed is 12 m.",
+        "Noted the garden is square-shaped.",
+        "Noted the lawn and flowerbed are square-shaped.",
+        "Noted the pool is square-shaped.",
+        "Noted the sandpit is square-shaped.",
+        "Noted the garden is divided into four equal parts.",
+        "Noted the perimeter of the lawn is 20 m.",
+        "Noted the perimeter of the flowerbed is 12 m.",
+        "Noted the perimeter of the pool is unknown.",
+        "Noted the perimeter of the sandpit is unknown."
+      ],
+      "grpo_reasoning": [
+        "The perimeter of the lawn is 20 m.",
+        "The perimeter of the flowerbed is 12 m.",
+        "The perimeter of the pool is 16 m."
+      ],
+      "question": "A garden of a square shape is divided into a pool (P), a flowerbed (F), a lawn (L) and a sandpit (S) (see the picture). The lawn and the flowerbed are of a square shape. The perimeter of the lawn is $20 \\mathrm{~m}$, the perimeter of the flowerbed is $12 \\mathrm{~m}$. What is the perimeter of the pool?\n<image1>",
+      "ground_truth": "D",
+      "baseline_answer": "D) 16 m",
+      "grpo_answer": "D) 16 m"
+    },
+    {
+      "idx": 1449,
+      "baseline_steps": 5,
+      "grpo_steps": 4,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 5,
+      "baseline_repetitive": true,
+      "baseline_reasoning": [
+        "Noted the discs are of different sizes.",
+        "Noted the discs are distinct in color.",
+        "Noted the discs are distinct in size.",
+        "Noted the discs are distinct in color.",
+        "Noted the discs are distinct in size."
+      ],
+      "grpo_reasoning": [
+        "The discs are of different sizes.",
+        "The discs are placed on top of each other in a tower.",
+        "A smaller disc must be on top of a bigger disc.",
+        "The discs are of different sizes, so the arrangement of discs is unique."
+      ],
+      "question": "Anna has four discs of different sizes. She wants to build a tower using 3 discs. A smaller disc always has to lie on top of a bigger disc. How many ways are there for Anna to build this tower?\n<image1>",
+      "ground_truth": "4",
+      "baseline_answer": "4",
+      "grpo_answer": "4"
+    },
+    {
+      "idx": 1453,
+      "baseline_steps": 5,
+      "grpo_steps": 6,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 5,
+      "baseline_repetitive": false,
+      "baseline_reasoning": [
+        "Noted car 1 moves diagonally upwards.",
+        "Noted car 2 moves diagonally downwards.",
+        "Noted car 3 moves diagonally upwards.",
+        "Noted car 4 moves diagonally downwards.",
+        "Noted car 1 and car 3 are moving towards each other."
+      ],
+      "grpo_reasoning": [
+        "The cars are moving towards each other.",
+        "The cars are positioned at different positions relative to each other.",
+        "The cars are moving in a straight line.",
+        "The cars are moving at a constant speed.",
+        "The cars are moving in the same direction.",
+        "The cars are moving away from each other."
+      ],
+      "question": "The diagram shows four cars 1, 2, 3 and 4. The arrows show where the cars move to in 5 seconds. Which cars will crash into each other?\n<image1>",
+      "ground_truth": "D",
+      "baseline_answer": "B) 1 and 3",
+      "grpo_answer": "B) 1 and 3"
+    },
+    {
+      "idx": 1541,
+      "baseline_steps": 5,
+      "grpo_steps": 3,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 5,
+      "baseline_repetitive": false,
+      "baseline_reasoning": [
+        "Noted the square ABCD has a side length of 10 cm.",
+        "Noted the distance NM is 6 cm.",
+        "Noted the shaded area forms an 'X' shape.",
+        "Noted the unshaded areas are squares or isosceles triangles.",
+        "Noted the shaded area is the area of the square minus the unshaded areas."
+      ],
+      "grpo_reasoning": [
+        "The area shaded in grey is a square.",
+        "The side length of the square is 6 cm.",
+        "The area of the square is 36 cm\u00b2."
+      ],
+      "question": "$A B C D$ is a square with side length $10 \\mathrm{~cm}$. The distance of $\\mathrm{N}$ to $\\mathrm{M}$ measures $6 \\mathrm{~cm}$. Each area not shaded grey is either a sqaure or an isosceles triangle. How big is the area shaded in grey?\n<image1>",
+      "ground_truth": "C",
+      "baseline_answer": "48 cm\u00b2",
+      "grpo_answer": "B) 46 cm\u00b2"
+    },
+    {
+      "idx": 1554,
+      "baseline_steps": 9,
+      "grpo_steps": 3,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 9,
+      "baseline_repetitive": false,
+      "baseline_reasoning": [
+        "Noted the square is divided into two triangles.",
+        "Noted one triangle is shaded grey.",
+        "Noted the base of the square is 4 cm.",
+        "Noted the height of the square is 4 cm.",
+        "Noted the base of the shaded triangle is 2 cm.",
+        "Noted the height of the shaded triangle is 2 cm.",
+        "Noted the area of the square is 4 cm * 4 cm = 16 cm\u00b2.",
+        "Noted the area of the shaded triangle is 2 cm * 2 cm / 2 = 2 cm\u00b2.",
+        "Noted the fraction of the square that is grey is 2 cm\u00b2 / 16 cm\u00b2 = 1/8."
+      ],
+      "grpo_reasoning": [
+        "The grey part of the square is a triangle.",
+        "The triangle is half of the square.",
+        "The grey part of the square is one quarter of the square."
+      ],
+      "question": "What fraction of the square is grey?\n<image1>",
+      "ground_truth": "A",
+      "baseline_answer": "B) $\frac{1}{4}$",
+      "grpo_answer": "B) $\frac{1}{4}$"
+    },
+    {
+      "idx": 1591,
+      "baseline_steps": 7,
+      "grpo_steps": 5,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 7,
+      "baseline_repetitive": false,
+      "baseline_reasoning": [
+        "Noted the buttons are in a row.",
+        "Noted the buttons have smiling and sad faces.",
+        "Noted the buttons are pressed one by one.",
+        "Noted the faces change after pressing a button.",
+        "Noted the faces of the neighboring buttons change after pressing a button.",
+        "Noted the goal is to have only smiling faces.",
+        "Noted the sequence of button presses needed to achieve the goal."
+      ],
+      "grpo_reasoning": [
+        "The button has two buttons with one with smiley face and one sad face.",
+        "The button changes to show a smiley face when pressed.",
+        "The button changes to show a sad face when pressed again.",
+        "The button changes to show a smiley face when pressed again after showing a sad face.",
+        "The button changes to show a sad face when pressed again after showing a smiley face."
+      ],
+      "question": "Two buttons with smiling faces and two buttons with sad faces are in a row as shown in the picture. When you press a button the face changes, and so do the faces of the neighbouring buttons. What is the minimum number of button presses needed so that only smiling faces can be seen?\n<image1>",
+      "ground_truth": "3",
+      "baseline_answer": "3",
+      "grpo_answer": "3"
+    },
+    {
+      "idx": 1613,
+      "baseline_steps": 10,
+      "grpo_steps": 4,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 10,
+      "baseline_repetitive": true,
+      "baseline_reasoning": [
+        "Noted the triangles are equilateral.",
+        "Noted the sides 'rot' and 'blau' are already colored.",
+        "Noted the color 'rot' is already used.",
+        "Noted the color 'blau' is already used.",
+        "Noted the color 'rot' is already used.",
+        "Noted the color 'blau' is already used.",
+        "Noted the color 'rot' is already used.",
+        "Noted the color 'blau' is already used.",
+        "Noted the color 'rot' is already used.",
+        "Noted the color 'blau' is already used."
+      ],
+      "grpo_reasoning": [
+        "The side x has three sides that are already colored.",
+        "The remaining three sides of the triangle are available for coloring.",
+        "The three sides of the triangle are of different colors.",
+        "Therefore, side x can have one of three colors: blue, green, or red."
+      ],
+      "question": "Each of the 9 sides of the triangles in the picture will be coloured blue, green or red. Three of the sides are already coloured. Which colour can side $\\mathrm{x}$ have, if the sides of each triangle must be coloured in three different colours?\n<image1>",
+      "ground_truth": "C",
+      "baseline_answer": "D) Each of the three colours is possible.",
+      "grpo_answer": "D) Each of the three colours is possible."
+    },
+    {
+      "idx": 1629,
+      "baseline_steps": 6,
+      "grpo_steps": 3,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 6,
+      "baseline_repetitive": false,
+      "baseline_reasoning": [
+        "Noted the perimeter of the original rectangle is 30 cm.",
+        "Noted the sum of the perimeters of the three added rectangles is 20 cm.",
+        "Noted the perimeter of the original rectangle is 30 cm.",
+        "Noted the sum of the perimeters of the three added rectangles is 20 cm.",
+        "Noted the perimeter of the original rectangle is 30 cm.",
+        "Noted the sum of the perimeters of the three added rectangles is 20 cm."
+      ],
+      "grpo_reasoning": [
+        "The perimeter of the rectangle ABCD is 30 cm.",
+        "Three more rectangles are added with their centres at A, B, and D.",
+        "The sum of the perimeters of these three rectangles is 20 cm."
+      ],
+      "question": "The perimeter of the rectangle $A B C D$ is $30 \\mathrm{~cm}$. Three more rectangles are added so that their centres are in the corners A, B and D and their sides are parallel to the rectangle (see diagram). The sum of the perimeters of these three rectangles is $20 \\mathrm{~cm}$. What is the length of the boarder of the shape (thick black line)?\n<image1>",
+      "ground_truth": "C",
+      "baseline_answer": "45 cm",
+      "grpo_answer": "E) This cannot be calculated."
+    },
+    {
+      "idx": 1748,
+      "baseline_steps": 5,
+      "grpo_steps": 3,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 5,
+      "baseline_repetitive": false,
+      "baseline_reasoning": [
+        "Noted the dial has numbers 1 to 12.",
+        "Noted the disc has three holes.",
+        "Noted the disc is placed on top of the dial.",
+        "Noted the disc is rotated around its center.",
+        "Noted the numbers are visible through the holes."
+      ],
+      "grpo_reasoning": [
+        "The numbers on the dial are visible at the same time.",
+        "The numbers on the dial are 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, and 12.",
+        "The numbers on the dial are 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, and 12."
+      ],
+      "question": "A dark disc with three holes is placed on top of a dial of a watch (see diagram). Then the disc is rotated around its centre. Which numbers can be seen at the same time? <image1>",
+      "ground_truth": "A",
+      "baseline_answer": "D) 3, 6 and 9",
+      "grpo_answer": "D) 3, 6 and 9"
+    },
+    {
+      "idx": 1888,
+      "baseline_steps": 6,
+      "grpo_steps": 3,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 6,
+      "baseline_repetitive": false,
+      "baseline_reasoning": [
+        "Noted the diagram consists of three squares.",
+        "Noted the side length of each square is 1.",
+        "Noted the midpoint of the topmost square is above the common side of the other two squares.",
+        "Inferred the shaded area forms a right triangle.",
+        "Inferred the base and height of the right triangle are both 1.",
+        "Inferred the area of the right triangle is 1/2."
+      ],
+      "grpo_reasoning": [
+        "The diagram consists of three squares each one of side length 1.",
+        "The midpoint of the topmost square is above the common side of the two other squares.",
+        "The area of the section coloured grey is the area of one square."
+      ],
+      "question": "The diagram consists of three squares each one of side length 1. The midpoint of the topmost square is exactly above the common side of the two other squares. What is the area of the section coloured grey?\n<image1>",
+      "ground_truth": "1",
+      "baseline_answer": "1/2",
+      "grpo_answer": "1"
+    },
+    {
+      "idx": 1927,
+      "baseline_steps": 8,
+      "grpo_steps": 4,
+      "baseline_vague_ratio": 1.0,
+      "grpo_vague_ratio": 0.0,
+      "baseline_vague_count": 8,
+      "baseline_repetitive": false,
+      "baseline_reasoning": [
+        "Noted the large rectangle is composed of 9 smaller rectangles.",
+        "Noted each small rectangle has a longer side of 10 cm.",
+        "Noted the large rectangle has 3 rows and 3 columns of small rectangles.",
+        "Noted the perimeter of each small rectangle is 2 * (10 cm + 10 cm) = 40 cm.",
+        "Noted the large rectangle has 2 rows of 3 small rectangles each.",
+        "Noted the large rectangle has 3 columns of 3 small rectangles each.",
+        "Noted the perimeter of the large rectangle is 2 * (10 cm + 30 cm) = 80 cm.",
+        "Noted the perimeter of the large rectangle is 2 * (10 cm + 30 cm) = 80 cm."
+      ],
+      "grpo_reasoning": [
+        "The large rectangle consists of 9 smaller rectangles.",
+        "Each small rectangle has a longer side of 10 cm.",
+        "The perimeter of each small rectangle is 40 cm.",
+        "The perimeter of the large rectangle is 40 cm + 40 cm = 80 cm."
+      ],
+      "question": "A large rectangle is made up of 9 equally big rectangles. The longer side of each small rectangle is $10 \\mathrm{~cm}$ long. What is the perimeter of the large rectangle?\n<image1>",
+      "ground_truth": "C",
+      "baseline_answer": "D) 81 cm",
+      "grpo_answer": "E) 90 cm"
+    }
+  ]
+}

@@ -21,12 +21,9 @@ def parse_reasoning_steps(response: str) -> Tuple[List[str], str]:
     """
     Parse response into reasoning steps and final answer.
 
-    Expected format:
-    <think>
-    Step 1: ...
-    Step 2: ...
-    </think>
-    <answer>X</answer>
+    Supports multiple formats:
+    1. JSON format: {"reasoning_steps": [...], "answer": "X"}
+    2. XML format: <think>...</think><answer>X</answer>
 
     Args:
         response: Model's full response
@@ -34,7 +31,35 @@ def parse_reasoning_steps(response: str) -> Tuple[List[str], str]:
     Returns:
         Tuple of (list of reasoning steps, final answer string)
     """
-    # Extract thinking section
+    import json
+
+    # Try JSON format first (current model output)
+    try:
+        # Find JSON block in response
+        json_match = re.search(r'```json\s*(.*?)\s*```', response, re.DOTALL)
+        if json_match:
+            json_str = json_match.group(1)
+        else:
+            # Try to find raw JSON
+            json_match = re.search(r'\{[^{}]*"reasoning_steps"[^{}]*\}', response, re.DOTALL)
+            if json_match:
+                json_str = json_match.group(0)
+            else:
+                json_str = None
+
+        if json_str:
+            data = json.loads(json_str)
+            steps = data.get("reasoning_steps", [])
+            if isinstance(steps, str):
+                # Sometimes steps is a single string
+                steps = [steps] if steps else []
+            answer = data.get("answer", "")
+            if steps or answer:
+                return steps, str(answer)
+    except (json.JSONDecodeError, TypeError):
+        pass
+
+    # Try XML/tag format
     think_match = re.search(r'<think>(.*?)</think>', response, re.DOTALL)
     if not think_match:
         # Try alternative format

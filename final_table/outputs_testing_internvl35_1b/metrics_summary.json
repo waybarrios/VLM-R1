@@ -1,0 +1,32 @@
+{
+  "model_name": "InternVL3.5-1B",
+  "encoder": "all-distilroberta-v1",
+  "threshold": 0.35,
+  "total_samples": 6372,
+  "accuracy": {
+    "mean": 0.3013182674199623,
+    "correct_count": 1920,
+    "confidence_mean": 0.5641086001255493
+  },
+  "match_f1": {
+    "mean": 0.33007529026288185,
+    "std": 0.29531968752153526,
+    "min": 0.0,
+    "max": 1.0
+  },
+  "precision": {
+    "mean": 0.6155712247998402,
+    "std": 0.48441144681794307
+  },
+  "recall": {
+    "mean": 0.2432939505521315,
+    "std": 0.2463933600126323
+  },
+  "steps": {
+    "predicted_mean": 2.5094161958568737,
+    "predicted_std": 3.065149213322109,
+    "reference_mean": 11.564030131826742,
+    "reference_std": 4.037511983218265,
+    "avg_similarity": 0.6198995793980768
+  }
+}

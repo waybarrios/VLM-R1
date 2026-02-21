@@ -1,0 +1,32 @@
+{
+  "model_name": "Gemma3-12B",
+  "encoder": "all-distilroberta-v1",
+  "threshold": 0.35,
+  "total_samples": 6371,
+  "accuracy": {
+    "mean": 0.33825145189138284,
+    "correct_count": 2155,
+    "confidence_mean": 0.6761340448909119
+  },
+  "match_f1": {
+    "mean": 0.6049394919723016,
+    "std": 0.2839582610661039,
+    "min": 0.0,
+    "max": 1.0
+  },
+  "precision": {
+    "mean": 0.838346245003231,
+    "std": 0.3579278723731977
+  },
+  "recall": {
+    "mean": 0.4991274837817485,
+    "std": 0.27432906611168084
+  },
+  "steps": {
+    "predicted_mean": 5.5072986972217866,
+    "predicted_std": 5.749648963560519,
+    "reference_mean": 11.560822476848218,
+    "reference_std": 4.029700981272045,
+    "avg_similarity": 0.8521425295167994
+  }
+}

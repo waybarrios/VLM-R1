@@ -1,0 +1,17 @@
+% GRPO Training Experimental Setup
+% Concise CVPR-style description of GRPO training methodology
+
+\subsection{GRPO Training Setup}
+\label{sec:grpo_setup}
+
+\textbf{Base Model and Training Data.}
+We fine-tune Qwen2.5-VL-3B-Instruct~\cite{qwen2vl2024} using Group Relative Policy Optimization (GRPO) on a curated reasoning dataset of 30,312 training examples with expert-generated step-by-step solutions. The training set is constructed from 6,218 samples from ScienceQA-IMG and 24,094 samples from TextVQA, with reasoning steps generated using our multi-agent framework (Section~\ref{sec:pipeline}). To maximize training efficiency, reasoning steps for the training set are generated \emph{without the two validation phases} (Phase 3: independent validation and Phase 5: human quality gate) described in Section~\ref{sec:pipeline}, as these quality gates are primarily designed to ensure benchmark integrity for evaluation data. Each training sample contains: (i)~an input image, (ii)~a question, (iii)~the correct answer, and (iv)~multi-agent generated reasoning steps. To balance computational efficiency with model convergence, we train for \textbf{1,500 optimization steps} rather than exhausting the full dataset. This early-stopping strategy allows us to evaluate the model's reasoning capabilities after modest exposure to supervised reasoning traces, avoiding potential overfitting to annotation artifacts while demonstrating meaningful performance gains.
+
+\textbf{Training Configuration.}
+We employ DeepSpeed ZeRO-3~\cite{rajbhandari2020zero} for efficient multi-GPU training across 4 NVIDIA A100 GPUs (80GB each). The effective batch size is 32 (4 GPUs $\times$ 4 samples per GPU $\times$ 2 gradient accumulation steps), with per-device batch size of 4. For each training sample, we generate $K=4$ candidate completions and compute rewards based on three criteria: (i)~\textit{format reward} (weight 3.0) penalizes malformed JSON outputs, (ii)~\textit{accuracy reward} (weight 1.0) measures final answer correctness via fuzzy matching, and (iii)~\textit{reasoning reward} (weight 3.0) evaluates step-by-step quality using Match F1 with \texttt{all-distilroberta-v1} embeddings at threshold $\tau=0.35$. The reasoning reward is computed identically to our evaluation protocol (Section~\ref{sec:metrics}), ensuring training objectives align with test-time assessment. We use learning rate $\eta = 1 \times 10^{-5}$ with linear decay, gradient clipping at 1.0, random seed 42 with shuffled training data, and save checkpoints every 100 steps.
+
+\textbf{Computational Resources.}
+We train for 1,500 optimization steps on 4$\times$A100-80GB GPUs with mixed-precision (BF16) computation and gradient checkpointing enabled. Images are processed with minimum resolution of 3,136 pixels and maximum resolution of 602,112 pixels to maintain GPU memory within safe limits while preserving visual reasoning capabilities.
+
+\textbf{Evaluation Protocol.}
+We evaluate intermediate checkpoints at steps \{100, 200, ..., 1500\} on the CRYSTAL test set (6,372 examples) to track reasoning quality throughout training. All checkpoints use greedy decoding ($T=0.0$) to ensure deterministic outputs for fair comparison. This analysis reveals how reasoning capabilities evolve during GRPO fine-tuning and validates whether reward-driven optimization successfully improves step-level reasoning beyond the base pretrained model.

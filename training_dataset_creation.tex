@@ -1,0 +1,16 @@
+% Training Dataset Creation
+% Describes how the training set was constructed from ScienceQA-IMG and TextVQA
+
+\subsection{Training Dataset Construction}
+\label{sec:training_data}
+
+To train models via GRPO (Section~\ref{sec:rl-grpo}), we construct a separate training dataset following the same multi-agent reasoning generation framework described in Section~\ref{sec:pipeline}, but with key modifications to balance annotation quality with computational efficiency.
+
+\textbf{Data Sources.}
+The training set comprises 30,312 examples sourced from two established VQA benchmarks: 6,218 samples from ScienceQA-IMG~\cite{scienceqa} and 24,094 samples from TextVQA~\cite{textvqa}. These benchmarks provide diverse question types spanning scientific reasoning, text recognition, and visual understanding. Each example includes an image, question, and ground-truth answer, forming the input triplet $(I, Q, A)$ required by our annotation pipeline.
+
+\textbf{Streamlined Generation Without Validation.}
+For computational efficiency, we generate reasoning steps using only Phases 1 and 2 of our multi-agent framework (independent generation and semantic clustering), \textit{omitting both validation phases} (Phase 3: independent validation and Phase 5: human quality gate). This design decision is justified by the distinct roles of training versus evaluation data. The rigorous validation phases in Section~\ref{sec:pipeline} ensure benchmark integrity for the CRYSTAL test set, where reasoning steps must meet strict quality criteria for reliable model evaluation. In contrast, training data serves to expose the model to diverse reasoning patterns, where occasional noise or suboptimal step formulations are acceptable and may even improve robustness. The GRPO training objective (Section~\ref{sec:rl-grpo}) provides implicit quality control through reward signals: poorly aligned reasoning steps receive lower Match F1 scores, naturally down-weighting their influence during policy optimization.
+
+\textbf{Annotation Process.}
+For each example, four independent MLLM agents (identical to those used for CRYSTAL test set generation) produce candidate reasoning steps. These candidates are pooled and semantically clustered using sentence embeddings and graph-based clustering (Equations~\ref{eq:embed_step}--\ref{eq:representative}). Representative steps from each cluster form the final reasoning sequence, ordered using edit distance minimization (Equation~\ref{eq:ordering}). By omitting the validation phases, this streamlined pipeline enables large-scale training data generation without manual review bottlenecks, facilitating efficient creation of the 30,312-example training set.

@@ -1,0 +1,32 @@
+{
+  "model_name": "MiniCPMv2.6-8B",
+  "encoder": "all-distilroberta-v1",
+  "threshold": 0.35,
+  "total_samples": 6371,
+  "accuracy": {
+    "mean": 0.25537592214722965,
+    "correct_count": 1627,
+    "confidence_mean": 0.5370271542928896
+  },
+  "match_f1": {
+    "mean": 0.21488271272159393,
+    "std": 0.1749354408290021,
+    "min": 0.0,
+    "max": 1.0
+  },
+  "precision": {
+    "mean": 0.7093568513577146,
+    "std": 0.4531599969993442
+  },
+  "recall": {
+    "mean": 0.1337620946893124,
+    "std": 0.1298947361063196
+  },
+  "steps": {
+    "predicted_mean": 1.3079579343902057,
+    "predicted_std": 1.135677069866877,
+    "reference_mean": 11.560822476848218,
+    "reference_std": 4.029700981272045,
+    "avg_similarity": 0.7110343923319492
+  }
+}

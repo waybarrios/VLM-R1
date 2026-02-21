@@ -1,0 +1,32 @@
+{
+  "model_name": "Qwen2.5-VL-7B",
+  "encoder": "all-distilroberta-v1",
+  "threshold": 0.35,
+  "total_samples": 6372,
+  "accuracy": {
+    "mean": 0.30430006277463906,
+    "correct_count": 1939,
+    "confidence_mean": 0.6002667922159448
+  },
+  "match_f1": {
+    "mean": 0.4754010316464281,
+    "std": 0.29317272190453125,
+    "min": 0.0,
+    "max": 1.0
+  },
+  "precision": {
+    "mean": 0.7647225294115383,
+    "std": 0.4205699702592086
+  },
+  "recall": {
+    "mean": 0.3653075376562264,
+    "std": 0.2590975737793836
+  },
+  "steps": {
+    "predicted_mean": 4.065128688010044,
+    "predicted_std": 3.2890368731188127,
+    "reference_mean": 11.564030131826742,
+    "reference_std": 4.037511983218265,
+    "avg_similarity": 0.7711864570944996
+  }
+}

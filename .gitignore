@@ -188,3 +188,9 @@ images_eval/
 runs/
 temps/
 src/open-r1-multimodal/src/open_r1/grpo_jsonl_ocr.py
+
+# Large data directories (predictions, evaluations, splits)
+predictions/
+predictions_final/
+temp_splits/
+evaluations/

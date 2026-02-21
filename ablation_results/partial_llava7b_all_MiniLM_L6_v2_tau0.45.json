@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "model": "llava7b",
+    "encoder": "all-MiniLM-L6-v2",
+    "threshold": 0.45,
+    "gpu": 3
+  },
+  "results": {
+    "encoder": "all-MiniLM-L6-v2",
+    "threshold": 0.45,
+    "num_samples": 6372,
+    "match_f1": {
+      "mean": 0.3416932406548982,
+      "std": 0.1797642601567467,
+      "median": 0.3636363636363636,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "precision": {
+      "mean": 0.6631563428916982,
+      "std": 0.32946354483926726
+    },
+    "recall": {
+      "mean": 0.2428779023206735,
+      "std": 0.1493159334365312
+    },
+    "num_predicted_steps": {
+      "mean": 3.9416195856873824
+    },
+    "num_reference_steps": {
+      "mean": 11.564030131826742
+    }
+  }
+}

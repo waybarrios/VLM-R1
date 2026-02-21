@@ -1,0 +1,43 @@
+{
+  "experiment_info": {
+    "predictions_dir": "/gpudata3/Wayner/reasoning/outputs_testing_qwen25vl_32b_64k",
+    "dataset_path": "/gpudata3/Wayner/reasoning/reasoning_test_with_reference_steps_updated_v27",
+    "use_judge": false,
+    "judge_model": null,
+    "num_gpus": 4,
+    "total_samples": 6372
+  },
+  "accuracy_metrics": {
+    "overall_accuracy": 0.45778405524168236,
+    "correct_samples": 2917,
+    "total_samples": 6372,
+    "average_confidence": 0.6467984934086628,
+    "median_confidence": 0.7
+  },
+  "match_f1_metrics": {
+    "average_match_f1": 0.5888219457950038,
+    "std_match_f1": 0.19150987802947353,
+    "median_match_f1": 0.6153846153846153,
+    "average_precision": 0.8610577752150657,
+    "std_precision": 0.2541046857488377,
+    "average_recall": 0.46876715508716055,
+    "std_recall": 0.1878563109193151
+  },
+  "step_matching_details": {
+    "avg_predicted_steps": 5.862680477087257,
+    "avg_reference_steps": 11.564030131826742,
+    "avg_matched_predictions": 5.207940991839297,
+    "avg_matched_references": 5.207940991839297,
+    "avg_similarity": 0.3812791940809344,
+    "avg_max_similarity": 0.7539580410553349
+  },
+  "match_type_breakdown": {
+    "exact": 2588,
+    "choice": 1393,
+    "numeric_mismatch": 1054,
+    "numeric_exact": 476,
+    "yes_no": 431,
+    "placeholder": 299,
+    "numeric_rounded": 131
+  }
+}

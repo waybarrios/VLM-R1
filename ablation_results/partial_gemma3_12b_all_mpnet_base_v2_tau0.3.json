@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "model": "gemma3_12b",
+    "encoder": "all-mpnet-base-v2",
+    "threshold": 0.3,
+    "gpu": 2
+  },
+  "results": {
+    "encoder": "all-mpnet-base-v2",
+    "threshold": 0.3,
+    "num_samples": 6372,
+    "match_f1": {
+      "mean": 0.5594960227135242,
+      "std": 0.2653797892024458,
+      "median": 0.631578947368421,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "precision": {
+      "mean": 0.7829627089341468,
+      "std": 0.35552367516059546
+    },
+    "recall": {
+      "mean": 0.45833420194163743,
+      "std": 0.24627949557962386
+    },
+    "num_predicted_steps": {
+      "mean": 5.508631512868801
+    },
+    "num_reference_steps": {
+      "mean": 11.564030131826742
+    }
+  }
+}

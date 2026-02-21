@@ -18,10 +18,10 @@ OUTPUT="${PROJECT_ROOT}/output/grpo-cpr-$(date +%Y%m%d_%H%M%S)"
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 NUM_GPUS=4
 
-# Hyperparameters
-PER_DEVICE_BATCH=4
+# Hyperparameters (batch=5 for optimal memory usage)
+PER_DEVICE_BATCH=5
 GRADIENT_ACCUM=2
-NUM_GENERATIONS=4
+NUM_GENERATIONS=5
 LEARNING_RATE=1e-5
 NUM_EPOCHS=2
 SAVE_STEPS=100

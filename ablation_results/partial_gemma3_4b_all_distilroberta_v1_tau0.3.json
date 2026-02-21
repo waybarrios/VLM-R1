@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "model": "gemma3_4b",
+    "encoder": "all-distilroberta-v1",
+    "threshold": 0.3,
+    "gpu": 3
+  },
+  "results": {
+    "encoder": "all-distilroberta-v1",
+    "threshold": 0.3,
+    "num_samples": 6372,
+    "match_f1": {
+      "mean": 0.6179460853756222,
+      "std": 0.25538175721264483,
+      "median": 0.6666666666666666,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "precision": {
+      "mean": 0.8780664705171662,
+      "std": 0.3147865233295571
+    },
+    "recall": {
+      "mean": 0.5058962090000668,
+      "std": 0.2581923217736433
+    },
+    "num_predicted_steps": {
+      "mean": 5.72112366603892
+    },
+    "num_reference_steps": {
+      "mean": 11.564030131826742
+    }
+  }
+}

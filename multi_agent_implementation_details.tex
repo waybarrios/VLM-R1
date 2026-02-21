@@ -1,0 +1,39 @@
+% Multi-Agent Implementation Details
+% Specifies the four MLLM agents and clustering hyperparameters
+
+\subsection{Multi-Agent Implementation Details}
+\label{sec:implementation_details}
+
+We provide the specific model configurations and hyperparameters used in our multi-agent reasoning generation pipeline (Section~\ref{sec:pipeline}), ensuring reproducibility and transparency in benchmark construction.
+
+\textbf{Phase 1: Four Independent Generator Agents.}
+The four MLLM agents used for independent reasoning generation (Phase 1) are selected from distinct architecture families to maximize diversity and reduce correlated errors. Table~\ref{tab:generator_agents} lists the specific models and their configurations.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Model} & \textbf{Parameters} & \textbf{Architecture} \\
+\midrule
+Qwen2.5-VL-72B~\cite{qwen2vl2024} & 72B & Qwen-VL \\
+Gemma3-27B~\cite{gemma2024} & 27B & Gemma \\
+InternVL2-Llama3-76B~\cite{internvl2} & 76B & InternVL \\
+Llama-4-Maverick-17B-128E~\cite{llama4} & 17B (400B total, 128E MoE) & Llama-4 \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Four independent generator agents.} We select models spanning 17B to 76B parameters from four distinct architecture families (Qwen-VL, Gemma, InternVL, Llama-4). This diversity reduces shared biases and increases coverage of valid reasoning paths.}
+\label{tab:generator_agents}
+\end{table}
+
+Each agent generates reasoning steps independently using greedy decoding with temperature $T=1.0$ to encourage diverse step formulations while maintaining coherence. Higher temperature allows agents to explore alternative phrasings and reasoning strategies, enriching the pool of candidate steps for semantic clustering. All agents receive identical input triplets $(Q, I, A)$ but use different random seeds to ensure stochastic independence. We explicitly avoid any shared fine-tuning, distillation, or architectural components between the four generators to minimize correlated failures~\cite{krogh1995neural,breiman1996bagging}.
+
+\textbf{Phase 2: Semantic Clustering Configuration.}
+For embedding reasoning steps (Equation~\ref{eq:embed_step}), we use \texttt{roberta-large}~\cite{liu2019roberta}, a 355M-parameter sentence encoder pretrained on diverse natural language corpora. RoBERTa-large provides robust semantic representations that generalize well across reasoning domains (spatial, mathematical, scientific) without task-specific fine-tuning. Each reasoning step is encoded as a 1024-dimensional dense vector via mean pooling over the final hidden states.
+
+Pairwise cosine similarity (Equation~\ref{eq:cosine_sim}) between all candidate steps constructs a similarity matrix. We set the clustering threshold to $\tau = 0.45$, defining edges in the similarity graph $G=(V,E)$ (Equation~\ref{eq:graph_edges}). This threshold is calibrated to balance cluster granularity: lower values ($\tau < 0.40$) produce overly coarse clusters that merge semantically distinct steps, while higher values ($\tau > 0.50$) fragment paraphrases into separate clusters. At $\tau=0.45$, connected components in $G$ reliably group paraphrastic variations (e.g., ``count the objects'' and ``determine the number of items'') while separating distinct reasoning operations (e.g., ``identify the color'' vs.~``compare the sizes'').
+
+The clustering process yields an average of 11.56 consensus steps per question (median: 12, range: 1--61), closely matching the step count distribution of human-validated reasoning chains. For each cluster $\mathcal{C}_k$, we select the representative step $x_k^{\star}$ as the medoid—the step minimizing average dissimilarity to all other steps in the cluster (Equation~\ref{eq:representative}). This medoid selection ensures the representative is an actual agent-generated step rather than a synthetic centroid, preserving natural language quality.
+
+\textbf{Ordering and Validation.}
+Representative steps are ordered using edit distance minimization (Equation~\ref{eq:ordering}) to maintain logical dependencies across iterations. A fifth independent MLLM (Qwen2-VL-7B-Instruct~\cite{qwen2vl2024}, distinct from the four generators) serves as the validator in Phase 3, checking logical coherence and visual grounding. This validator uses greedy decoding ($T=0.0$) to produce deterministic assessments. Examples passing validation and subsequent human review constitute the final CRYSTAL benchmark, ensuring high-quality reference reasoning for evaluation.

@@ -1,0 +1,32 @@
+{
+  "model_name": "LLaVA-v1.6-7B",
+  "encoder": "all-distilroberta-v1",
+  "threshold": 0.35,
+  "total_samples": 6370,
+  "accuracy": {
+    "mean": 0.2466248037676609,
+    "correct_count": 1571,
+    "confidence_mean": 0.6105180533751963
+  },
+  "match_f1": {
+    "mean": 0.5120910591992254,
+    "std": 0.17844896974511945,
+    "min": 0.0,
+    "max": 1.0
+  },
+  "precision": {
+    "mean": 0.9609155238804913,
+    "std": 0.1875344409491352
+  },
+  "recall": {
+    "mean": 0.3695631708513605,
+    "std": 0.1793519746578691
+  },
+  "steps": {
+    "predicted_mean": 3.940659340659341,
+    "predicted_std": 1.7805304767340924,
+    "reference_mean": 11.556985871271586,
+    "reference_std": 4.018363682363527,
+    "avg_similarity": 0.9665620392027605
+  }
+}

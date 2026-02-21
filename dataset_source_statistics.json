@@ -1,0 +1,95 @@
+{
+  "metadata": {
+    "dataset_name": "CRYSTAL",
+    "total_samples": 6372,
+    "num_sources": 5,
+    "avg_steps_overall": 11.564030131826742,
+    "median_steps_overall": 12.0,
+    "std_steps_overall": 4.0371951540905195,
+    "min_steps": 1,
+    "max_steps": 61
+  },
+  "complexity_distribution": {
+    "easy": 3090,
+    "medium": 2810,
+    "hard": 470,
+    "very_hard": 2
+  },
+  "sources": {
+    "mathvision": {
+      "count": 3040,
+      "percentage": 47.7,
+      "avg_steps": 14.0,
+      "median_steps": 13.0,
+      "std_steps": 3.9,
+      "min_steps": 1,
+      "max_steps": 61,
+      "complexity": {
+        "easy": 360,
+        "medium": 2212,
+        "hard": 466,
+        "very_hard": 2
+      }
+    },
+    "mmvp": {
+      "count": 300,
+      "percentage": 4.7,
+      "avg_steps": 8.7,
+      "median_steps": 9.0,
+      "std_steps": 1.1,
+      "min_steps": 6,
+      "max_steps": 12,
+      "complexity": {
+        "easy": 299,
+        "medium": 1,
+        "hard": 0,
+        "very_hard": 0
+      }
+    },
+    "plotqa": {
+      "count": 250,
+      "percentage": 3.9,
+      "avg_steps": 8.9,
+      "median_steps": 8.5,
+      "std_steps": 2.6,
+      "min_steps": 4,
+      "max_steps": 26,
+      "complexity": {
+        "easy": 223,
+        "medium": 26,
+        "hard": 1,
+        "very_hard": 0
+      }
+    },
+    "realwordqa": {
+      "count": 765,
+      "percentage": 12.0,
+      "avg_steps": 8.2,
+      "median_steps": 8.0,
+      "std_steps": 1.2,
+      "min_steps": 1,
+      "max_steps": 16,
+      "complexity": {
+        "easy": 731,
+        "medium": 34,
+        "hard": 0,
+        "very_hard": 0
+      }
+    },
+    "scienceqa": {
+      "count": 2017,
+      "percentage": 31.7,
+      "avg_steps": 9.9,
+      "median_steps": 10.0,
+      "std_steps": 2.9,
+      "min_steps": 1,
+      "max_steps": 18,
+      "complexity": {
+        "easy": 1477,
+        "medium": 537,
+        "hard": 3,
+        "very_hard": 0
+      }
+    }
+  }
+}

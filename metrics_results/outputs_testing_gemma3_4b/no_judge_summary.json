@@ -1,0 +1,43 @@
+{
+  "experiment_info": {
+    "predictions_dir": "/gpudata3/Wayner/reasoning/outputs_testing_gemma3_4b",
+    "dataset_path": "/gpudata3/Wayner/reasoning/reasoning_test_with_reference_steps_updated_v27",
+    "use_judge": false,
+    "judge_model": null,
+    "num_gpus": 4,
+    "total_samples": 6372
+  },
+  "accuracy_metrics": {
+    "overall_accuracy": 0.2512554927809165,
+    "correct_samples": 1601,
+    "total_samples": 6372,
+    "average_confidence": 0.624450721908349,
+    "median_confidence": 1.0
+  },
+  "match_f1_metrics": {
+    "average_match_f1": 0.5347509221918018,
+    "std_match_f1": 0.23344968373378316,
+    "median_match_f1": 0.5833333333333334,
+    "average_precision": 0.7724249813273062,
+    "std_precision": 0.32699370838651715,
+    "average_recall": 0.43304395447221816,
+    "std_recall": 0.21955967258204723
+  },
+  "step_matching_details": {
+    "avg_predicted_steps": 5.72112366603892,
+    "avg_reference_steps": 11.564030131826742,
+    "avg_matched_predictions": 4.715473948524796,
+    "avg_matched_references": 4.715473948524796,
+    "avg_similarity": 0.337777472221002,
+    "avg_max_similarity": 0.6871864773258239
+  },
+  "match_type_breakdown": {
+    "exact": 2437,
+    "choice": 1459,
+    "numeric_mismatch": 1085,
+    "placeholder": 680,
+    "yes_no": 431,
+    "numeric_exact": 193,
+    "numeric_rounded": 87
+  }
+}

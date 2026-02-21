@@ -1,0 +1,32 @@
+{
+  "model_name": "Qwen3-VL-2B",
+  "encoder": "all-distilroberta-v1",
+  "threshold": 0.35,
+  "total_samples": 6372,
+  "accuracy": {
+    "mean": 0.34149403640929066,
+    "correct_count": 2176,
+    "confidence_mean": 0.6470495919648462
+  },
+  "match_f1": {
+    "mean": 0.5949551278766588,
+    "std": 0.36208374389168413,
+    "min": 0.0,
+    "max": 1.0
+  },
+  "precision": {
+    "mean": 0.7255972423008684,
+    "std": 0.42712108705474167
+  },
+  "recall": {
+    "mean": 0.5353938279851226,
+    "std": 0.35505016379125254
+  },
+  "steps": {
+    "predicted_mean": 5.940207156308851,
+    "predicted_std": 4.651405205481854,
+    "reference_mean": 11.564030131826742,
+    "reference_std": 4.037511983218265,
+    "avg_similarity": 0.7531387355442849
+  }
+}

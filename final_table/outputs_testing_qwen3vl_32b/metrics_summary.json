@@ -1,0 +1,32 @@
+{
+  "model_name": "Qwen3 VL 32B",
+  "encoder": "all-distilroberta-v1",
+  "threshold": 0.35,
+  "total_samples": 6372,
+  "accuracy": {
+    "mean": 0.4921531701192718,
+    "correct_count": 3136,
+    "confidence_mean": 0.764030131826742
+  },
+  "match_f1": {
+    "mean": 0.7176061351145337,
+    "std": 0.28013231622362356,
+    "min": 0.0,
+    "max": 1.0
+  },
+  "precision": {
+    "mean": 0.8193677493699117,
+    "std": 0.3289600240887973
+  },
+  "recall": {
+    "mean": 0.7037375258248124,
+    "std": 0.29875058766593626
+  },
+  "steps": {
+    "predicted_mean": 10.561362209667294,
+    "predicted_std": 12.384801188667337,
+    "reference_mean": 11.564030131826742,
+    "reference_std": 4.037511983218265,
+    "avg_similarity": 0.9042686783829651
+  }
+}

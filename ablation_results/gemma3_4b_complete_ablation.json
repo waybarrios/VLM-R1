@@ -1,0 +1,541 @@
+{
+  "metadata": {
+    "model": "gemma3_4b",
+    "num_configurations": 20,
+    "encoders": [
+      "all-MiniLM-L6-v2",
+      "all-MiniLM-L12-v2",
+      "all-mpnet-base-v2",
+      "all-distilroberta-v1"
+    ],
+    "thresholds": [
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5
+    ]
+  },
+  "results": [
+    {
+      "encoder": "all-MiniLM-L6-v2",
+      "threshold": 0.3,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.5593331880948047,
+        "std": 0.23680698628400432,
+        "median": 0.6153846153846153,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "precision": {
+        "mean": 0.8051779396470431,
+        "std": 0.3235169645383725
+      },
+      "recall": {
+        "mean": 0.4538878704597636,
+        "std": 0.22647518557280674
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-MiniLM-L6-v2",
+      "threshold": 0.5,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.4183730157680974,
+        "std": 0.2237768490163475,
+        "median": 0.46153846153846156,
+        "min": 0.0,
+        "max": 0.9333333333333333
+      },
+      "precision": {
+        "mean": 0.6113292667897928,
+        "std": 0.33280455565023853
+      },
+      "recall": {
+        "mean": 0.3361809413793628,
+        "std": 0.19747828333032746
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-MiniLM-L12-v2",
+      "threshold": 0.45,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.4657982315599103,
+        "std": 0.2293903415268038,
+        "median": 0.5000000000000001,
+        "min": 0.0,
+        "max": 0.962962962962963
+      },
+      "precision": {
+        "mean": 0.6771576635185272,
+        "std": 0.3335453123118319
+      },
+      "recall": {
+        "mean": 0.37537958257767734,
+        "std": 0.20735599714738132
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-mpnet-base-v2",
+      "threshold": 0.4,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.5132298851396397,
+        "std": 0.23353718386265418,
+        "median": 0.5625000000000001,
+        "min": 0.0,
+        "max": 0.967741935483871
+      },
+      "precision": {
+        "mean": 0.7426368048404393,
+        "std": 0.3318157386953081
+      },
+      "recall": {
+        "mean": 0.4149159816918443,
+        "std": 0.21581325484542338
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-distilroberta-v1",
+      "threshold": 0.35,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.6179460853756222,
+        "std": 0.25538175721264483,
+        "median": 0.6666666666666666,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "precision": {
+        "mean": 0.8780664705171662,
+        "std": 0.3147865233295571
+      },
+      "recall": {
+        "mean": 0.5058962090000668,
+        "std": 0.2581923217736433
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-MiniLM-L6-v2",
+      "threshold": 0.45,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.46430454934655624,
+        "std": 0.2277208778558755,
+        "median": 0.5,
+        "min": 0.0,
+        "max": 0.9600000000000001
+      },
+      "precision": {
+        "mean": 0.6755666875921847,
+        "std": 0.33349047562180384
+      },
+      "recall": {
+        "mean": 0.3743397982757841,
+        "std": 0.20567306869840443
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-MiniLM-L12-v2",
+      "threshold": 0.4,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.5046394704594044,
+        "std": 0.2334173861033052,
+        "median": 0.5555555555555556,
+        "min": 0.0,
+        "max": 0.962962962962963
+      },
+      "precision": {
+        "mean": 0.730670795820844,
+        "std": 0.3321552521321718
+      },
+      "recall": {
+        "mean": 0.4077223788386494,
+        "std": 0.21518753623350206
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-mpnet-base-v2",
+      "threshold": 0.35,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.5430083753045658,
+        "std": 0.23601193542184853,
+        "median": 0.5925925925925926,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "precision": {
+        "mean": 0.782473658924921,
+        "std": 0.326302689126753
+      },
+      "recall": {
+        "mean": 0.44021303865307443,
+        "std": 0.22308104064257162
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-distilroberta-v1",
+      "threshold": 0.3,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.6179460853756222,
+        "std": 0.25538175721264483,
+        "median": 0.6666666666666666,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "precision": {
+        "mean": 0.8780664705171662,
+        "std": 0.3147865233295571
+      },
+      "recall": {
+        "mean": 0.5058962090000668,
+        "std": 0.2581923217736433
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-distilroberta-v1",
+      "threshold": 0.5,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.6179460853756222,
+        "std": 0.25538175721264483,
+        "median": 0.6666666666666666,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "precision": {
+        "mean": 0.8780664705171662,
+        "std": 0.3147865233295571
+      },
+      "recall": {
+        "mean": 0.5058962090000668,
+        "std": 0.2581923217736433
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-MiniLM-L6-v2",
+      "threshold": 0.35,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.5347509221918018,
+        "std": 0.23343136461548022,
+        "median": 0.5833333333333334,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "precision": {
+        "mean": 0.7724249813273063,
+        "std": 0.32696804873972546
+      },
+      "recall": {
+        "mean": 0.4330439544722182,
+        "std": 0.21954244343205548
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-MiniLM-L12-v2",
+      "threshold": 0.3,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.5623618837221722,
+        "std": 0.237530862552723,
+        "median": 0.6153846153846153,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "precision": {
+        "mean": 0.8088376286493069,
+        "std": 0.32309810893164503
+      },
+      "recall": {
+        "mean": 0.45652679819994885,
+        "std": 0.22756156681638645
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-MiniLM-L12-v2",
+      "threshold": 0.5,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.4209103807734332,
+        "std": 0.2255347025394841,
+        "median": 0.46153846153846156,
+        "min": 0.0,
+        "max": 0.9333333333333333
+      },
+      "precision": {
+        "mean": 0.6141036518727437,
+        "std": 0.333043171994592
+      },
+      "recall": {
+        "mean": 0.33869932163073035,
+        "std": 0.20027713121181526
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-mpnet-base-v2",
+      "threshold": 0.45,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.47611596938496575,
+        "std": 0.23002910201512852,
+        "median": 0.5333333333333333,
+        "min": 0.0,
+        "max": 0.962962962962963
+      },
+      "precision": {
+        "mean": 0.6913830616829146,
+        "std": 0.33331397181119204
+      },
+      "recall": {
+        "mean": 0.38405005461422437,
+        "std": 0.2086409748200277
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-distilroberta-v1",
+      "threshold": 0.4,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.6179460853756222,
+        "std": 0.25538175721264483,
+        "median": 0.6666666666666666,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "precision": {
+        "mean": 0.8780664705171662,
+        "std": 0.3147865233295571
+      },
+      "recall": {
+        "mean": 0.5058962090000668,
+        "std": 0.2581923217736433
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-MiniLM-L6-v2",
+      "threshold": 0.4,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.5026065254662206,
+        "std": 0.23073891065197563,
+        "median": 0.5454545454545454,
+        "min": 0.0,
+        "max": 0.962962962962963
+      },
+      "precision": {
+        "mean": 0.728410726948049,
+        "std": 0.3309826989038044
+      },
+      "recall": {
+        "mean": 0.40629255172714507,
+        "std": 0.2127875422726752
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-MiniLM-L12-v2",
+      "threshold": 0.35,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.5369990114251066,
+        "std": 0.23511436131621766,
+        "median": 0.5882352941176471,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "precision": {
+        "mean": 0.775103655082586,
+        "std": 0.3280615936235798
+      },
+      "recall": {
+        "mean": 0.434946689203093,
+        "std": 0.2210426699603482
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-mpnet-base-v2",
+      "threshold": 0.3,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.5664918090188296,
+        "std": 0.23883742133566704,
+        "median": 0.6153846153846153,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "precision": {
+        "mean": 0.8138943124895517,
+        "std": 0.32256495579455524
+      },
+      "recall": {
+        "mean": 0.4600389394341111,
+        "std": 0.22929898294470902
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-mpnet-base-v2",
+      "threshold": 0.5,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.43026971701600897,
+        "std": 0.22704496759580917,
+        "median": 0.47058823529411764,
+        "min": 0.0,
+        "max": 0.962962962962963
+      },
+      "precision": {
+        "mean": 0.6269145453028099,
+        "std": 0.33398918629335866
+      },
+      "recall": {
+        "mean": 0.34592498483605866,
+        "std": 0.20120844485546716
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    },
+    {
+      "encoder": "all-distilroberta-v1",
+      "threshold": 0.45,
+      "num_samples": 6372,
+      "match_f1": {
+        "mean": 0.6179460853756222,
+        "std": 0.25538175721264483,
+        "median": 0.6666666666666666,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "precision": {
+        "mean": 0.8780664705171662,
+        "std": 0.3147865233295571
+      },
+      "recall": {
+        "mean": 0.5058962090000668,
+        "std": 0.2581923217736433
+      },
+      "num_predicted_steps": {
+        "mean": 5.72112366603892
+      },
+      "num_reference_steps": {
+        "mean": 11.564030131826742
+      }
+    }
+  ]
+}

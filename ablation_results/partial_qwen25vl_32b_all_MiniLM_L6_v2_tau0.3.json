@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "model": "qwen25vl_32b",
+    "encoder": "all-MiniLM-L6-v2",
+    "threshold": 0.3,
+    "gpu": 0
+  },
+  "results": {
+    "encoder": "all-MiniLM-L6-v2",
+    "threshold": 0.3,
+    "num_samples": 6372,
+    "match_f1": {
+      "mean": 0.6085628917531302,
+      "std": 0.19029174816150243,
+      "median": 0.631578947368421,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "precision": {
+      "mean": 0.8880125220415571,
+      "std": 0.24315046505115315
+    },
+    "recall": {
+      "mean": 0.4851361297262164,
+      "std": 0.1910363245216343
+    },
+    "num_predicted_steps": {
+      "mean": 5.862680477087257
+    },
+    "num_reference_steps": {
+      "mean": 11.564030131826742
+    }
+  }
+}

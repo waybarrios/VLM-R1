@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "model": "qwen25vl_32b",
+    "encoder": "all-distilroberta-v1",
+    "threshold": 0.4,
+    "gpu": 1
+  },
+  "results": {
+    "encoder": "all-distilroberta-v1",
+    "threshold": 0.4,
+    "num_samples": 6372,
+    "match_f1": {
+      "mean": 0.6524535899040931,
+      "std": 0.20071831185285327,
+      "median": 0.6666666666666666,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "precision": {
+      "mean": 0.9432288267920079,
+      "std": 0.2207735104923179
+    },
+    "recall": {
+      "mean": 0.5235717423725057,
+      "std": 0.21464927121325353
+    },
+    "num_predicted_steps": {
+      "mean": 5.862680477087257
+    },
+    "num_reference_steps": {
+      "mean": 11.564030131826742
+    }
+  }
+}

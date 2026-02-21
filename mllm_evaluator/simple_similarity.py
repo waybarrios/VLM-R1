@@ -58,17 +58,51 @@ def word_overlap_similarity(text1: str, text2: str) -> float:
     return common / denom if denom > 0 else 0.0
 
 
+# Process-local cache for SentenceTransformer to avoid DeepSpeed multi-process issues
+_semantic_model_cache = {}
+
+def _get_semantic_model():
+    """Get process-local SentenceTransformer model with lazy initialization."""
+    import os
+    pid = os.getpid()
+
+    if pid not in _semantic_model_cache:
+        try:
+            from sentence_transformers import SentenceTransformer
+            import torch
+
+            # Ensure CPU-only and disable parallelism
+            os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+            # Create fresh model for this process
+            model = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
+            model.eval()
+
+            # Verify model is on CPU
+            for param in model.parameters():
+                if param.device.type != "cpu":
+                    param.data = param.data.cpu()
+
+            _semantic_model_cache[pid] = model
+            print(f"✓ semantic_match_f1: Model initialized for PID {pid}")
+        except Exception as e:
+            print(f"⚠ semantic_match_f1: Model init failed for PID {pid}: {e}")
+            _semantic_model_cache[pid] = None
+
+    return _semantic_model_cache.get(pid)
+
+
 def semantic_match_f1(
     predicted_steps: List[str],
     reference_steps: List[str],
-    model: Any,  # SentenceTransformer instance (CPU-only for DeepSpeed)
+    model: Any = None,  # Optional - will use process-local model if None
     threshold: float = 0.70
 ) -> Tuple[float, int, int]:
     """
     Calculate F1 score using SEMANTIC similarity (SentenceTransformer + cosine).
 
-    Reuses the same algorithm as MLLMReasoningEvaluator but takes a pre-initialized
-    model as parameter for DeepSpeed compatibility (CPU-only, process-local).
+    Reuses the same algorithm as MLLMReasoningEvaluator but with process-local
+    model initialization for DeepSpeed compatibility.
 
     This captures semantic equivalence that word overlap misses:
     - "The light is green" ≈ "Traffic signal shows green" (HIGH score)
@@ -77,7 +111,7 @@ def semantic_match_f1(
     Args:
         predicted_steps: List of predicted reasoning steps
         reference_steps: List of reference reasoning steps
-        model: SentenceTransformer model (must be CPU-only for DeepSpeed)
+        model: Optional SentenceTransformer (uses process-local if None)
         threshold: Cosine similarity threshold (0.70 recommended)
 
     Returns:
@@ -86,9 +120,28 @@ def semantic_match_f1(
     if not predicted_steps or not reference_steps:
         return 0.0, 0, 0
 
-    # Compute embeddings (same as MLLMReasoningEvaluator._compute_embeddings)
-    pred_embeddings = model.encode(predicted_steps, convert_to_tensor=False, show_progress_bar=False)
-    ref_embeddings = model.encode(reference_steps, convert_to_tensor=False, show_progress_bar=False)
+    # Use process-local model if not provided
+    if model is None:
+        model = _get_semantic_model()
+
+    if model is None:
+        raise RuntimeError("SentenceTransformer not available")
+
+    # Compute embeddings with error handling for DeepSpeed issues
+    try:
+        pred_embeddings = model.encode(predicted_steps, convert_to_tensor=False, show_progress_bar=False)
+        ref_embeddings = model.encode(reference_steps, convert_to_tensor=False, show_progress_bar=False)
+    except Exception as e:
+        # If encoding fails, try reinitializing model
+        import os
+        pid = os.getpid()
+        if pid in _semantic_model_cache:
+            del _semantic_model_cache[pid]
+        model = _get_semantic_model()
+        if model is None:
+            raise RuntimeError(f"SentenceTransformer encoding failed: {e}")
+        pred_embeddings = model.encode(predicted_steps, convert_to_tensor=False, show_progress_bar=False)
+        ref_embeddings = model.encode(reference_steps, convert_to_tensor=False, show_progress_bar=False)
 
     # Compute cosine similarity matrix (same as MLLMReasoningEvaluator._compute_similarity_matrix)
     pred_norm = pred_embeddings / (np.linalg.norm(pred_embeddings, axis=1, keepdims=True) + 1e-8)
