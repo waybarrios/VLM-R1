@@ -1,7 +1,8 @@
 #!/bin/bash
-# Causal Process Reward (CPR) GRPO Training
-# Combines: PCGrad for gradient conflict resolution + CPR for causal reasoning rewards
-# Target: >46% accuracy AND >0.50 F1 with faithful reasoning
+# CPR Curriculum Training (Phase 2)
+# Base: Answer-Only checkpoint-1400 (acc 44.90%, stable)
+# Goal: Add reasoning via CPR WITHOUT losing accuracy
+# Strategy: Lower LR (5e-6) + save frequently to catch best balance
 
 PROJECT_ROOT="/gpudata3/Wayner/VLM-R1"
 SRC_DIR="${PROJECT_ROOT}/src/open-r1-multimodal/src"
@@ -11,18 +12,19 @@ DEEPSPEED_CONFIG="${PROJECT_ROOT}/src/open-r1-multimodal/local_scripts/zero3.jso
 export PYTHONPATH="${SRC_DIR}:${MLLM_EVALUATOR_DIR}:${PYTHONPATH}"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
-MODEL="Qwen/Qwen2.5-VL-3B-Instruct"
+# KEY CHANGE: Start from Answer-Only best checkpoint instead of base model
+MODEL="${PROJECT_ROOT}/output/GRPO_answer_only_baseline_20260129_202515/checkpoint-1400"
 DATASET="/gpudata3/Wayner/reasoning/reasoning_train_with_reference_steps"
-OUTPUT="${PROJECT_ROOT}/output/grpo-cpr-$(date +%Y%m%d_%H%M%S)"
+OUTPUT="${PROJECT_ROOT}/output/grpo-cpr-curriculum-$(date +%Y%m%d_%H%M%S)"
 
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 NUM_GPUS=4
 
-# Hyperparameters (batch=5 for optimal memory usage)
+# Hyperparameters - lower LR to preserve accuracy from phase 1
 PER_DEVICE_BATCH=5
 GRADIENT_ACCUM=2
 NUM_GENERATIONS=5
-LEARNING_RATE=1e-5
+LEARNING_RATE=5e-6
 NUM_EPOCHS=2
 SAVE_STEPS=100
 LOGGING_STEPS=2
@@ -31,10 +33,10 @@ SEED=42
 MAX_PIXELS=602112
 MIN_PIXELS=3136
 
-# CPR Settings
+# CPR Settings - slightly higher answer weight to protect accuracy
 USE_CAUSAL_REWARD=true
-CAUSAL_ANSWER_WEIGHT=0.6
-CAUSAL_STEP_WEIGHT=0.4
+CAUSAL_ANSWER_WEIGHT=0.65
+CAUSAL_STEP_WEIGHT=0.35
 USE_PCGRAD=true
 
 mkdir -p $OUTPUT
@@ -42,9 +44,11 @@ export DEBUG_MODE="true"
 export LOG_PATH="${OUTPUT}/reward.txt"
 
 echo "========================================"
-echo "Causal Process Reward (CPR) GRPO Training"
+echo "CPR Curriculum Training (Phase 2)"
 echo "========================================"
-echo "Strategy: PCGrad + Causal Process Reward"
+echo "Base model: Answer-Only checkpoint-1400 (acc 44.90%)"
+echo "Strategy: CPR + PCGrad on top of pre-trained accuracy"
+echo "  - Learning Rate: $LEARNING_RATE (half of original)"
 echo "  - Causal Answer Weight: $CAUSAL_ANSWER_WEIGHT"
 echo "  - Causal Step Weight: $CAUSAL_STEP_WEIGHT"
 echo "  - PCGrad: $USE_PCGRAD"
@@ -89,7 +93,7 @@ accelerate launch \
     2>&1 | tee $OUTPUT/training.log
 
 echo "========================================"
-echo "CPR Training completed!"
+echo "CPR Curriculum Training completed!"
 echo "Next: Evaluate checkpoints"
 echo "  python inference/evaluate_predictions.py --predictions_dir ... --test_dataset_path ..."
 echo "========================================"

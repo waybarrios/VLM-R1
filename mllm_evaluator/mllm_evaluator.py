@@ -30,6 +30,14 @@ class EvaluationMetrics:
     avg_similarity: float
     max_similarity: float
     threshold_used: float
+    # Ordered Match F1 fields (populated when alpha > 0)
+    kendall_tau: float = 1.0
+    tau_normalized: float = 1.0
+    lis_ratio: float = 1.0
+    order_score: float = 1.0  # normalized score from chosen order metric
+    ordered_match_f1: float = 0.0
+    alpha_used: float = 0.0
+    order_metric_used: str = "none"
 
 
 class MLLMReasoningEvaluator:
@@ -49,7 +57,7 @@ class MLLMReasoningEvaluator:
     
     def __init__(
         self,
-        model_name: str = "all-MiniLM-L6-v2",
+        model_name: str = "all-distilroberta-v1",
         similarity_threshold: Optional[float] = None,
         device: Optional[str] = None,
         debug_mode: bool = False
@@ -96,7 +104,7 @@ class MLLMReasoningEvaluator:
             "all-MiniLM-L6-v2": 0.35,  # Lowered from 0.45 for VQA reasoning
             "all-MiniLM-L12-v2": 0.37,  # Lowered from 0.47
             "all-mpnet-base-v2": 0.38,  # Lowered from 0.48
-            "all-distilroberta-v1": 0.40,  # Lowered from 0.50
+            "all-distilroberta-v1": 0.35,  # Ablation-validated (τ=0.35, Paper Section 4.3)
             "paraphrase-multilingual-MiniLM-L12-v2": 0.33,  # Lowered from 0.43
             "paraphrase-multilingual-mpnet-base-v2": 0.35  # Lowered from 0.45
         }
@@ -130,55 +138,138 @@ class MLLMReasoningEvaluator:
         
         return np.dot(embeddings1_norm, embeddings2_norm.T)
     
-    def _find_matches(self, 
-                     similarity_matrix: np.ndarray, 
-                     threshold: float) -> Tuple[set, set]:
+    def _find_matches(self,
+                     similarity_matrix: np.ndarray,
+                     threshold: float) -> Tuple[set, set, List[Tuple[int, int, float]]]:
         """
         Find optimal 1:1 matching between predicted and reference steps
-        
+
         Uses greedy algorithm:
         1. Find all pairs with similarity > threshold
         2. Sort by descending similarity
         3. Assign matches greedily (no double assignments)
+
+        Returns:
+            matched_preds: set of matched prediction indices
+            matched_refs: set of matched reference indices
+            match_pairs: list of (pred_idx, ref_idx, similarity) tuples
         """
         matched_refs = set()
         matched_preds = set()
-        
+        match_pairs = []
+
         similarities = []
         for i in range(similarity_matrix.shape[0]):
             for j in range(similarity_matrix.shape[1]):
                 if similarity_matrix[i, j] > threshold:
                     similarities.append((similarity_matrix[i, j], i, j))
-        
+
         similarities.sort(reverse=True)
-        
+
         for sim, pred_idx, ref_idx in similarities:
             if pred_idx not in matched_preds and ref_idx not in matched_refs:
                 matched_preds.add(pred_idx)
                 matched_refs.add(ref_idx)
-                
+                match_pairs.append((pred_idx, ref_idx, sim))
+
                 if self.debug_mode:
                     print(f"Match: P{pred_idx} <-> R{ref_idx} (sim: {sim:.3f})")
-        
-        return matched_preds, matched_refs
-    
-    def evaluate_single(self, 
-                       predicted_steps: List[str], 
+
+        return matched_preds, matched_refs, match_pairs
+
+    @staticmethod
+    def _compute_kendall_tau(match_pairs: List[Tuple[int, int, float]]) -> float:
+        """
+        Compute Kendall's Tau from matched pairs to measure order preservation.
+
+        Sort matched pairs by reference index, then check if predicted indices
+        are monotonically increasing (concordant) or not (discordant).
+
+        Returns:
+            tau in [-1, 1]. +1 = perfect order, 0 = random, -1 = reversed.
+            Returns 1.0 if fewer than 2 matches (order undefined).
+        """
+        if len(match_pairs) < 2:
+            return 1.0
+
+        # Sort by reference index, extract predicted indices
+        sorted_by_ref = sorted(match_pairs, key=lambda x: x[1])
+        pred_indices = [p[0] for p in sorted_by_ref]
+
+        # Count concordant and discordant pairs
+        k = len(pred_indices)
+        concordant = 0
+        discordant = 0
+        for i in range(k):
+            for j in range(i + 1, k):
+                if pred_indices[i] < pred_indices[j]:
+                    concordant += 1
+                elif pred_indices[i] > pred_indices[j]:
+                    discordant += 1
+                # ties are ignored
+
+        total_pairs = k * (k - 1) / 2
+        if total_pairs == 0:
+            return 1.0
+
+        return (concordant - discordant) / total_pairs
+
+    @staticmethod
+    def _compute_lis_ratio(match_pairs: List[Tuple[int, int, float]]) -> float:
+        """
+        Compute LIS (Longest Increasing Subsequence) ratio from matched pairs.
+
+        Sort matched pairs by reference index, then find the longest increasing
+        subsequence of predicted indices. The ratio LIS/k measures what fraction
+        of matched steps are in the correct relative order.
+
+        Returns:
+            ratio in [0, 1]. 1.0 = all matched steps in correct order.
+            Returns 1.0 if fewer than 2 matches (order undefined).
+        """
+        if len(match_pairs) < 2:
+            return 1.0
+
+        # Sort by reference index, extract predicted indices
+        sorted_by_ref = sorted(match_pairs, key=lambda x: x[1])
+        pred_indices = [p[0] for p in sorted_by_ref]
+
+        # O(k log k) LIS using patience sorting
+        from bisect import bisect_left
+        tails = []
+        for val in pred_indices:
+            pos = bisect_left(tails, val)
+            if pos == len(tails):
+                tails.append(val)
+            else:
+                tails[pos] = val
+
+        return len(tails) / len(pred_indices)
+
+    def evaluate_single(self,
+                       predicted_steps: List[str],
                        reference_steps: List[str],
-                       verbose: bool = None) -> EvaluationMetrics:
+                       verbose: bool = None,
+                       alpha: float = 0.0,
+                       order_metric: str = "kendall_tau") -> EvaluationMetrics:
         """
         Evaluate a single sample using Match F1 metric
-        
+
         Match F1 = 2 * (Precision * Recall) / (Precision + Recall)
         where:
         - Precision = |matched_predictions| / |total_predictions|
         - Recall = |matched_references| / |total_references|
-        
+
+        When alpha > 0, computes Ordered Match F1:
+        Ordered_F1 = F1 * ((1 - alpha) + alpha * order_score)
+
         Args:
             predicted_steps: List of predicted reasoning steps
             reference_steps: List of reference/ground truth reasoning steps
             verbose: Whether to show debug information
-            
+            alpha: Order sensitivity in [0, 1]. 0 = ignore order, 0.3 = recommended.
+            order_metric: "kendall_tau" or "lis" (Longest Increasing Subsequence ratio).
+
         Returns:
             EvaluationMetrics object with Match F1 and related metrics
         """
@@ -199,35 +290,55 @@ class MLLMReasoningEvaluator:
                 num_matched_references=0,
                 avg_similarity=0.0,
                 max_similarity=0.0,
-                threshold_used=self.similarity_threshold
+                threshold_used=self.similarity_threshold,
+                alpha_used=alpha,
+                order_metric_used=order_metric
             )
-        
+
         pred_embeddings = self._compute_embeddings(predicted_steps)
         ref_embeddings = self._compute_embeddings(reference_steps)
-        
+
         similarity_matrix = self._compute_similarity_matrix(pred_embeddings, ref_embeddings)
-        
-        matched_preds, matched_refs = self._find_matches(
+
+        matched_preds, matched_refs, match_pairs = self._find_matches(
             similarity_matrix, self.similarity_threshold)
-        
+
         n_predicted = len(predicted_steps)
         n_reference = len(reference_steps)
         n_matched_preds = len(matched_preds)
         n_matched_refs = len(matched_refs)
-        
+
         precision = n_matched_preds / n_predicted if n_predicted > 0 else 0.0
         recall = n_matched_refs / n_reference if n_reference > 0 else 0.0
         match_f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
-        
+
         avg_similarity = np.mean(similarity_matrix) if similarity_matrix.size > 0 else 0.0
         max_similarity = np.max(similarity_matrix) if similarity_matrix.size > 0 else 0.0
-        
+
+        # Compute both order metrics (always, for comparison)
+        tau = self._compute_kendall_tau(match_pairs)
+        tau_norm = (tau + 1.0) / 2.0
+        lis = self._compute_lis_ratio(match_pairs)
+
+        # Select which metric drives the ordered F1
+        if order_metric == "lis":
+            order_score = lis
+        else:  # kendall_tau
+            order_score = tau_norm
+
+        ordered_f1 = match_f1 * ((1.0 - alpha) + alpha * order_score) if alpha > 0 else match_f1
+
         if verbose:
             print(f"\nEvaluation Results:")
             print(f"  Precision: {precision:.3f} ({n_matched_preds}/{n_predicted})")
             print(f"  Recall: {recall:.3f} ({n_matched_refs}/{n_reference})")
             print(f"  Match F1: {match_f1:.3f}")
-        
+            if alpha > 0:
+                print(f"  Kendall's Tau: {tau:.3f} (normalized: {tau_norm:.3f})")
+                print(f"  LIS ratio: {lis:.3f}")
+                print(f"  Order metric: {order_metric} (score: {order_score:.3f})")
+                print(f"  Ordered Match F1 (alpha={alpha}): {ordered_f1:.3f}")
+
         return EvaluationMetrics(
             match_f1=match_f1,
             precision=precision,
@@ -238,7 +349,14 @@ class MLLMReasoningEvaluator:
             num_matched_references=n_matched_refs,
             avg_similarity=avg_similarity,
             max_similarity=max_similarity,
-            threshold_used=self.similarity_threshold
+            threshold_used=self.similarity_threshold,
+            kendall_tau=tau,
+            tau_normalized=tau_norm,
+            lis_ratio=lis,
+            order_score=order_score,
+            ordered_match_f1=ordered_f1,
+            alpha_used=alpha,
+            order_metric_used=order_metric
         )
     
     def evaluate_dataset(self,
@@ -375,7 +493,7 @@ def demo():
         }
     }
     
-    evaluator = MLLMReasoningEvaluator(model_name="all-MiniLM-L6-v2")
+    evaluator = MLLMReasoningEvaluator(model_name="all-distilroberta-v1")
     
     results_df = evaluator.evaluate_dataset(predictions, ground_truth, verbose=True)
     

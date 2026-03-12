@@ -59,6 +59,9 @@ def _torch_load_with_compat(*args, **kwargs):
 torch.load = _torch_load_with_compat
 
 from open_r1.qwen2_5vl_monkey_patch import monkey_patch_qwen2_5vl_flash_attn, monkey_patch_qwen2_5vl_forward
+from open_r1.internvl_monkey_patch import monkey_patch_internvl_forward, monkey_patch_torch_load
+# Only apply Qwen monkey patch at module level if not running InternVL
+# The forward patch is applied conditionally in __main__ based on model name
 monkey_patch_qwen2_5vl_flash_attn()
 
 
@@ -126,18 +129,18 @@ class GRPOScriptArguments(ScriptArguments):
         default=0.70,
         metadata={"help": "Cosine similarity threshold for semantic matching (default: 0.70)"},
     )
-    # Causal Intervention Reward (CIR) settings
+    # Causal Process Reward (CPR) settings
     use_causal_reasoning_reward: bool = field(
         default=False,
-        metadata={"help": "Use Causal Intervention Reward instead of word overlap for reasoning"},
+        metadata={"help": "Use Causal Process Reward instead of word overlap for reasoning"},
     )
     causal_answer_weight: float = field(
         default=0.6,
-        metadata={"help": "Weight for answer correctness in CIR (default: 0.6)"},
+        metadata={"help": "Weight for answer correctness in CPR (default: 0.6)"},
     )
     causal_step_weight: float = field(
         default=0.4,
-        metadata={"help": "Weight for step alignment in CIR (default: 0.4)"},
+        metadata={"help": "Weight for step alignment in CPR (default: 0.4)"},
     )
     # PCGrad settings for gradient conflict resolution
     use_pcgrad: bool = field(
@@ -415,13 +418,27 @@ Output formatting:
 
 
 def get_vlm_module(model_name_or_path):
-    if "qwen" in model_name_or_path.lower():
+    name_lower = model_name_or_path.lower()
+    if "qwen" in name_lower:
         return Qwen2VLModule
-    elif "internvl" in model_name_or_path.lower():
+    elif "internvl" in name_lower:
         return InvernVLModule
-    elif "glm" in model_name_or_path.lower():
+    elif "glm" in name_lower:
         return GLMVModule
     else:
+        # For checkpoint paths, check config.json for model_type
+        import json
+        config_path = os.path.join(model_name_or_path, "config.json")
+        if os.path.exists(config_path):
+            with open(config_path) as f:
+                config = json.load(f)
+            model_type = config.get("model_type", "").lower()
+            if "qwen" in model_type:
+                return Qwen2VLModule
+            elif "internvl" in model_type:
+                return InvernVLModule
+            elif "glm" in model_type:
+                return GLMVModule
         raise ValueError(f"Unsupported model: {model_name_or_path}")
 
 def main(script_args, training_args, model_args):
@@ -447,7 +464,7 @@ def main(script_args, training_args, model_args):
         ]
         print(f"Semantic Process Reward ENABLED (threshold={script_args.semantic_similarity_threshold})")
 
-    # Configure Causal Intervention Reward (CIR) if enabled
+    # Configure Causal Process Reward (CPR) if enabled
     if script_args.use_causal_reasoning_reward:
         vlm_module_cls.configure_causal_reward(
             answer_weight=script_args.causal_answer_weight,
@@ -458,7 +475,7 @@ def main(script_args, training_args, model_args):
             "reasoning_causal" if f == "reasoning" else f
             for f in script_args.reward_funcs
         ]
-        print(f"Causal Intervention Reward ENABLED (answer_weight={script_args.causal_answer_weight}, step_weight={script_args.causal_step_weight})")
+        print(f"Causal Process Reward ENABLED (answer_weight={script_args.causal_answer_weight}, step_weight={script_args.causal_step_weight})")
 
     # Configure PCGrad for gradient conflict resolution
     if script_args.use_pcgrad:
@@ -513,7 +530,34 @@ def main(script_args, training_args, model_args):
 if __name__ == "__main__":
     parser = TrlParser((GRPOScriptArguments, GRPOConfig, GRPOModelConfig))
     script_args, training_args, model_args = parser.parse_args_and_config()
-    if training_args.deepspeed and "zero3" in training_args.deepspeed:
+    # Only apply Qwen-specific monkey patches for Qwen models
+    is_qwen = "qwen" in model_args.model_name_or_path.lower()
+    if not is_qwen:
+        # Check config.json for checkpoint paths
+        import json as _json
+        _config_path = os.path.join(model_args.model_name_or_path, "config.json")
+        if os.path.exists(_config_path):
+            with open(_config_path) as _f:
+                is_qwen = "qwen" in _json.load(_f).get("model_type", "").lower()
+    if is_qwen and training_args.deepspeed and "zero3" in training_args.deepspeed:
         print("zero3 is used, qwen2_5vl forward monkey patch is applied")
         monkey_patch_qwen2_5vl_forward()
+
+    # Apply InternVL-specific monkey patches for ZeRO-3
+    is_internvl = "internvl" in model_args.model_name_or_path.lower()
+    if not is_internvl:
+        _config_path = os.path.join(model_args.model_name_or_path, "config.json")
+        if os.path.exists(_config_path):
+            import json as _json2
+            with open(_config_path) as _f2:
+                _cfg = _json2.load(_f2)
+                is_internvl = (
+                    "internvl" in _cfg.get("architectures", [""])[0].lower()
+                    or "internvl" in _cfg.get("model_type", "").lower()
+                )
+    if is_internvl and training_args.deepspeed and "zero3" in training_args.deepspeed:
+        print("zero3 is used, InternVL forward monkey patch is applied")
+        monkey_patch_internvl_forward(model_args.model_name_or_path)
+        monkey_patch_torch_load()
+
     main(script_args, training_args, model_args)

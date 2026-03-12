@@ -1,5 +1,5 @@
 """
-Causal Intervention Reward (CIR)
+Causal Process Reward (CPR)
 Rewards reasoning steps based on their causal necessity for the correct answer.
 
 R_causal(step_i) = P(correct | with step_i) - P(correct | without step_i)
@@ -240,7 +240,7 @@ def lightweight_causal_reward(
     step_weight: float = 0.4
 ) -> float:
     """
-    Lightweight approximation of Causal Intervention Reward.
+    Lightweight approximation of Causal Process Reward.
 
     Instead of computing full counterfactuals (expensive), we use a
     multiplicative interaction between answer correctness and step alignment.
@@ -304,9 +304,9 @@ def causal_intervention_reward(
     **kwargs
 ) -> List[float]:
     """
-    Compute Causal Intervention Reward for a batch of completions.
+    Compute Causal Process Reward for a batch of completions.
 
-    This is the main entry point for the CIR reward function.
+    This is the main entry point for the CPR reward function.
 
     Args:
         completions: Model completions, each is [{"content": "..."}]
@@ -388,8 +388,8 @@ vqa_causal_reasoning_reward = causal_intervention_reward
 
 
 if __name__ == "__main__":
-    # Test the CIR module
-    print("Testing Causal Intervention Reward module...")
+    # Test the CPR module
+    print("Testing Causal Process Reward module...")
 
     test_response = """<think>
 Step 1: Looking at the image, I can see a traffic light.

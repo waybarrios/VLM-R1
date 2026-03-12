@@ -49,7 +49,7 @@ class Qwen2VLModule(VLMBaseModule):
                 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
                 # Load model on CPU
-                cls._sentence_transformer_model = SentenceTransformer("all-MiniLM-L6-v2", device=device)
+                cls._sentence_transformer_model = SentenceTransformer("all-distilroberta-v1", device=device)
                 cls._sentence_transformer_model.eval()
                 cls._sentence_transformer_pid = current_pid
 
@@ -100,10 +100,10 @@ class Qwen2VLModule(VLMBaseModule):
                 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
                 # Initialize with GPU to avoid CPU tensor shape issues in multi-process context
-                # Use threshold 0.45 (original, stricter than model-optimized 0.35)
+                # Use threshold 0.35 (validated by ablation study across 5 VLMs)
                 cls._reasoning_evaluator = MLLMReasoningEvaluator(
-                    model_name="all-MiniLM-L6-v2",
-                    similarity_threshold=0.45,  # Original threshold (stricter matching)
+                    model_name="all-distilroberta-v1",
+                    similarity_threshold=0.35,  # Ablation-validated threshold
                     device=device,  # Use local GPU to avoid CPU multi-process tensor issues
                     debug_mode=False
                 )
@@ -130,9 +130,20 @@ class Qwen2VLModule(VLMBaseModule):
     def get_model_class(self, model_id: str, model_init_kwargs: dict):
         if "Qwen2-VL" in model_id:
             model_cls = Qwen2VLForConditionalGeneration
-        elif "Qwen2.5-VL" in model_id:
+        elif "Qwen2.5-VL" in model_id or "qwen2.5-vl" in model_id.lower():
             model_cls = Qwen2_5_VLForConditionalGeneration
         else:
+            # For checkpoint paths, check config.json for model_type
+            import json, os
+            config_path = os.path.join(model_id, "config.json")
+            if os.path.exists(config_path):
+                with open(config_path) as f:
+                    config = json.load(f)
+                model_type = config.get("model_type", "")
+                if "qwen2_5_vl" in model_type:
+                    return Qwen2_5_VLForConditionalGeneration
+                elif "qwen2_vl" in model_type:
+                    return Qwen2VLForConditionalGeneration
             raise ValueError(f"Unsupported model: {model_id}")
         return model_cls
     
@@ -760,15 +771,15 @@ class Qwen2VLModule(VLMBaseModule):
 
     @classmethod
     def configure_causal_reward(cls, answer_weight: float = 0.6, step_weight: float = 0.4):
-        """Configure Causal Intervention Reward weights."""
+        """Configure Causal Process Reward weights."""
         cls._causal_answer_weight = answer_weight
         cls._causal_step_weight = step_weight
-        print(f"Causal Intervention Reward configured: answer_weight={answer_weight}, step_weight={step_weight}")
+        print(f"Causal Process Reward configured: answer_weight={answer_weight}, step_weight={step_weight}")
 
     @staticmethod
     def vqa_causal_reasoning_reward(completions, **kwargs):
         """
-        Causal Intervention Reward (CIR) for reasoning quality.
+        Causal Process Reward (CPR) for reasoning quality.
 
         Rewards reasoning steps based on their causal necessity for the correct answer.
         Uses a multiplicative interaction between answer correctness and step alignment
@@ -827,7 +838,7 @@ class Qwen2VLModule(VLMBaseModule):
                 log_path=os.getenv("LOG_PATH")
             )
         except Exception as e:
-            print(f"Warning: CIR computation failed: {e}")
+            print(f"Warning: CPR computation failed: {e}")
             rewards = [0.0] * len(completions)
 
         return rewards
@@ -864,7 +875,7 @@ class Qwen2VLModule(VLMBaseModule):
                 case _:
                     raise ValueError(f"Unsupported reward function: {func} for task type: {task_type}")
         elif func == "reasoning_causal":
-            # Causal Intervention Reward - rewards causally necessary reasoning steps
+            # Causal Process Reward - rewards causally necessary reasoning steps
             match task_type:
                 case "vqa":
                     return Qwen2VLModule.vqa_causal_reasoning_reward

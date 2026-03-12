@@ -146,7 +146,8 @@ def evaluate_batch_gpu(args):
 
     # Initialize evaluators
     match_f1_evaluator = MLLMReasoningEvaluator(
-        model_name="all-MiniLM-L6-v2",
+        model_name="all-distilroberta-v1",
+        similarity_threshold=0.35,
         device=device,
         debug_mode=False
     )

@@ -670,6 +670,9 @@ class VLMGRPOTrainer(Trainer):
                 output_reward_func = reward_func(prompts=prompts, completions=completions, **reward_kwargs)
                 rewards_per_func[:, i] = torch.tensor(output_reward_func, dtype=torch.float32, device=device)
 
+            # Free intermediate memory between reward functions (format, accuracy, reasoning/CPR)
+            torch.cuda.empty_cache()
+
         # Gather rewards across processes
         rewards_per_func = self.accelerator.gather(rewards_per_func)
         
@@ -777,6 +780,11 @@ class VLMGRPOTrainer(Trainer):
         is_clipped = (per_token_loss1 < per_token_loss2).float()
         clip_ratio = (is_clipped * completion_mask).sum() / completion_mask.sum()
         self._metrics["clip_ratio"].append(self.accelerator.gather_for_metrics(clip_ratio).mean().item())
+
+        # Clear CUDA cache after each training step to reduce memory pressure
+        # DeepSpeed ZeRO-3 accumulates fragmented memory across steps, causing
+        # progressive cache flushes that degrade performance and can OOM-kill the process
+        torch.cuda.empty_cache()
 
         return loss
 

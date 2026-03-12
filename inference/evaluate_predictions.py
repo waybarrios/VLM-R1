@@ -59,7 +59,7 @@ def evaluate_predictions(
     use_llm_judge: bool = False,
     llm_judge_model: str = "gpt-oss:20b",
     llm_judge_base_url: str = "http://localhost:11434/v1",
-    reasoning_model: str = "all-MiniLM-L6-v2",
+    reasoning_model: str = "all-distilroberta-v1",
     reasoning_threshold: float = None,
     reasoning_device: str = "auto",
     output_file: str = None,
@@ -94,7 +94,7 @@ def evaluate_predictions(
 
     reasoning_evaluator = MLLMReasoningEvaluator(
         model_name=reasoning_model,
-        similarity_threshold=reasoning_threshold if reasoning_threshold is not None else 0.45,
+        similarity_threshold=reasoning_threshold if reasoning_threshold is not None else 0.35,
         device=reasoning_device,
         debug_mode=False,
     )
@@ -308,14 +308,14 @@ def main():
     parser.add_argument(
         "--reasoning_model",
         type=str,
-        default="all-MiniLM-L6-v2",
-        help="Sentence transformer model for Match F1 (default: all-MiniLM-L6-v2)",
+        default="all-distilroberta-v1",
+        help="Sentence transformer model for Match F1 (default: all-distilroberta-v1)",
     )
     parser.add_argument(
         "--reasoning_threshold",
         type=float,
         default=None,
-        help="Similarity threshold (default: 0.45 for stricter matching)",
+        help="Similarity threshold (default: 0.35, validated by ablation study)",
     )
     parser.add_argument(
         "--reasoning_device",

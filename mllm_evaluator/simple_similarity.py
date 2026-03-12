@@ -75,7 +75,7 @@ def _get_semantic_model():
             os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
             # Create fresh model for this process
-            model = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
+            model = SentenceTransformer("all-distilroberta-v1", device="cpu")
             model.eval()
 
             # Verify model is on CPU
