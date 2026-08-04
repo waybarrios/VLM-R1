@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the traffic light in the image.",
+    "Note the traffic light is red.",
+    "Understand that red lights indicate stop.",
+    "Determine the right-of-way rule applies.",
+    "Conclude that making a right is not allowed."
+  ],
+  "answer": "No"
+}

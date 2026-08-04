@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the street signs in the image.",
+    "Note the presence of a stop sign.",
+    "Confirm the stop sign's visibility in the image.",
+    "Determine that there is one stop sign present.",
+    "Conclude that there is a stop sign in the image."
+  ],
+  "answer": "yes"
+}

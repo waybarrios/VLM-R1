@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the street scene in the image.",
+    "Note the presence of vehicles on the road.",
+    "Identify the pedestrian in the image.",
+    "Confirm the pedestrian is in front of the camera.",
+    "Conclude that there is a pedestrian in front of us."
+  ],
+  "answer": "no"
+}

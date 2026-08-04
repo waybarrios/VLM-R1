@@ -1,0 +1,12 @@
+{
+  "reasoning_steps": [
+    "Identify the original rectangle ABCD.",
+    "Note the perimeter of the original rectangle.",
+    "Understand that the perimeter of the original rectangle is 30 cm.",
+    "Identify the three additional rectangles added at the corners A, B, and D.",
+    "Note that the perimeter of each of these three rectangles is 20 cm.",
+    "Calculate the total perimeter of the shape by adding the perimeters of the original rectangle and the three additional rectangles.",
+    "Sum the perimeters to find the total perimeter of the shape."
+  ],
+  "answer": "45 cm"
+}

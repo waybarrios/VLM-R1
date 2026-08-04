@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the traffic sign near the bus.",
+    "Note the 'Do Not Turn Left' sign.",
+    "Count the number of 'Do Not Turn Left' signs.",
+    "Confirm that there is one 'Do Not Turn Left' sign."
+  ],
+  "answer": "1"
+}

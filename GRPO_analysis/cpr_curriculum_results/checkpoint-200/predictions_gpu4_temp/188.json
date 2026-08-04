@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the one-way street sign.",
+    "Note the direction indicated by the sign.",
+    "Confirm that the arrow points in the desired direction.",
+    "Conclude that the street is one-way."
+  ],
+  "answer": "yes"
+}

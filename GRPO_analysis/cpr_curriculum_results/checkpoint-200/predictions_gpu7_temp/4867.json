@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the map of the United States.",
+    "Note the state of New Mexico highlighted in the image.",
+    "Confirm that New Mexico is the state highlighted in the image.",
+    "Conclude that New Mexico is the state highlighted in the image."
+  ],
+  "answer": "New Mexico"
+}

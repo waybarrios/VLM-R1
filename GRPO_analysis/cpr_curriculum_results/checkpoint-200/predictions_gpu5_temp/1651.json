@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the pattern of the calendar.",
+    "Note the days of the week listed at the top of the calendar.",
+    "Identify the 25th day of the month.",
+    "Determine the day of the week for the 25th.",
+    "Conclude that the 25th falls on a Thursday."
+  ],
+  "answer": "Thursday"
+}

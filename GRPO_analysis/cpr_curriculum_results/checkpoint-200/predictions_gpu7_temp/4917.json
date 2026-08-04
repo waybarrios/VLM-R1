@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the states listed in the image.",
+    "Note that Delaware is located in the east.",
+    "Identify Florida, which is the westernmost state.",
+    "Confirm that Florida is the westernmost state.",
+    "Conclude that Florida is the farthest west."
+  ],
+  "answer": "Florida"
+}

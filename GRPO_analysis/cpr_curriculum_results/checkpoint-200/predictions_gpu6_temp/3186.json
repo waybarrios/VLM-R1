@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the large cube's dimensions.",
+    "Understand the internal diagonal of the large cube.",
+    "Determine the plane's position relative to the cube.",
+    "Calculate the number of unit cubes intersected by the plane."
+  ],
+  "answer": "9"
+}

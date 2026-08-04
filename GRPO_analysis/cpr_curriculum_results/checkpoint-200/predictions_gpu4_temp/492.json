@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the traffic light on the left.",
+    "Note the left-turn signal.",
+    "Observe the green arrow on the traffic light.",
+    "Conclude that the left-turn signal is green."
+  ],
+  "answer": "no"
+}

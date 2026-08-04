@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the car bumper, which appears to be made of metal.",
+    "Note the gold ring, which is also metallic.",
+    "Observe the tin foil, which is made of a shiny material.",
+    "Conclude that all three objects share the property of being shiny.",
+    "Conclude that the common property among the objects is shine."
+  ],
+  "answer": "shiny"
+}

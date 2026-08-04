@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the trash cans in the image.",
+    "Note the trash cans near the road.",
+    "Count the trash cans in the image.",
+    "Confirm that there are two trash cans.",
+    "Conclude that there are two trash cans in the photo."
+  ],
+  "answer": "2"
+}

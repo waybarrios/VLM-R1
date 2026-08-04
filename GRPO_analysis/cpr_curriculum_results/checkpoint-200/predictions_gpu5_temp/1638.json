@@ -1,0 +1,13 @@
+{
+  "reasoning_steps": [
+    "Identify the goal: Boris wants to increase his pocket money.",
+    "Understand the effect of each magic wand: +1 increases money by 1 €, -1 decreases money by 1 €, and •2 doubles the money.",
+    "Determine the sequence that maximizes the money: Start with the wand that doubles the money, then decrease it, and finally increase it.",
+    "Option A: +1, -1, •2. This results in a net gain of 0 €.",
+    "Option B: +1, •2, -1. This results in a net gain of 1 €.",
+    "Option C: •2, +1, -1. This results in a net gain of 2 €.",
+    "Option D: •2, -1, +1. This results in a net gain of 2 €.",
+    "Option E: +1, •2, -1. This results in a net gain of 2 €."
+  ],
+  "answer": "D"
+}

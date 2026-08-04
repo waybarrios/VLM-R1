@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of New Hampshire.",
+    "Note that the capital of New Hampshire is listed in the image.",
+    "Concord is the capital of New Hampshire.",
+    "Confirm that Concord is the capital.",
+    "Conclude that the capital of New Hampshire is Concord."
+  ],
+  "answer": "Concord"
+}

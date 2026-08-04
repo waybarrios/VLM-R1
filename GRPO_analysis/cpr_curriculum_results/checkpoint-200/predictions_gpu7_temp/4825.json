@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the material of the toilet plunger.",
+    "Note the handle of the plunger.",
+    "Observe the handle appears to be made of wood.",
+    "Conclude that the plunger is made of wood.",
+    "Verify the plunger's body is made of a different material.",
+    "Conclude that the plunger is made of wood."
+  ],
+  "answer": "wood"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the medians BD and CE of triangle ABC.",
+    "Note that the medians intersect at the centroid G.",
+    "Since BD and CE are perpendicular, the triangle is right-angled at G.",
+    "Calculate the lengths of the sides of the triangle using the Pythagorean theorem.",
+    "Determine the area of the triangle using the formula for the area of a right-angled triangle."
+  ],
+  "answer": "96"
+}

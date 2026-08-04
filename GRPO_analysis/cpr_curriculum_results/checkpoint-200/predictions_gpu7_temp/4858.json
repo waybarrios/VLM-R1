@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the continent highlighted on the map.",
+    "Note the color of the continent.",
+    "Europe is the continent highlighted in the image.",
+    "Europe is the continent that appears to be the most prominent in the image.",
+    "Conclude that Europe is the continent highlighted."
+  ],
+  "answer": "Europe"
+}

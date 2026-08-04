@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of West Virginia.",
+    "Note that West Virginia is a state in the United States.",
+    "Recall that the capital of West Virginia is a city.",
+    "Identify the city of Charleston as the capital of West Virginia.",
+    "Conclude that the capital of West Virginia is Charleston."
+  ],
+  "answer": "Charleston"
+}

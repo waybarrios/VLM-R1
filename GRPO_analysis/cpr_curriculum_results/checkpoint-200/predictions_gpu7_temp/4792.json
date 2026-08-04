@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the container of apple juice.",
+    "Note the label on the bottle.",
+    "Understand that the label indicates the type of juice.",
+    "Recall the properties of apple juice.",
+    "Conclude that apple juice is a liquid.",
+    "Provide the final answer."
+  ],
+  "answer": "a liquid"
+}

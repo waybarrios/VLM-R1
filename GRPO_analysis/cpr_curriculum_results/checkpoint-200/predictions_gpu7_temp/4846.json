@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the orca, which is a large marine mammal known for its powerful jaws.",
+    "Note the orca's mouth is wide open, showing sharp teeth.",
+    "Understand that the orca's mouth is adapted for tearing through meat.",
+    "Identify the tamandua, which is a small anteater with a short snout.",
+    "Note the tamandua's mouth is closed and not adapted for tearing through meat.",
+    "Conclude that the orca's mouth is adapted to tear through meat."
+  ],
+  "answer": "orca"
+}

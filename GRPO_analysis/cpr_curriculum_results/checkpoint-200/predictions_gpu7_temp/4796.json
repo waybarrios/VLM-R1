@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the colony shown in the map.",
+    "Note the colony's location on the map.",
+    "Identify the colony labeled 'New Jersey' on the map.",
+    "Confirm that the colony shown is New Jersey.",
+    "Conclude that the colony shown is New Jersey."
+  ],
+  "answer": "New Jersey"
+}

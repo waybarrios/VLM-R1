@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the oncoming traffic in the image.",
+    "Note the number of vehicles approaching.",
+    "Count the cars on the road.",
+    "Verify that there are five cars oncoming.",
+    "Conclude that there are five cars oncoming."
+  ],
+  "answer": "yes"
+}

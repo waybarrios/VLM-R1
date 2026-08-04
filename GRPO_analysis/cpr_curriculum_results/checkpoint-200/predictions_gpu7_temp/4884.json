@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the mass of each particle in Sample A and Sample B.",
+    "Note that Sample B has a higher mass per particle.",
+    "Determine the average speed of particles in both samples.",
+    "Recall the formula for kinetic energy: KE = 0.5 * m * v².",
+    "Calculate the kinetic energy for each sample.",
+    "Conclude that Sample B has a higher temperature."
+  ],
+  "answer": "sample B"
+}

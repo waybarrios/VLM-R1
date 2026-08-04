@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the initial and final temperatures of both batteries.",
+    "Note that the temperature of the more expensive battery decreased by 7°C.",
+    "Conclude that the battery lost heat to its surroundings.",
+    "Identify the less expensive battery which also lost heat.",
+    "Conclude that the surroundings transferred thermal energy to both batteries."
+  ],
+  "answer": "the surroundings . . . each battery"
+}

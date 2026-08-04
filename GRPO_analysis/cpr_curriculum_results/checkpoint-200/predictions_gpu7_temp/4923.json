@@ -1,0 +1,8 @@
+{
+  "reasoning_steps": [
+    "Solution A contains fewer particles per milliliter compared to Solution B.",
+    "Solution B has more particles per milliliter.",
+    "Therefore, Solution B has a higher concentration of yellow particles."
+  ],
+  "answer": "Solution B"
+}

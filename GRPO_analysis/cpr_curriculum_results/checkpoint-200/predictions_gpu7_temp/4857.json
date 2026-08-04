@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the states listed in the image.",
+    "Note the states labeled as 'Arkansas', 'Montana', 'Arizona', and 'Ohio'.",
+    "Identify the state 'Ohio' which is located in the northeastern part of the United States.",
+    "Compare the positions of the states on the map.",
+    "Conclude that 'Ohio' is the state farthest east.",
+    "Verify that 'Ohio' is the easternmost state among the listed ones."
+  ],
+  "answer": "Ohio"
+}

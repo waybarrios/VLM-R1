@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the traffic signs in the image.",
+    "Note the presence of a one-way street sign.",
+    "Confirm that the one-way street sign is clearly visible.",
+    "Conclude that the street is one way."
+  ],
+  "answer": "yes"
+}

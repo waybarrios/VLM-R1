@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the pattern in the padlocks.",
+    "Note that the letters D, A, B, H, and A appear in both padlocks.",
+    "Determine the corresponding digits for these letters.",
+    "Notice the sequence of digits in the padlocks.",
+    "Conclude that the key with the question mark corresponds to the sequence 124."
+  ],
+  "answer": "124"
+}

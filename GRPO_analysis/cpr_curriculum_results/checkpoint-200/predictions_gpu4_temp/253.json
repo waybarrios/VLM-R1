@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the traffic light in the image.",
+    "Note the red signal on the traffic light.",
+    "Conclude that the traffic light is red.",
+    "Provide the answer as a single word."
+  ],
+  "answer": "yes"
+}

@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the shape of the large square and the smaller square within it.",
+    "Note that the large square is divided into a smaller square and four congruent rectangles.",
+    "Understand that the perimeter of each rectangle is 14.",
+    "Determine the dimensions of the smaller square and the rectangles.",
+    "Calculate the side length of the smaller square.",
+    "Find the side length of the large square."
+  ],
+  "answer": "49"
+}

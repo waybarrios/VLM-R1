@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the exit sign in the image.",
+    "Note the direction indicated by the exit sign.",
+    "Determine that the exit is labeled as 'EXIT 235B'.",
+    "Conclude that the vehicle is taking the exit.",
+    "Confirm the presence of the exit sign.",
+    "Conclude that the vehicle is taking the exit."
+  ],
+  "answer": "Yes"
+}

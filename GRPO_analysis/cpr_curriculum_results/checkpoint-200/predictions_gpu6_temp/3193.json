@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the coordinates of points A, B, C, D, E, and F.",
+    "Note that ABCD is a 2x2 square.",
+    "Determine the midpoint E of AD.",
+    "Identify point F on BE such that CF is perpendicular to BE.",
+    "Calculate the area of triangle CEF.",
+    "Subtract the area of triangle CEF from the area of rectangle CDEF."
+  ],
+  "answer": "3 - \\frac{\\sqrt{3}}{2}"
+}

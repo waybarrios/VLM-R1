@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the African sacred ibis in the image.",
+    "Note the bird's long legs which are adapted for wading.",
+    "Compare the African sacred ibis' legs with other birds in the image.",
+    "Identify the kookaburra in the image.",
+    "Note that the kookaburra has short legs which are not adapted for wading.",
+    "Conclude that the African sacred ibis' legs are adapted for wading."
+  ],
+  "answer": "African sacred ibis"
+}

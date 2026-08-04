@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the speed limit sign in the image.",
+    "Note the text on the speed limit sign.",
+    "Determine that the speed limit is 25.",
+    "Confirm the speed limit is clearly marked on the road.",
+    "Conclude that the speed limit is 25."
+  ],
+  "answer": "25"
+}

@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the houses in the background.",
+    "Note that the lights are on in the houses.",
+    "Count the number of houses with lights on.",
+    "Conclude that there are two houses with lights on."
+  ],
+  "answer": "2"
+}

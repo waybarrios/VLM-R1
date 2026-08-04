@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the states listed in the image.",
+    "Note that Iowa is located in the top left corner of the map.",
+    "Compare the northernmost state with the others.",
+    "Identify Iowa as the northernmost state.",
+    "Conclude that Iowa is the state farthest north."
+  ],
+  "answer": "Iowa"
+}

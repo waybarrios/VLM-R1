@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the species mentioned in the question.",
+    "Note the scientific name of the species.",
+    "Understand the term 'nucleus' in the context of cellular biology.",
+    "Recall the characteristics of the species.",
+    "Conclude that Chelonoidis nigra has cells with a nucleus."
+  ],
+  "answer": "yes"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the direction of particle movement.",
+    "Note that more solute particles moved across the membrane.",
+    "Determine the net movement of particles.",
+    "Conclude that the particles moved to the left than to the right.",
+    "Conclude that the particles reached equilibrium."
+  ],
+  "answer": "to the left than to the right"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the person in the image.",
+    "Notice the person holding a box.",
+    "Count the number of boxes the person is holding.",
+    "Confirm the count of the boxes.",
+    "Conclude that the person is holding one box."
+  ],
+  "answer": "1"
+}

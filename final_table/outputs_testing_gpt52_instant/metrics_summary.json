@@ -1,0 +1,32 @@
+{
+  "model_name": "GPT-5.2 Instant",
+  "encoder": "all-distilroberta-v1",
+  "threshold": 0.35,
+  "total_samples": 6372,
+  "accuracy": {
+    "mean": 0.47347771500313873,
+    "correct_count": 3017,
+    "confidence_mean": 0.7739249843063404
+  },
+  "match_f1": {
+    "mean": 0.5641645865854885,
+    "std": 0.16001062831351417,
+    "min": 0.0,
+    "max": 1.0
+  },
+  "precision": {
+    "mean": 0.974307445910546,
+    "std": 0.15107679583297118
+  },
+  "recall": {
+    "mean": 0.4156961604848412,
+    "std": 0.1697712570276152
+  },
+  "steps": {
+    "predicted_mean": 4.639202762084118,
+    "predicted_std": 2.169896028778183,
+    "reference_mean": 11.564030131826742,
+    "reference_std": 4.037511983218265,
+    "avg_similarity": 0.979598430347233
+  }
+}

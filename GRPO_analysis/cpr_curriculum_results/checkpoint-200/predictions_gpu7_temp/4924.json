@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the lunch items Neil and Darnell have.",
+    "Note that Neil has a sandwich and tomatoes.",
+    "Darnell has a variety of fruits, vegetables, and nuts.",
+    "Consider the trade-offs between the two lunches.",
+    "Trade Neil's tomatoes for Darnell's broccoli.",
+    "Exchange Neil's tomatoes for Darnell's broccoli."
+  ],
+  "answer": "Neil can trade his tomatoes for darnell's broccoli."
+}

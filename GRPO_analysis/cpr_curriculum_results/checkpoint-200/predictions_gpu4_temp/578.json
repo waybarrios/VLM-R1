@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the STOP sign at the intersection.",
+    "Note the presence of the word 'STOP' painted on the road.",
+    "Observe the traffic light above the STOP sign.",
+    "Determine that the traffic light indicates a stop signal.",
+    "Conclude that you need to stop at the intersection."
+  ],
+  "answer": "yes"
+}

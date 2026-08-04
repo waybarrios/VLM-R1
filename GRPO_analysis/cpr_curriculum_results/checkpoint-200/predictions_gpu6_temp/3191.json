@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the shape as a decagon.",
+    "Note that the decagon has 10 sides.",
+    "Identify the lengths of the sides.",
+    "Calculate the perimeter by summing the lengths of all sides.",
+    "Sum the lengths of the sides to find the perimeter."
+  ],
+  "answer": "48"
+}

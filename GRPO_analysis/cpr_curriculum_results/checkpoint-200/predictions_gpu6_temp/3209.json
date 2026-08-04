@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the centers of the circles.",
+    "Note that the distance between the centers of the circles is the sum of their radii.",
+    "Calculate the distance between the centers of the circles.",
+    "Determine the radius of the third circle by using the properties of similar triangles.",
+    "Conclude that the radius of the third circle is the geometric mean of the radii of the other two circles."
+  ],
+  "answer": "5/12"
+}

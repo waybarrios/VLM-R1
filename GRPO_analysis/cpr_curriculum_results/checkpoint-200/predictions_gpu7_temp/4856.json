@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of Louisiana.",
+    "Note that the capital of Louisiana is listed in the image.",
+    "Identify the capital of Louisiana as Baton Rouge.",
+    "Confirm that Baton Rouge is the capital of Louisiana.",
+    "Conclude that the capital of Louisiana is Baton Rouge."
+  ],
+  "answer": "Baton Rouge"
+}

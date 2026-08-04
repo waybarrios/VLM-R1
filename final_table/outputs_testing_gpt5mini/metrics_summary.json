@@ -1,0 +1,32 @@
+{
+  "model_name": "GPT-5-mini",
+  "encoder": "all-distilroberta-v1",
+  "threshold": 0.35,
+  "total_samples": 6372,
+  "accuracy": {
+    "mean": 0.5558694287507847,
+    "correct_count": 3542,
+    "confidence_mean": 0.820205586942875
+  },
+  "match_f1": {
+    "mean": 0.7732513822298521,
+    "std": 0.13661625936206084,
+    "min": 0.0,
+    "max": 1.0
+  },
+  "precision": {
+    "mean": 0.9783908173600974,
+    "std": 0.09861538413192415
+  },
+  "recall": {
+    "mean": 0.6694365379807556,
+    "std": 0.1904042540650922
+  },
+  "steps": {
+    "predicted_mean": 7.567953546767106,
+    "predicted_std": 2.722433245126867,
+    "reference_mean": 11.564030131826742,
+    "reference_std": 4.037511983218265,
+    "avg_similarity": 0.9981167639529114
+  }
+}

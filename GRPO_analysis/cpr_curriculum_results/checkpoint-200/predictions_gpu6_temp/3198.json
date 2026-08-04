@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the rectangle in position I.",
+    "Note the label on the top left side of the rectangle in position I.",
+    "Compare the label on the top left side of the rectangle in position I with the other rectangles.",
+    "Identify the rectangle that has the label 0 on the top left side.",
+    "Conclude that the rectangle in position I is B."
+  ],
+  "answer": "B"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the genetic traits involved in the fruit fly's wing development.",
+    "Note the presence of dominant and recessive alleles.",
+    "Understand the concept of Mendelian genetics.",
+    "Determine the probability of an offspring having the normal wing allele.",
+    "Conclude that the probability of a fruit fly having normal wings is 2/4."
+  ],
+  "answer": "2/4"
+}

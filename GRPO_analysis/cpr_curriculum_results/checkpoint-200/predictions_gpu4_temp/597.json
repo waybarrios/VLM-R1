@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the traffic lights in the image.",
+    "Note that the traffic lights are red.",
+    "Conclude that the traffic lights are not green.",
+    "Provide the answer directly."
+  ],
+  "answer": "no"
+}

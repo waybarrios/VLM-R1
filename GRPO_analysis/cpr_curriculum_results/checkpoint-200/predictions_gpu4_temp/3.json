@@ -1,0 +1,12 @@
+{
+  "reasoning_steps": [
+    "Identify the traffic lights in the image.",
+    "Note that there are two traffic lights.",
+    "Observe the traffic light on the left.",
+    "Notice the traffic light on the right.",
+    "Determine the color of the traffic lights.",
+    "Confirm that both traffic lights are green.",
+    "Conclude that the traffic lights are green."
+  ],
+  "answer": "green"
+}

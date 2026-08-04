@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the species of fish shown in the image.",
+    "Note that the fish is Danio rerio, which is a type of fish.",
+    "Understand that Danio rerio is an aquatic organism.",
+    "Recall that Danio rerio is a type of fish that lives in freshwater environments.",
+    "Recall that fish do not produce their own food.",
+    "Conclude that Danio rerio cells cannot make their own food."
+  ],
+  "answer": "no"
+}

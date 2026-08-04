@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the green sign on the left side of the road.",
+    "Note the crosswalk sign on the right side of the road.",
+    "Determine that the green sign is closer to the camera.",
+    "Conclude that the green sign is closer to the camera."
+  ],
+  "answer": "yes"
+}

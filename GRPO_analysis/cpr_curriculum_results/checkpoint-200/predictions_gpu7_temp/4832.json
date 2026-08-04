@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the highlighted country on the map.",
+    "Note the shape and location of the country.",
+    "Compare the shape and location of the highlighted country with the known countries in the region.",
+    "Identify the country that matches the shape and location of the highlighted country.",
+    "Conclude that the highlighted country is Vanuatu."
+  ],
+  "answer": "Vanuatu"
+}

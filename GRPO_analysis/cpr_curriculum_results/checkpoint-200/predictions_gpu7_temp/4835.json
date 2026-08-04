@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Clara wants a sandwich, oranges, broccoli, and water.",
+    "Hazel wants a hot dog, tomatoes, and almonds.",
+    "Clara can trade her tomatoes for Hazel's broccoli.",
+    "Hazel can trade her almonds for Clara's tomatoes.",
+    "Clara can trade her tomatoes for Hazel's broccoli."
+  ],
+  "answer": "Clara can trade her tomatoes for Hazel's broccoli."
+}

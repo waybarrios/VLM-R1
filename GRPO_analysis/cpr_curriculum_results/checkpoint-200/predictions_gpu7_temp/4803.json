@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the volumes of Saturn and Uranus.",
+    "Note that Saturn's volume is 8.27 x 10^14 km³.",
+    "Identify the volume of Uranus, which is 6.83 x 10^13 km³.",
+    "Compare the volumes by dividing Saturn's volume by Uranus' volume.",
+    "Determine if Saturn's volume is more than ten times Uranus' volume.",
+    "Conclude that Saturn's volume is indeed more than ten times Uranus' volume."
+  ],
+  "answer": "true"
+}

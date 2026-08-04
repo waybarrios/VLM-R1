@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the grey pearls at the ends of the string.",
+    "Note that there are 5 grey pearls.",
+    "Determine the number of white pearls needed to balance the grey pearls.",
+    "Count the white pearls at the ends of the string.",
+    "Calculate the difference between the number of grey pearls and the number of white pearls.",
+    "Conclude that Monika needs to pull off 3 white pearls."
+  ],
+  "answer": "3"
+}

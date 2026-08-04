@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the magnets as N and S poles.",
+    "Under the right-hand rule, the N pole attracts the S pole.",
+    "Since both magnets have the same magnetic field direction, they will repel each other.",
+    "Conclude that the magnets will repel each other."
+  ],
+  "answer": "repel"
+}

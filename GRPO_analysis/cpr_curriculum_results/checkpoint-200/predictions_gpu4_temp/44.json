@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the road markings.",
+    "Note the lane markings on the road.",
+    "Count the lanes on the road.",
+    "Verify that there are two lanes on the road."
+  ],
+  "answer": "2"
+}

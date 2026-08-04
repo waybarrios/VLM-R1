@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the highway signs in the image.",
+    "Note the highway signs indicating different routes.",
+    "Determine the direction of the highway signs.",
+    "Conclude that staying in the current lane will lead to Highway 95."
+  ],
+  "answer": "B"
+}

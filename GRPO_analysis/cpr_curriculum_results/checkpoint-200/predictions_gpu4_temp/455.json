@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the traffic light in the image.",
+    "Note the traffic light's position in the image.",
+    "Observe the traffic light's color.",
+    "Determine if the traffic light is green.",
+    "Conclude that the traffic light is green."
+  ],
+  "answer": "no"
+}

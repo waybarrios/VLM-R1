@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the ocean water icon.",
+    "Note the ocean water icon has a salty taste.",
+    "Identify the pretzel icon.",
+    "Note the pretzel icon is salty.",
+    "Conclude that both objects have a salty property in common."
+  ],
+  "answer": "salty"
+}

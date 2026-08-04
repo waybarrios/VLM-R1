@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the northernmost state on the map.",
+    "Note that Rhode Island is located in the northeastern part of the United States.",
+    "Compare the latitude of Rhode Island with the other states listed.",
+    "Identify the state of Kansas, which is further south.",
+    "Conclude that Rhode Island is the northernmost state.",
+    "Verify that Rhode Island is indeed the northernmost state."
+  ],
+  "answer": "Rhode Island"
+}

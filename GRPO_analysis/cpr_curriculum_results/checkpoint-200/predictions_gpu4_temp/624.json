@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the pedestrian crossing in the image.",
+    "Note the presence of a pedestrian crossing ahead.",
+    "Determine that the pedestrian crossing is clearly marked.",
+    "Conclude that you should stop at the pedestrian crossing.",
+    "Conclude that you should stop right now."
+  ],
+  "answer": "Yes"
+}

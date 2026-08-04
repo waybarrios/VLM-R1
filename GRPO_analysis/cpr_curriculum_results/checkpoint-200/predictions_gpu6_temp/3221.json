@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the right angles in the triangles.",
+    "Note that $\\angle EAB$ and $\\angle ABC$ are both right angles.",
+    "Determine the lengths of the sides in the triangles.",
+    "Calculate the area of $\\triangle ADE$.",
+    "Calculate the area of $\\triangle BDC$.",
+    "Find the difference between the areas of $\\triangle ADE$ and $\\triangle BDC$."
+  ],
+  "answer": "10"
+}

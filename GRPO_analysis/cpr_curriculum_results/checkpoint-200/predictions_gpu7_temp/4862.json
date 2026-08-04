@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the continent highlighted in the map.",
+    "Note the color of the continent.",
+    "Australia is the continent highlighted in the image.",
+    "Confirm that Australia is the continent of interest.",
+    "Conclude that Australia is the continent highlighted in the image."
+  ],
+  "answer": "Australia"
+}

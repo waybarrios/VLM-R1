@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the squirrels and their positions on the line.",
+    "Note the distance between each squirrel and the nuts.",
+    "Understand that the squirrels will run towards the nearest nut.",
+    "Determine which squirrel is closest to the first nut.",
+    "Conclude that the squirrel closest to the first nut will be the one to pick it up.",
+    "Identify the squirrel that picks the first nut and then runs to the next one."
+  ],
+  "answer": "D"
+}

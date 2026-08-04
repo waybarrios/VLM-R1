@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the road surface and markings.",
+    "Note the presence of a speed bump.",
+    "Determine the direction of the speed bump.",
+    "Conclude that there is a speed bump ahead."
+  ],
+  "answer": "yes"
+}

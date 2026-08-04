@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the road markings and lanes.",
+    "Note the presence of a dedicated bicycle lane.",
+    "Confirm the absence of a dedicated bicycle lane.",
+    "Conclude that there is no dedicated bicycle lane."
+  ],
+  "answer": "no"
+}

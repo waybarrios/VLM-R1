@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the continent highlighted on the map.",
+    "Note the continent labeled 'Asia' on the map.",
+    "Verify that the continent highlighted is Asia.",
+    "Conclude that Asia is the continent highlighted in the image."
+  ],
+  "answer": "Asia"
+}

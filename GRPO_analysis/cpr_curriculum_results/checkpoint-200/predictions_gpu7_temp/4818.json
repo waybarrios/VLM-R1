@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the two species involved in the relationship.",
+    "Note that the alpheid shrimp and the goby share a burrow.",
+    "Understand that the goby benefits from the shelter provided by the shrimp.",
+    "Determine that the shrimp does not benefit from the goby's presence.",
+    "Conclude that the relationship is one where the goby benefits at the expense of the shrimp."
+  ],
+  "answer": "commensal"
+}

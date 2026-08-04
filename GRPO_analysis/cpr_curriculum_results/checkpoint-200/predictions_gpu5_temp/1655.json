@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the black areas in each square.",
+    "Note that the black areas in each square are equal in size.",
+    "Conclude that the total area of the black parts is the same in all squares.",
+    "Conclude that the total area of the black parts is always equally big."
+  ],
+  "answer": "The total area of the black parts is always equally big."
+}

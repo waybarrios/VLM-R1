@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the context of the question, which involves a test on a parachute.",
+    "Note that the test is conducted with a 1 m vent and a speed of 200 km per hour.",
+    "Understand that the test is evaluating the stability of the parachute.",
+    "Conclude that the test could be assessing the stability of the parachute under different conditions.",
+    "Determine that the test might be used to determine if the spacecraft is damaged by the parachute.",
+    "Conclude that the test could show if the spacecraft is damaged."
+  ],
+  "answer": "if the spacecraft was damaged when using a parachute with a 1 m vent going 200 km per hour"
+}

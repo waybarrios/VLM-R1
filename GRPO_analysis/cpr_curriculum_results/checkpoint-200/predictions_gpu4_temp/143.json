@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the traffic light at the intersection.",
+    "Note the green arrow indicating the right turn.",
+    "Confirm that the right turn is allowed.",
+    "Conclude that you can turn right."
+  ],
+  "answer": "no"
+}

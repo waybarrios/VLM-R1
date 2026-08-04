@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the car in the foreground.",
+    "Note the direction of the car's wheels.",
+    "Determine the car's position relative to the camera.",
+    "Conclude that the car is turning right."
+  ],
+  "answer": "no"
+}

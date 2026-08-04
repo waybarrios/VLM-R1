@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of Tennessee.",
+    "Note that Tennessee is a state in the southeastern United States.",
+    "Recall that the capital of Tennessee is a major city.",
+    "Identify the city of Nashville as the capital of Tennessee.",
+    "Conclude that the capital of Tennessee is Nashville."
+  ],
+  "answer": "Nashville"
+}

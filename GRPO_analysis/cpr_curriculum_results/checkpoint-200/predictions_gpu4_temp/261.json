@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the car in front of us.",
+    "Note the traffic sign on the right side of the road.",
+    "Determine the relative positions of the car and the traffic sign.",
+    "Conclude that we are closer to the car in front of us."
+  ],
+  "answer": "yes"
+}

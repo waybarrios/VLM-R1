@@ -1,0 +1,12 @@
+{
+  "reasoning_steps": [
+    "Identify the initial and final temperatures of both refrigerators.",
+    "Note that the temperature of the refrigerator with its door open increased by 8.5°C.",
+    "Conclude that the refrigerator with its door open lost thermal energy to the surroundings.",
+    "Identify the temperature change in the refrigerator with its door closed.",
+    "Note that the temperature of the refrigerator with its door closed decreased by 2.3°C.",
+    "Conclude that the refrigerator with its door closed gained thermal energy from the surroundings.",
+    "Conclude that thermal energy transferred from the surroundings to each refrigerator."
+  ],
+  "answer": "the surroundings . . . each refrigerator"
+}

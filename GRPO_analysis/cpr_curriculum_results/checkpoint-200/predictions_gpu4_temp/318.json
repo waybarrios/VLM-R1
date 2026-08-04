@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the turn signal in the image.",
+    "Note that the turn signal is green.",
+    "Confirm the green color of the turn signal.",
+    "Conclude that the turn signal is indeed green."
+  ],
+  "answer": "yes"
+}

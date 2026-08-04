@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of Alabama.",
+    "Note that the capital of Alabama is listed in the image.",
+    "Identify the capital of Alabama as Montgomery.",
+    "Confirm that Montgomery is the capital of Alabama.",
+    "Conclude that the capital of Alabama is Montgomery."
+  ],
+  "answer": "Montgomery"
+}

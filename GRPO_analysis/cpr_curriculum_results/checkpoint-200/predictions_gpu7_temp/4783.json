@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the object in question.",
+    "Note the object is a bunch of balloons.",
+    "Understand that helium balloons are known for their elasticity.",
+    "Conclude that the object is stretchy.",
+    "Determine that the object is not yellow.",
+    "Conclude that the property that matches the object is stretchy."
+  ],
+  "answer": "stretchy"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the numbers on the faces of the cube.",
+    "Note the numbers on the faces meeting at each corner.",
+    "Sum the numbers on the faces meeting at each corner.",
+    "Determine the total sum for each corner.",
+    "Identify the total sum for corner F."
+  ],
+  "answer": "30"
+}

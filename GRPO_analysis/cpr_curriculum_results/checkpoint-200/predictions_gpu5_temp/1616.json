@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the squares where the kangaroos can be placed.",
+    "Note that the kangaroos must be placed in such a way that no two kangaroos share a square.",
+    "Determine the possible positions for the kangaroos.",
+    "Verify that the arrangement satisfies the condition of no immediate neighbors.",
+    "Conclude that there are 6 possible arrangements."
+  ],
+  "answer": "6"
+}

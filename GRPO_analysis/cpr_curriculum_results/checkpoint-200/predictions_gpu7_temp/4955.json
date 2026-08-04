@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the key elements in the image.",
+    "Note the sky and the water.",
+    "Determine the weather conditions.",
+    "Conclude that the image describes the weather.",
+    "The image shows a clear blue sky and calm water, which suggests good weather.",
+    "Conclude that the passage describes the weather."
+  ],
+  "answer": "weather"
+}

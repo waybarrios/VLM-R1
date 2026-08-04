@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the total length of the longer side.",
+    "Note that the longer side is composed of four smaller rectangles.",
+    "Since the shorter side is 10 cm, the longer side must be four times the length of the shorter side.",
+    "Calculate the length of the longer side by multiplying the shorter side by 4.",
+    "The longer side is 40 cm."
+  ],
+  "answer": "40 cm"
+}

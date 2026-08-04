@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the shape and its components.",
+    "Note that the star consists of a square and four triangles.",
+    "Understand that the perimeter of the star is composed of the perimeter of the square plus the perimeter of the triangles.",
+    "Calculate the perimeter of the square.",
+    "Determine the length of one side of the square.",
+    "Calculate the total perimeter of the star by adding the perimeter of the square to the perimeter of the triangles."
+  ],
+  "answer": "120 cm"
+}

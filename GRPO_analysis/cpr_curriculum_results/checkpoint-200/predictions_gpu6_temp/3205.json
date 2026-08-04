@@ -1,0 +1,12 @@
+{
+  "reasoning_steps": [
+    "Identify the function P(x) = x^4 + ax^3 + bx^2 + cx + d.",
+    "Note that the polynomial is of degree 4, which means it has four roots.",
+    "Identify the zeros of the polynomial.",
+    "Calculate the sum of the coefficients of the polynomial.",
+    "Identify the product of the zeros of the polynomial.",
+    "Identify the product of the non-real zeros of the polynomial.",
+    "Identify the sum of the real zeros of the polynomial."
+  ],
+  "answer": "The sum of the real zeros of P"
+}

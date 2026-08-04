@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the initial and final temperatures in both aquariums.",
+    "Note that the temperature in both aquariums decreased.",
+    "Understand that the decrease in temperature indicates heat transfer.",
+    "Conclude that the heat was transferred from the surroundings to the aquariums.",
+    "Conclude that the surroundings lost heat to the aquariums."
+  ],
+  "answer": "the surroundings . . . each aquarium"
+}

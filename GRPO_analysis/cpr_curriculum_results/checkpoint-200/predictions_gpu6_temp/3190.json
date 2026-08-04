@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the properties of the triangles.",
+    "Note that both triangles ABC and ABD are isosceles.",
+    "Since BD is perpendicular to AC, angle BDE is 90 degrees.",
+    "In triangle ABD, since AB = BD, angle ADB is 60 degrees.",
+    "In triangle ABC, since AB = AC, angle ACB is 60 degrees.",
+    "Summing up the angles, angle C + angle D equals 120 degrees."
+  ],
+  "answer": "120°"
+}

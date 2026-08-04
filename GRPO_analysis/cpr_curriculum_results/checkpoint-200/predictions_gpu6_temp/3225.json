@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the properties of the triangle.",
+    "Note that $AB = BC$ implies $\\triangle ABC$ is isosceles.",
+    "Identify the altitude $BD$ which creates two right triangles.",
+    "Note that $BE = 10$ and $\\tan CBE$, $\\tan DBE$, and $\\tan ABE$ form a geometric progression.",
+    "Identify the cotangent values forming an arithmetic progression.",
+    "Calculate the area of $\\triangle ABC$."
+  ],
+  "answer": "10\\sqrt{3}"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the vertices of the pentagon.",
+    "Note that there are five positions where an equilateral triangle can be attached.",
+    "Understand that attaching an equilateral triangle to the pentagon will create a new shape.",
+    "Determine that the new shapes formed by attaching the triangles will vary in size and orientation.",
+    "Conclude that there are multiple non-congruent figures possible."
+  ],
+  "answer": "5"
+}

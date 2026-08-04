@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the first building on the right.",
+    "Note the garage doors on the building.",
+    "Count the number of garage doors.",
+    "Confirm that there are three garage doors.",
+    "Conclude that the first building has three garages."
+  ],
+  "answer": "3"
+}

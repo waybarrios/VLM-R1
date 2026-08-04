@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the stop sign in the image.",
+    "Note that the stop sign is positioned near the road.",
+    "Determine the direction of the stop sign.",
+    "Conclude that the stop sign is facing towards the viewer."
+  ],
+  "answer": "yes"
+}

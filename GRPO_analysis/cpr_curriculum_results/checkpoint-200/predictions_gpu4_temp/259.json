@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the person walking on the right side of the road.",
+    "Note the person's position relative to the road.",
+    "Determine that the person is within 100 meters of the road.",
+    "Count the number of pedestrians in the vicinity.",
+    "Conclude that there is one pedestrian within 100 meters."
+  ],
+  "answer": "1"
+}

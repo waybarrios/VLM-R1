@@ -1,0 +1,12 @@
+{
+  "reasoning_steps": [
+    "Identify Neptune's volume in km³.",
+    "Note that Neptune's volume is 6.25 x 10¹³ km³.",
+    "Compare Neptune's volume to Earth's volume.",
+    "Earth's volume is 1.08 x 10¹² km³.",
+    "Calculate the ratio of Neptune's volume to Earth's volume.",
+    "Determine if Neptune's volume is more than 100 times larger than Earth's.",
+    "Conclude that Neptune's volume is indeed more than 100 times as large as Earth's."
+  ],
+  "answer": "false"
+}

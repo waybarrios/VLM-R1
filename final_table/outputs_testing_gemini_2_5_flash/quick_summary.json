@@ -1,0 +1,6 @@
+{
+  "model": "vertex_ai.gemini-2.5-flash",
+  "samples": 6372,
+  "empty_steps": 676,
+  "avg_steps": 17.09871311989956
+}

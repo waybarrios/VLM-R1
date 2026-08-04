@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the highlighted country on the map.",
+    "Note the shape and color of the highlighted country.",
+    "Compare the highlighted country with the known countries in the Caribbean.",
+    "Identify the country that matches the shape and color of the highlighted country.",
+    "Conclude that the highlighted country is Saint Vincent and the Grenadines."
+  ],
+  "answer": "Saint Vincent and the Grenadines"
+}

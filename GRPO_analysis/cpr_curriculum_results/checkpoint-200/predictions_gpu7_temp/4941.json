@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the southernmost state on the map.",
+    "Note the states listed in the image.",
+    "California is the southernmost state.",
+    "Verify that California is the southernmost state.",
+    "Confirm that California is the southernmost state."
+  ],
+  "answer": "California"
+}

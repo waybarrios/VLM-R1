@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the polynomial P(x) with nonzero coefficients.",
+    "Replace the nonzero coefficients of P(x) with their mean to form Q(x).",
+    "Note that the graph of Q(x) will be a scaled version of P(x).",
+    "Compare the graphs of P(x) and Q(x) within the interval -4 ≤ x ≤ 4.",
+    "Identify the graph that shows the transformation from P(x) to Q(x)."
+  ],
+  "answer": "E"
+}

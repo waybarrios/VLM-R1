@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the vehicles in the image.",
+    "Note the direction of the vehicles.",
+    "Determine that the vehicles are facing left.",
+    "Conclude that the vehicles are facing left."
+  ],
+  "answer": "yes"
+}

@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of Washington.",
+    "Note that Washington is a state in the United States.",
+    "Recall that the capital of Washington is a city.",
+    "Identify the capital of Washington.",
+    "Note that the capital of Washington is a city.",
+    "Identify the capital of Washington."
+  ],
+  "answer": "Olympia"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of Texas.",
+    "Note that the capital of Texas is listed in the image.",
+    "Identify the capital of Texas as Austin.",
+    "Confirm that Austin is the capital of Texas.",
+    "Conclude that the capital of Texas is Austin."
+  ],
+  "answer": "Austin"
+}

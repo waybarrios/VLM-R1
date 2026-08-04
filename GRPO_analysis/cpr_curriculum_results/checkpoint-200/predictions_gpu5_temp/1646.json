@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the balloons that are hit by the darts.",
+    "Note the direction of the darts and their impact on the balloons.",
+    "Determine which balloons remain unhit.",
+    "Conclude that the number of balloons not hit is the total number minus the number hit."
+  ],
+  "answer": "6"
+}

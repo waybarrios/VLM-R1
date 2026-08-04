@@ -1,0 +1,12 @@
+{
+  "reasoning_steps": [
+    "Identify the small cube in Image 1.",
+    "Note that the small cube has two gray blocks and one white block.",
+    "Understand that the big cube is composed of 9 identical building blocks.",
+    "Visualize the big cube with the same pattern of blocks.",
+    "Match the pattern of the small cube with the big cube in Image 2.",
+    "Identify the correct big cube among the options.",
+    "Option D matches the pattern of the small cube in Image 1."
+  ],
+  "answer": "D"
+}

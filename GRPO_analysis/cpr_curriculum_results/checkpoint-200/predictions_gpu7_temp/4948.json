@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of Maine.",
+    "Note that the capital of Maine is listed in the image.",
+    "Identify the capital of Maine as 'Augusta'.",
+    "Confirm that 'Augusta' is the capital of Maine.",
+    "Conclude that the capital of Maine is Augusta."
+  ],
+  "answer": "C) Augusta"
+}

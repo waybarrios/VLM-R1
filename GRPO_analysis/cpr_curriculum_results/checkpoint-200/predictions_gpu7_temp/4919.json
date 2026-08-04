@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Utah is a state in the western United States.",
+    "Utah's capital city is Salt Lake City.",
+    "Salt Lake City is the largest city in Utah.",
+    "Salt Lake City is the capital of Utah.",
+    "The capital of Utah is Salt Lake City."
+  ],
+  "answer": "Salt Lake City"
+}

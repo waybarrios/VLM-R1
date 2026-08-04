@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of North Dakota.",
+    "Note that the capital of North Dakota is listed in the image.",
+    "Identify the capital of North Dakota as Bismarck.",
+    "Confirm that Bismarck is the capital of North Dakota.",
+    "Conclude that the capital of North Dakota is Bismarck."
+  ],
+  "answer": "B) Bismarck"
+}

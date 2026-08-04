@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the cars on the street.",
+    "Note that there are two cars.",
+    "Observe the cars' colors.",
+    "Determine that both cars are black.",
+    "Conclude that all the cars on the street are black."
+  ],
+  "answer": "yes"
+}

@@ -1,0 +1,6 @@
+{
+  "model": "meta.llama-3.2-11b-vision-instruct",
+  "samples": 6372,
+  "empty_steps": 1742,
+  "avg_steps": 4.194601381042059
+}

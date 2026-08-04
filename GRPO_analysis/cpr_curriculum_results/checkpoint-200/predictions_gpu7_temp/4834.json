@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of New Jersey.",
+    "Note that the capital of New Jersey is listed in the image.",
+    "Trenton is the capital of New Jersey.",
+    "Confirm that Trenton is the capital.",
+    "Conclude that the capital of New Jersey is Trenton."
+  ],
+  "answer": "Trenton"
+}

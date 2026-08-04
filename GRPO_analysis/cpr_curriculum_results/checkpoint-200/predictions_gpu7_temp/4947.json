@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of Georgia.",
+    "Note that the capital of Georgia is listed in the image.",
+    "Identify the capital of Georgia as Atlanta.",
+    "Confirm that Atlanta is the capital of Georgia.",
+    "Conclude that the capital of Georgia is Atlanta."
+  ],
+  "answer": "Atlanta"
+}

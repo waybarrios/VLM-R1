@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the goal of the test.",
+    "Note the setup of the test.",
+    "Observe the placement of the solar panels.",
+    "Determine the direction of the roof.",
+    "Conclude that the test measures the amount of sunlight received by the roof."
+  ],
+  "answer": "which side of the roof got more sun over one day"
+}

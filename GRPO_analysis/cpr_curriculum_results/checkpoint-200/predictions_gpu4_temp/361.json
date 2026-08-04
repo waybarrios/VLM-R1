@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the telephone line in the image.",
+    "Notice the birds perched on the telephone line.",
+    "Count the number of birds on the telephone line.",
+    "Confirm that there are two birds on the telephone line.",
+    "Conclude that there are two birds on the telephone line."
+  ],
+  "answer": "2"
+}

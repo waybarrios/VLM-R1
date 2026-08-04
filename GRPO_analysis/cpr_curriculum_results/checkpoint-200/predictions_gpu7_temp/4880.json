@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the alleles involved in the mutation.",
+    "Note the presence of two different alleles.",
+    "Understand that the ratio of offspring with mutated antennae to offspring with normal antennae is determined by the Mendelian inheritance pattern.",
+    "Conclude that the ratio of offspring with mutated antennae to offspring with normal antennae is 1:3."
+  ],
+  "answer": "1:3"
+}

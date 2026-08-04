@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the rectangle's dimensions.",
+    "Note that the rectangle is twice as long as it is wide.",
+    "Understand that the grey part of the rectangle is half of the total area.",
+    "Calculate the fraction of the rectangle that is grey.",
+    "Conclude that the grey part of the rectangle is one-fourth of the whole rectangle."
+  ],
+  "answer": "1/4"
+}

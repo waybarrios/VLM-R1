@@ -1,0 +1,12 @@
+{
+  "reasoning_steps": [
+    "Identify the bird in the image.",
+    "Note the bird's feathers and beak.",
+    "Compare the bird to the options listed.",
+    "Identify the eagle in the image.",
+    "Conclude that the bird is an eagle.",
+    "Match the eagle with the option 'common toad' which is incorrect.",
+    "Conclude that the correct bird is the eagle."
+  ],
+  "answer": "eagle"
+}

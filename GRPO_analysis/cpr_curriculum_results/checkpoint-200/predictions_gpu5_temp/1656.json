@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the numbers hidden by the smudges.",
+    "Note that the calculations along the arrows are correct.",
+    "Determine which number is left out in the sequence.",
+    "Conclude that the number behind the smudge with the star is 5."
+  ],
+  "answer": "5"
+}

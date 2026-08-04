@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the cars on the left side of the image.",
+    "Note the cars parked in the left section of the parking lot.",
+    "Count the cars on the left side.",
+    "Verify that there are three cars parked on the left.",
+    "Conclude that there are three cars on the left."
+  ],
+  "answer": "3"
+}

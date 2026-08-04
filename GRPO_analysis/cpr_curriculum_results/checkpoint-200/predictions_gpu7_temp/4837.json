@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Erik wants a sandwich, oranges, broccoli, and water.",
+    "Lily wants a hot dog, tomatoes, and almonds.",
+    "Erik can trade his tomatoes for Lily's broccoli.",
+    "This trade will satisfy both Erik and Lily's preferences.",
+    "Therefore, Erik can trade his tomatoes for Lily's broccoli."
+  ],
+  "answer": "Erik can trade his tomatoes for Lily's broccoli."
+}

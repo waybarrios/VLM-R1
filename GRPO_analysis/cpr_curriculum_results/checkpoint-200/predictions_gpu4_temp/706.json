@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the two vehicles in the image.",
+    "Note that one car is moving on the left side of the road.",
+    "The other car appears stationary on the right side of the road.",
+    "Conclude that there is one car in motion.",
+    "Provide the count of the moving car."
+  ],
+  "answer": "1"
+}

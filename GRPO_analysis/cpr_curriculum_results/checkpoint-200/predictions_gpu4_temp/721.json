@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the car in front of us.",
+    "Note the direction of the car's headlights.",
+    "Determine the car's orientation relative to the camera.",
+    "Conclude that the car is facing right."
+  ],
+  "answer": "yes"
+}

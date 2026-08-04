@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the continent highlighted on the map.",
+    "Note the color of the continent.",
+    "Identify the continent that matches the color on the map.",
+    "Conclude that the continent highlighted is North America."
+  ],
+  "answer": "North America"
+}

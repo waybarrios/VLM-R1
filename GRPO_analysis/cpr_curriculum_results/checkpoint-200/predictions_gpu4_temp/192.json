@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the parking lot environment.",
+    "Note the presence of vehicles.",
+    "Notice the absence of portable toilets.",
+    "Conclude that there are no porta potties available."
+  ],
+  "answer": "no"
+}

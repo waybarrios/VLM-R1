@@ -1,0 +1,12 @@
+{
+  "reasoning_steps": [
+    "Identify the girls sleeping on the left side of the room.",
+    "Note that Bea and Pia are on the left side.",
+    "Identify the girls sleeping on the right side of the room.",
+    "Note that Mary and Karen are on the right side.",
+    "Determine which girls have their right ear on the pillow.",
+    "Identify the girl on the left who has her right ear on the pillow.",
+    "Identify the girl on the right who has her right ear on the pillow."
+  ],
+  "answer": "2"
+}

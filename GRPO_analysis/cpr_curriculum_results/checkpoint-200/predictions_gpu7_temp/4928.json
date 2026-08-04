@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the states listed in the image.",
+    "Note the states listed as Georgia, Kentucky, New Mexico, and Arkansas.",
+    "Identify the northernmost state among the listed states.",
+    "Kentucky is the northernmost state listed.",
+    "Confirm that Kentucky is the state farthest north."
+  ],
+  "answer": "Kentucky"
+}

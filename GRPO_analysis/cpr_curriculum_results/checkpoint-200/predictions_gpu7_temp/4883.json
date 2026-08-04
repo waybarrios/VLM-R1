@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the molecular structure of bromine.",
+    "Note the presence of bromine atoms in the molecule.",
+    "Identify the molecular structure of trichlorofluoromethane.",
+    "Note the presence of chlorine, fluorine, and carbon atoms in the molecule.",
+    "Identify the molecular structure of hydrazine.",
+    "Note the presence of nitrogen and hydrogen atoms in the molecule."
+  ],
+  "answer": "bromine"
+}

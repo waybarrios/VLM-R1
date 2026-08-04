@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the two-digit numbers involved in the subtraction.",
+    "Note that the result of the subtraction is 25.",
+    "Determine the two digits that Alice painted over.",
+    "Identify the sum of these painted digits."
+  ],
+  "answer": "5"
+}

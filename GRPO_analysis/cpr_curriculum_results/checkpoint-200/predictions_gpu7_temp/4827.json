@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the elements present in each molecule.",
+    "Note the presence of carbon, hydrogen, fluorine, phosphorus, and chlorine in the molecules.",
+    "Understand that tetraphosphorus contains phosphorus.",
+    "Identify fluoromethane which contains fluorine.",
+    "Determine chloromethane which contains chlorine.",
+    "Conclude that the elementary substances are phosphorus, fluorine, and chlorine."
+  ],
+  "answer": "tetraphosphorus"
+}

@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the months on the x-axis.",
+    "Note the temperatures listed on the y-axis.",
+    "Determine the highest and lowest temperatures.",
+    "Identify the months with the highest and lowest temperatures.",
+    "Conclude that January and February are the coldest months.",
+    "Conclude that the temperature changes significantly throughout the year."
+  ],
+  "answer": "January and February are the coldest months of the year."
+}

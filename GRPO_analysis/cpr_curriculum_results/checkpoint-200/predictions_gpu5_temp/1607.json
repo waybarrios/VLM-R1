@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the balance scale in both scenarios.",
+    "Note that in the first scenario, Rita and Dita balance at 8 kg.",
+    "In the second scenario, Rita alone balances at 2 kg.",
+    "Conclude that Dita must be the difference between the two scenarios.",
+    "Calculate the weight of Dita by subtracting the weight of Rita in the second scenario from the total weight in the first scenario.",
+    "Determine that Dita weighs 6 kg."
+  ],
+  "answer": "6 kg"
+}

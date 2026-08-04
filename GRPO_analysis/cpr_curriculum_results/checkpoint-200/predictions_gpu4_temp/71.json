@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the traffic light at the intersection.",
+    "Note the traffic light is red.",
+    "Determine that the red light indicates a stop.",
+    "Conclude that you cannot turn left.",
+    "Provide the answer 'no' to the question."
+  ],
+  "answer": "no"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Ian wants a sandwich, oranges, broccoli, and water.",
+    "joseph wants a hot dog, tomatoes, and almonds.",
+    "Ian can trade his tomatoes for joseph's broccoli.",
+    "this trade will satisfy both ians and josephs needs.",
+    "the trade is fair and beneficial for both parties."
+  ],
+  "answer": "Ian can trade his tomatoes for Joseph's broccoli."
+}

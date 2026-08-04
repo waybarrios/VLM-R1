@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the organism in the image.",
+    "Note the scientific name listed in the image.",
+    "Confirm the scientific name matches the organism depicted.",
+    "Verify the scientific name is Caprimulgus europaeus.",
+    "Conclude that the scientific name is Caprimulgus europaeus."
+  ],
+  "answer": "Caprimulgus europaeus"
+}

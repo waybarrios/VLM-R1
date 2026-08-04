@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the side lengths of the smaller squares.",
+    "Note that the smallest square has a side length of 6 cm.",
+    "Observe that the other two squares share the same side length as the smallest one.",
+    "Conclude that the side length of the biggest square is the sum of the side lengths of the smaller squares.",
+    "Calculate the total side length of the biggest square."
+  ],
+  "answer": "10 cm"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the vehicles in the image.",
+    "Note the cars near the center of the image.",
+    "Count the number of sedans in the image.",
+    "Verify that the sedans are positioned within the specified distance.",
+    "Conclude that there are two sedans within 30 meters of the viewer."
+  ],
+  "answer": "2"
+}

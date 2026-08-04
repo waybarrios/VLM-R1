@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the object in the image.",
+    "Note the texture of the rock.",
+    "Determine that the rock has a rough surface.",
+    "Conclude that the rock is rough.",
+    "Match the property 'rough' with the object.",
+    "Provide the final answer."
+  ],
+  "answer": "rough"
+}

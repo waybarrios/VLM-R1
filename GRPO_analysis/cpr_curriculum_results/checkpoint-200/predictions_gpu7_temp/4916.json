@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the marbles in the image.",
+    "Note the texture of the marbles.",
+    "Observe the marbles' glossy finish.",
+    "Conclude that the marbles are made of glass.",
+    "Confirm the material by the shiny surface.",
+    "Conclude that the marbles are made of glass."
+  ],
+  "answer": "glass"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the right triangle properties.",
+    "Note the lengths of the sides of the triangle.",
+    "Calculate the area of the triangle.",
+    "Determine the coordinates of points M, N, J, and K.",
+    "Calculate the area of the pentagon CMJKN."
+  ],
+  "answer": "20"
+}

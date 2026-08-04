@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the outlined area on the map.",
+    "Note the specific humidity scale at the bottom of the image.",
+    "Locate the outlined area on the specific humidity scale.",
+    "Determine the specific humidity level within the outlined area.",
+    "Conclude that the specific humidity level within the outlined area is 13 grams of water vapor per kilogram of air."
+  ],
+  "answer": "13 grams of water vapor per kilogram of air"
+}

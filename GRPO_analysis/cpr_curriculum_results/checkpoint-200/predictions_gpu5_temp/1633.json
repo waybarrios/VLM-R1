@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the islands and bridges connecting them.",
+    "Note that there are 10 islands and 12 bridges.",
+    "Understand that the goal is to halt traffic between A and B.",
+    "Determine the minimum number of bridges to close.",
+    "Close the bridge connecting islands A and B.",
+    "Verify that the traffic between A and B is halted."
+  ],
+  "answer": "3"
+}

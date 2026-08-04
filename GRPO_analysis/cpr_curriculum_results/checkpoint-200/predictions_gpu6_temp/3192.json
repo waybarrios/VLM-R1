@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the total perimeter of the original rectangle.",
+    "Note that the original rectangle is divided into five congruent smaller rectangles.",
+    "Determine the length and width of the original rectangle.",
+    "Calculate the perimeter of one of the five congruent rectangles."
+  ],
+  "answer": "35"
+}

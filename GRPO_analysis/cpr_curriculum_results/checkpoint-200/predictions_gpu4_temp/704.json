@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the street scene in the image.",
+    "Note the presence of vehicles on the road.",
+    "Notice the traffic light and other urban elements.",
+    "Identify the fire hydrant in the image.",
+    "Confirm the presence of a fire hydrant near the road.",
+    "Conclude that there is a fire hydrant present."
+  ],
+  "answer": "yes"
+}

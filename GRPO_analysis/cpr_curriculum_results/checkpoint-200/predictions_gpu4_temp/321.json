@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the trash cans on the right side of the road.",
+    "Note that there are two trash cans.",
+    "Determine that one of the trash cans is green.",
+    "Count the green trash can on the right.",
+    "Conclude that there is one green trash can to the right."
+  ],
+  "answer": "1"
+}

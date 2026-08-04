@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the left turn lane markings on the road.",
+    "Note the presence of a solid white line marking the left turn lane.",
+    "Count the number of lanes available for turning left.",
+    "Verify that there is only one lane designated for left turns.",
+    "Conclude that there is one lane available for left turns."
+  ],
+  "answer": "1 lane"
+}

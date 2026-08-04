@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Jennifer wants a sandwich, oranges, broccoli, and water.",
+    "melissa wants a hot dog, tomatoes, and almonds.",
+    "Jennifer can trade her tomatoes for melissa's broccoli.",
+    "melissa can trade her almonds for jennifer's tomatoes.",
+    "the trade will satisfy both jennifer's and melissa's wants."
+  ],
+  "answer": "Jennifer can trade her tomatoes for Melissa's broccoli."
+}

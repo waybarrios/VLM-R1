@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the items Nancy wants.",
+    "Identify the items Dominic wants.",
+    "Determine what Nancy can trade for what she wants.",
+    "Determine what Dominic can trade for what he wants.",
+    "Find a trade that satisfies both parties' needs."
+  ],
+  "answer": "Nancy can trade her tomatoes for Dominic's broccoli."
+}

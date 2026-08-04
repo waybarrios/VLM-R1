@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identified the experiment setup with eggs in water.",
+    "Noted the eggs floating in fresh water.",
+    "Added salt to the water.",
+    "Observe the eggs in both scenarios.",
+    "Concluded that eggs float in fresh water but sink in salty water."
+  ],
+  "answer": "Are eggs more likely to float in fresh water or salty water?"
+}

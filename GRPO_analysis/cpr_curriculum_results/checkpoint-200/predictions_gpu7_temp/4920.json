@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the ocean highlighted in the image.",
+    "Note the ocean's color and shape.",
+    "Compare the highlighted ocean with the known oceans.",
+    "Identify the ocean that matches the description in the image.",
+    "Conclude that the ocean highlighted is the Pacific Ocean."
+  ],
+  "answer": "the Pacific Ocean"
+}

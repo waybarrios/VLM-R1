@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the original surface area of the 9x9x9 cube.",
+    "Determine the surface area of the 3x3x3 cubes that remain after the first removal.",
+    "Calculate the surface area of the remaining 3x3x3 cubes after the second removal.",
+    "Sum the surface areas of the final figure."
+  ],
+  "answer": "648"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the speed limit sign in the image.",
+    "Note the speed limit sign on the right side of the road.",
+    "Determine that the speed limit is 25.",
+    "Confirm the speed limit is clearly marked on the sign.",
+    "Conclude that the speed limit is 25."
+  ],
+  "answer": "B"
+}

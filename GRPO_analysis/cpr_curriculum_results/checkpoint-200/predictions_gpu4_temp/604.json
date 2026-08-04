@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the cars on the opposite side of the road.",
+    "Note the traffic lights and the direction of the cars.",
+    "Count the number of cars on the opposite side.",
+    "Verify that the cars are moving in the same direction as the bus.",
+    "Conclude that there is one car on the opposite side moving."
+  ],
+  "answer": "1"
+}

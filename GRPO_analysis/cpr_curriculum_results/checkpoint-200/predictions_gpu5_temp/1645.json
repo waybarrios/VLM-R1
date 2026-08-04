@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the kangaroo in the grey triangle.",
+    "Note that the kangaroo is mirrored along the dotted lines.",
+    "Observe the position of the kangaroo in the grey triangle.",
+    "Conclude that the kangaroo in the grey triangle is in position E."
+  ],
+  "answer": "E"
+}

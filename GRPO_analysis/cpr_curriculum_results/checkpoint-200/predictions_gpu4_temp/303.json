@@ -1,0 +1,12 @@
+{
+  "reasoning_steps": [
+    "Identify the traffic light in the background.",
+    "Note the traffic light is red.",
+    "Determine that the red light indicates a stop signal.",
+    "Conclude that you must stop before proceeding.",
+    "Identify the lane markings on the road.",
+    "Note the lane markings indicate a left turn.",
+    "Conclude that you need to turn left."
+  ],
+  "answer": "yes"
+}

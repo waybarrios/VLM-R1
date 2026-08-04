@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the volumes of Neptune and Uranus.",
+    "Note that Neptune's volume is 62,530 billion km³.",
+    "Identify the volume of Uranus, which is 68,330 billion km³.",
+    "Calculate the percentage of Neptune's volume relative to Uranus.",
+    "Determine if Neptune's volume is less than 75% of Uranus.",
+    "Conclude that Neptune's volume is indeed less than 75% of Uranus."
+  ],
+  "answer": "false"
+}

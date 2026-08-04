@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the car in the distance.",
+    "Note the headlights of the car.",
+    "Determine that the car has its engine on.",
+    "Conclude that there is a car in front with the engine on."
+  ],
+  "answer": "yes"
+}

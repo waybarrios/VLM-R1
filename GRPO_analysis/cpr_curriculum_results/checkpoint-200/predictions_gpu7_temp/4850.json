@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the sky in the image.",
+    "Note the presence of clouds in the sky.",
+    "Determine the overall atmosphere depicted in the image.",
+    "Conclude that the image describes the weather.",
+    "Conclude that the passage describes the weather."
+  ],
+  "answer": "weather"
+}

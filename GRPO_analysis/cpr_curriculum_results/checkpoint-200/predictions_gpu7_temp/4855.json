@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of New Mexico.",
+    "Note that the capital of New Mexico is listed in the image.",
+    "Identify the capital of New Mexico as Santa Fe.",
+    "Confirm that Santa Fe is the capital of New Mexico.",
+    "Conclude that the capital of New Mexico is Santa Fe."
+  ],
+  "answer": "Santa Fe"
+}

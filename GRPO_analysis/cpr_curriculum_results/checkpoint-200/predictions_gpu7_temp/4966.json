@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the arrows pointing towards the lichen.",
+    "Note that the lichen is labeled as a producer.",
+    "Understand that producers are organisms that convert light energy into chemical energy.",
+    "Conclude that the lichen is a producer.",
+    "Verify the lichen is the only organism labeled as a producer in the diagram."
+  ],
+  "answer": "lichen"
+}

@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the mass of each particle in both samples.",
+    "Note that the mass of each particle is the same in both samples.",
+    "Determine the average particle speed in each sample.",
+    "Recall the formula for average kinetic energy.",
+    "Calculate the average kinetic energy for each sample.",
+    "Conclude that Sample A has a higher temperature."
+  ],
+  "answer": "sample A"
+}

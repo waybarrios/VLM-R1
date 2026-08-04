@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the crosswalk sign in the image.",
+    "Note that the sign is illuminated.",
+    "Determine the color of the sign.",
+    "Conclude that the crosswalk sign is active."
+  ],
+  "answer": "yes"
+}

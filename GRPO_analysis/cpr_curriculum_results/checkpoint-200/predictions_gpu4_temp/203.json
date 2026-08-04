@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the speed limit sign on the road.",
+    "Note the text on the speed limit sign.",
+    "Determine that the speed limit is 25.",
+    "Conclude that the speed limit on the road is 25."
+  ],
+  "answer": "25"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the word 'KANGAROO' on the umbrella.",
+    "Note the orientation of the umbrella in Image 1.",
+    "Compare the orientation of the umbrella in Image 1 with the other images.",
+    "Identify the umbrella in Image 2 that does not match the orientation of the umbrella in Image 1.",
+    "Conclude that Image 2 (B) does not show the correct orientation of the umbrella."
+  ],
+  "answer": "B"
+}

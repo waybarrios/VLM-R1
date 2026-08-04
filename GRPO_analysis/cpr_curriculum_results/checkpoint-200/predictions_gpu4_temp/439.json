@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the road markings.",
+    "Note the presence of a bike lane.",
+    "Determine the direction of the bike lane.",
+    "Confirm the bike lane is on the right side of the road.",
+    "Conclude that there is a bike lane to the right."
+  ],
+  "answer": "yes"
+}

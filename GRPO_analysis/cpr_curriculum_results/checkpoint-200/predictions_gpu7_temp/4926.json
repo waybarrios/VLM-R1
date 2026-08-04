@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the highlighted country on the map.",
+    "Note the shape and color of the country.",
+    "Compare the highlighted country with the other countries on the map.",
+    "Identify the country that matches the shape and color of the highlighted country.",
+    "Conclude that the highlighted country is New Zealand."
+  ],
+  "answer": "New Zealand"
+}

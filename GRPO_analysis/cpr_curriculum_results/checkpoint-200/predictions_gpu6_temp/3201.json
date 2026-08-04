@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the areas of the semicircles and the full circle.",
+    "Calculate the area of the shaded region by subtracting the area of the smaller semicircle from the area of the larger semicircle.",
+    "Note that the area of the shaded region is the difference between the area of the larger semicircle and the area of the smaller semicircle.",
+    "Express the ratio of the shaded area to the unshaded area in terms of the diameters a and b.",
+    "Conclude that the ratio of the shaded area to the unshaded area is the square root of the ratio of the diameters."
+  ],
+  "answer": "sqrt(a/b)"
+}

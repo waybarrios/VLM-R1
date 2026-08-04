@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of Arizona.",
+    "Note that the capital of Arizona is listed in the image.",
+    "Confirm the capital of Arizona is Phoenix.",
+    "Conclude that Phoenix is the capital of Arizona."
+  ],
+  "answer": "Phoenix"
+}

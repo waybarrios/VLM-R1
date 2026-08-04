@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the total length of the strips when glued together.",
+    "Note that the strips are 10 cm long each.",
+    "Calculate the combined length of the strips before overlap.",
+    "Determine the length of the overlap needed to achieve the desired length.",
+    "Conclude that the overlap should be 8 cm."
+  ],
+  "answer": "8 cm"
+}

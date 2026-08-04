@@ -1,0 +1,12 @@
+{
+  "reasoning_steps": [
+    "Identify the red-billed gull in the image.",
+    "Note the distinctive red beak of the bird.",
+    "Recall the species name of the red-billed gull.",
+    "Understand that the red-billed gull is a species of seabird.",
+    "Identify the other species listed in the options.",
+    "Determine which species has a similar appearance to the red-billed gull.",
+    "Conclude that the red-billed gull belongs to the same species as Chroicocephalus ridibundus."
+  ],
+  "answer": "Chroicocephalus ridibundus"
+}

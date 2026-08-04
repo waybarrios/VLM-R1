@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the weight relationship between Jane, Kate, and Lynn.",
+    "Note that Jane weighs 500 kg more than Kate.",
+    "Understand that Kate weighs 1000 kg less than Lynn.",
+    "Determine the correct order of the rhinos based on their weights.",
+    "Conclude that the correct order is Jane at the front, Kate in the middle, and Lynn at the back."
+  ],
+  "answer": "D"
+}

@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of Florida.",
+    "Note that Tallahassee is the capital of Florida.",
+    "Confirm Tallahassee as the capital.",
+    "Conclude that Tallahassee is the capital of Florida."
+  ],
+  "answer": "Tallahassee"
+}

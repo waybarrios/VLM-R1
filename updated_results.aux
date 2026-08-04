@@ -1,0 +1,60 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{yu2020pcgrad}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces \textbf  {Three GRPO strategies compared.} All train Qwen2.5-VL-3B on 4$\times $A100 with DeepSpeed ZeRO-3. $\Delta $F1 relative to baseline (0.480).}}{1}{table.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:headline}{{1}{1}{\textbf {Three GRPO strategies compared.} All train Qwen2.5-VL-3B on 4$\times $A100 with DeepSpeed ZeRO-3. $\Delta $F1 relative to baseline (0.480)}{table.caption.1}{}}
+\newlabel{tab:headline@cref}{{[table][1][]1}{[1][1][]1}}
+\@writefile{toc}{\contentsline {section}{\numberline {1}\hskip -1em.~Addressing the Central GRPO Concern}{1}{section.1}\protected@file@percent }
+\newlabel{sec:central}{{1}{1}{\texorpdfstring {\hskip -1em.~}{}Addressing the Central GRPO Concern}{section.1}{}}
+\newlabel{sec:central@cref}{{[section][1][]1}{[1][1][]1}}
+\@writefile{brf}{\backcite{yu2020pcgrad}{{1}{1}{equation.1.1}}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \textbf  {Side-by-side comparison of three strategies} on accuracy, Match-F1, and recall. CPR is the only strategy that improves Match-F1 (+32\%) and recall (+41\%) above baseline while maintaining competitive accuracy.}}{1}{figure.caption.2}\protected@file@percent }
+\newlabel{fig:summary_bars}{{1}{1}{\textbf {Side-by-side comparison of three strategies} on accuracy, Match-F1, and recall. CPR is the only strategy that improves Match-F1 (+32\%) and recall (+41\%) above baseline while maintaining competitive accuracy}{figure.caption.2}{}}
+\newlabel{fig:summary_bars@cref}{{[figure][1][]1}{[1][1][]1}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces \textbf  {Composite GRPO trajectory.} Hard mode collapse at step 600.}}{1}{table.caption.3}\protected@file@percent }
+\newlabel{tab:composite}{{2}{1}{\textbf {Composite GRPO trajectory.} Hard mode collapse at step 600}{table.caption.3}{}}
+\newlabel{tab:composite@cref}{{[table][2][]2}{[1][1][]1}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}\hskip -1em.~Full Training Trajectories}{1}{section.2}\protected@file@percent }
+\newlabel{sec:trajectories}{{2}{1}{\texorpdfstring {\hskip -1em.~}{}Full Training Trajectories}{section.2}{}}
+\newlabel{sec:trajectories@cref}{{[section][2][]2}{[1][1][]1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}\hskip -1em.~Composite GRPO (Original Paper)}{1}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}\hskip -1em.~Answer-Only GRPO (New Experiment)}{1}{subsection.2.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces \textbf  {Answer-Only trajectory.} Stable, no collapse. Match-F1 remains flat (0.41 to 0.44) throughout training. Reasoning does not improve without reasoning reward.}}{2}{table.caption.4}\protected@file@percent }
+\newlabel{tab:answeronly}{{3}{2}{\textbf {Answer-Only trajectory.} Stable, no collapse. Match-F1 remains flat (0.41 to 0.44) throughout training. Reasoning does not improve without reasoning reward}{table.caption.4}{}}
+\newlabel{tab:answeronly@cref}{{[table][3][]3}{[1][1][]2}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces \textbf  {CPR trajectory.} Soft collapse at step 700 with full self-correction. Both accuracy and F1 improve simultaneously from step 700 to 2400.}}{2}{table.caption.5}\protected@file@percent }
+\newlabel{tab:cpr}{{4}{2}{\textbf {CPR trajectory.} Soft collapse at step 700 with full self-correction. Both accuracy and F1 improve simultaneously from step 700 to 2400}{table.caption.5}{}}
+\newlabel{tab:cpr@cref}{{[table][4][]4}{[1][2][]2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}\hskip -1em.~Causal Process Reward (New Experiment)}{2}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}\hskip -1em.~Training Dynamics Visualization}{2}{subsection.2.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \textbf  {Match-F1 training trajectories.} Composite oscillates due to accuracy-reasoning gradient conflict. Answer-Only remains flat (no reasoning reward). CPR recovers from soft collapse and improves monotonically from step 700 to 2400.}}{2}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:f1_traj}{{2}{2}{\textbf {Match-F1 training trajectories.} Composite oscillates due to accuracy-reasoning gradient conflict. Answer-Only remains flat (no reasoning reward). CPR recovers from soft collapse and improves monotonically from step 700 to 2400}{figure.caption.6}{}}
+\newlabel{fig:f1_traj@cref}{{[figure][2][]2}{[1][2][]2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces \textbf  {Accuracy alone is misleading.} Answer-Only reaches the highest accuracy (44.90\%) but its Match-F1 stays flat (see Figure~\ref {fig:f1_traj}), meaning reasoning never improves. Composite collapses at step 600. CPR sacrifices 3.5pp accuracy to gain +32\% in reasoning quality, the only strategy that improves both.}}{2}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:acc_traj}{{3}{2}{\textbf {Accuracy alone is misleading.} Answer-Only reaches the highest accuracy (44.90\%) but its Match-F1 stays flat (see Figure~\ref {fig:f1_traj}), meaning reasoning never improves. Composite collapses at step 600. CPR sacrifices 3.5pp accuracy to gain +32\% in reasoning quality, the only strategy that improves both}{figure.caption.7}{}}
+\newlabel{fig:acc_traj@cref}{{[figure][3][]3}{[1][2][]2}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces \textbf  {Precision/Recall balance at best checkpoint.} Composite maximizes precision but collapses recall. CPR achieves the most balanced ratio.}}{2}{table.caption.8}\protected@file@percent }
+\newlabel{tab:prec_recall}{{5}{2}{\textbf {Precision/Recall balance at best checkpoint.} Composite maximizes precision but collapses recall. CPR achieves the most balanced ratio}{table.caption.8}{}}
+\newlabel{tab:prec_recall@cref}{{[table][5][]5}{[1][2][]2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}\hskip -1em.~Cross-Strategy Analysis}{2}{subsection.2.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces \textbf  {Precision vs Recall at best checkpoint.} Composite maximizes precision (0.983) at the cost of recall (0.284). CPR achieves the highest recall (0.488) while maintaining near-identical precision (0.975), yielding the most balanced performance.}}{3}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:prec_rec_bars}{{4}{3}{\textbf {Precision vs Recall at best checkpoint.} Composite maximizes precision (0.983) at the cost of recall (0.284). CPR achieves the highest recall (0.488) while maintaining near-identical precision (0.975), yielding the most balanced performance}{figure.caption.9}{}}
+\newlabel{fig:prec_rec_bars@cref}{{[figure][4][]4}{[1][3][]3}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}\hskip -1em.~Responses to Reviewer GRPO Questions}{3}{section.3}\protected@file@percent }
+\newlabel{sec:responses}{{3}{3}{\texorpdfstring {\hskip -1em.~}{}Responses to Reviewer GRPO Questions}{section.3}{}}
+\newlabel{sec:responses@cref}{{[section][3][]3}{[1][3][]3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}\hskip -1em.~Reviewer Aho6}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}\hskip -1em.~Reviewer xNF6}{3}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}\hskip -1em.~Reviewer G1hH}{3}{subsection.3.3}\protected@file@percent }
+\bibstyle{ieeenat_fullname}
+\bibcite{grpo}{{1}{}{{}}{{}}}
+\bibcite{yu2020pcgrad}{{2}{}{{}}{{}}}
+\providecommand\NAT@force@numbers{}\NAT@force@numbers
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces \textbf  {CPR: accuracy and reasoning co-evolve.} Both metrics are normalized (0 = worst, 1 = best) for direct comparison. After a brief dip at step 700, accuracy and Match-F1 rise together through step 2400. This co-evolution is unique to CPR: Composite shows divergence (high accuracy, low F1) and Answer-Only shows stagnation (high accuracy, flat F1).}}{4}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:cpr_dynamics}{{5}{4}{\textbf {CPR: accuracy and reasoning co-evolve.} Both metrics are normalized (0 = worst, 1 = best) for direct comparison. After a brief dip at step 700, accuracy and Match-F1 rise together through step 2400. This co-evolution is unique to CPR: Composite shows divergence (high accuracy, low F1) and Answer-Only shows stagnation (high accuracy, flat F1)}{figure.caption.10}{}}
+\newlabel{fig:cpr_dynamics@cref}{{[figure][5][]5}{[1][4][]4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}\hskip -1em.~Meta-Review}{4}{subsection.3.4}\protected@file@percent }
+\gdef \@abspage@last{4}

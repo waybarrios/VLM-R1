@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the postcards attached to the magnets.",
+    "Note that there are 7 postcards.",
+    "Understand that each postcard is held by one magnet.",
+    "Determine the total number of magnets used.",
+    "Calculate the maximum number of magnets Lisa can remove without causing the postcards to fall.",
+    "Conclude that the maximum number of magnets Lisa can remove is 6."
+  ],
+  "answer": "6"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the kangaroos in the image.",
+    "Note the kangaroos standing next to each other and facing each other.",
+    "Understand the process of the kangaroos changing places.",
+    "Count the number of changes of places.",
+    "Conclude that there were four changes of places."
+  ],
+  "answer": "4"
+}

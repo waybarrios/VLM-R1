@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the months listed on the x-axis.",
+    "Note the precipitation values for each month.",
+    "Determine which month has the highest precipitation value.",
+    "Conclude that May is the wettest month on average in Christchurch.",
+    "Verify the answer against the data presented in the graph."
+  ],
+  "answer": "May"
+}

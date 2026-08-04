@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the properties of the rhombus.",
+    "Note that the diagonals of a rhombus bisect each other at right angles.",
+    "Understand that the perpendicular distances from $N$ to $AC$ and $BD$ will create right triangles.",
+    "Conclude that the minimum length of $PQ$ occurs when $N$ is at the midpoint of $AB$.",
+    "Calculate the lengths of the segments $AN$ and $BN$.",
+    "Determine the coordinates of $P$ and $Q$ in terms of $N$'s position."
+  ],
+  "answer": "12"
+}

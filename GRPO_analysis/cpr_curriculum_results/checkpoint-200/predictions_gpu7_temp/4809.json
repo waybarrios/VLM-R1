@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of Kentucky.",
+    "Note that the capital of Kentucky is listed in the image.",
+    "Identify the capital of Kentucky as Frankfort.",
+    "Conclude that the capital of Kentucky is Frankfort."
+  ],
+  "answer": "Frankfort"
+}

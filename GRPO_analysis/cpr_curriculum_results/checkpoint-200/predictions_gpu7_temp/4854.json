@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the highlighted country on the map.",
+    "Note the country's name on the map.",
+    "Confirm that the highlighted country is the Dominican Republic.",
+    "Conclude that the highlighted country is the Dominican Republic."
+  ],
+  "answer": "the Dominican Republic"
+}

@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the total width of the 3-seater sofa.",
+    "Note the width of the 2-seater sofa.",
+    "Understand that the 1-seater sofa has the same width as the 2-seater sofa.",
+    "Conclude that the 1-seater sofa is 80 cm wide."
+  ],
+  "answer": "80 cm"
+}

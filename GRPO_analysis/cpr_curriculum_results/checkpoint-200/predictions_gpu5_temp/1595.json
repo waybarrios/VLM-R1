@@ -1,0 +1,12 @@
+{
+  "reasoning_steps": [
+    "Identify the numbers in the addition sum.",
+    "Note that the sum is 309.",
+    "Determine the missing digits by subtracting the known numbers from the total sum.",
+    "Subtract 1 * 2 = 2 from 309.",
+    "Subtract 1 * 3 = 3 from the result.",
+    "Subtract 1 * 4 = 4 from the remaining sum.",
+    "The sum of the three missing digits is 9."
+  ],
+  "answer": "9"
+}

@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the semicircle with diameter AB inside the square.",
+    "Note that the semicircle is tangent to AD at E.",
+    "Determine the length of CE by considering the right triangle formed by CE, AE, and the radius of the semicircle.",
+    "Calculate the length of CE using the Pythagorean theorem."
+  ],
+  "answer": "sqrt(5)"
+}

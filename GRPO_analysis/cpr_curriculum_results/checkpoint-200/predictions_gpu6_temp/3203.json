@@ -1,0 +1,13 @@
+{
+  "reasoning_steps": [
+    "Identify the triangle as an isosceles triangle with base AC.",
+    "Note that D is the foot of the perpendicular from B to AC.",
+    "Since BD is perpendicular to AC, BD is the altitude of the isosceles triangle.",
+    "The length of BD is given as 57.",
+    "In an isosceles triangle, the altitude splits the base into two equal segments.",
+    "Let AD be x and CD be y, where x + y = AC.",
+    "Using the Pythagorean theorem in triangle ABD, we get BD² = AD² + AB².",
+    "Since AB = AC, we can express AC in terms of x and y."
+  ],
+  "answer": "13"
+}

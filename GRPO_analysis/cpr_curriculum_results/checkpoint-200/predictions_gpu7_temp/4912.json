@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the ocean highlighted in the map.",
+    "Note the ocean's color and shape.",
+    "The ocean highlighted is surrounded by landmasses.",
+    "The ocean appears to be the Southern Ocean.",
+    "The Southern Ocean is the ocean that surrounds Antarctica.",
+    "The Southern Ocean is the ocean highlighted in the image."
+  ],
+  "answer": "the Southern Ocean"
+}

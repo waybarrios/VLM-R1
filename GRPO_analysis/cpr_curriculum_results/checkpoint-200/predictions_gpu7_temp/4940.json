@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the months listed on the x-axis.",
+    "Note the precipitation values for each month.",
+    "Determine which month has the highest precipitation.",
+    "Identify the months with the lowest precipitation.",
+    "Conclude that there is a seasonal pattern in precipitation.",
+    "Conclude that Charlotte has a rainy season and a dry season."
+  ],
+  "answer": "Charlotte has a rainy season and a dry season."
+}

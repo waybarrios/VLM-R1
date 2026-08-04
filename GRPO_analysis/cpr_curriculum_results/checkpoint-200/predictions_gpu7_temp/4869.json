@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the control group in the experiment.",
+    "Note that the control group is the unpruned tomato plants.",
+    "Determine the experimental group by observing the pruned tomato plants.",
+    "Conclude that the pruned tomato plants are the experimental group."
+  ],
+  "answer": "the pruned tomato plants"
+}

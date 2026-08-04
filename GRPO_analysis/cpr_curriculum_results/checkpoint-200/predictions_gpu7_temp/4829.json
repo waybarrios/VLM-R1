@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the animal in the image.",
+    "Note the animal's physical characteristics.",
+    "Understand the definition of a mammal.",
+    "Match the animal in the image with the definition of a mammal.",
+    "Conclude that the koala is a mammal."
+  ],
+  "answer": "human"
+}

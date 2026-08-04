@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the organism in the image as a European green toad.",
+    "Note the species name 'Bufo bufo' listed in the image.",
+    "Understand that 'Bufo bufo' is the scientific name for the European green toad.",
+    "Recall that the European green toad belongs to the genus Bufo.",
+    "Conclude that the organism in the same genus as the European green toad is Bufo bufo."
+  ],
+  "answer": "Bufo bufo"
+}

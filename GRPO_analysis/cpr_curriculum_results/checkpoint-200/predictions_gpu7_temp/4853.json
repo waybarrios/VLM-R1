@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Tristan wants a sandwich, oranges, broccoli, and water.",
+    "Lorenzo wants a hot dog, tomatoes, and almonds.",
+    "Tristan can trade his tomatoes for Lorenzo's broccoli.",
+    "Lorenzo can trade his almonds for Tristan's tomatoes.",
+    "The trade will satisfy both Tristan and Lorenzo's preferences."
+  ],
+  "answer": "Tristan can trade his tomatoes for Lorenzo's broccoli."
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the chemical structure shown in the image.",
+    "Note that Chloroform has a carbon atom bonded to three chlorine atoms.",
+    "Understand that Chloroform is composed of different elements.",
+    "Conclude that Chloroform is a compound.",
+    "Confirm the presence of multiple elements in Chloroform."
+  ],
+  "answer": "a compound"
+}

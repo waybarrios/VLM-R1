@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the wind's behavior in the image.",
+    "Note the leaves are falling, which suggests the wind is strong.",
+    "Understand that wind is a form of air movement.",
+    "Recall that air is a gas.",
+    "Conclude that the wind through the tree is a gas."
+  ],
+  "answer": "a gas"
+}

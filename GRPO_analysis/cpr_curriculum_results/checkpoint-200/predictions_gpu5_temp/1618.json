@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the road sign with the most symmetrical shape.",
+    "Note that the sign in option A has one axis of symmetry.",
+    "Option B has two axes of symmetry, which is more than the other signs.",
+    "Option C has one axis of symmetry, which is less than the other signs.",
+    "Option D has one axis of symmetry, which is less than the other signs.",
+    "Option E has one axis of symmetry, which is less than the other signs."
+  ],
+  "answer": "A"
+}

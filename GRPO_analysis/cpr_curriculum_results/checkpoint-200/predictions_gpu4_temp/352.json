@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the street sign indicating the traffic regulations.",
+    "Note the presence of a stop sign near the intersection.",
+    "Determine that the street sign suggests a right turn.",
+    "Conclude that a U-turn is not allowed in this location."
+  ],
+  "answer": "no"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the vehicles in the image.",
+    "Note the vehicles within the specified distance.",
+    "Count the vehicles that appear to be within the 20-meter range.",
+    "Confirm the count of vehicles.",
+    "Conclude with the number of vehicles."
+  ],
+  "answer": "2"
+}

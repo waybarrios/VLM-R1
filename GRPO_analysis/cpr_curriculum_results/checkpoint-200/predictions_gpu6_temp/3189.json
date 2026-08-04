@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the regular hexagon ABCDEF.",
+    "Note that the midpoints of the sides of the hexagon form another hexagon.",
+    "Understand that the smaller hexagon is similar to the original hexagon.",
+    "Recall that the ratio of the side lengths of the smaller hexagon to the original hexagon is 1/2.",
+    "Conclude that the area of the smaller hexagon is 1/4 of the area of the original hexagon.",
+    "Therefore, the fraction of the area of the original hexagon that is enclosed by the smaller hexagon is 1/4."
+  ],
+  "answer": "1/4"
+}

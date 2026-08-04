@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the parking spot in question.",
+    "Note the 'No Parking' sign.",
+    "Understand the time restriction mentioned on the sign.",
+    "Determine that the parking spot is not allowed for the next 2 hours.",
+    "Conclude that parking in the spot is illegal."
+  ],
+  "answer": "no"
+}

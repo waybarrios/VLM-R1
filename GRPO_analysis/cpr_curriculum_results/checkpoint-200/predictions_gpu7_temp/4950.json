@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of Indiana.",
+    "Note that the capital of Indiana is listed in the image.",
+    "Indiana is a state in the Midwest of the United States.",
+    "The capital of Indiana is Indianapolis.",
+    "Conclude that Indianapolis is the capital of Indiana."
+  ],
+  "answer": "Indianapolis"
+}

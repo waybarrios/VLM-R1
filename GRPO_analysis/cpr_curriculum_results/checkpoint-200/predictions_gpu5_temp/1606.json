@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the total area covered by the shape.",
+    "Note that each square has an area of 4 cm².",
+    "Calculate the total area of the shape.",
+    "Determine the length of the thick line.",
+    "Conclude that the length of the thick line is 20 cm."
+  ],
+  "answer": "20 cm"
+}

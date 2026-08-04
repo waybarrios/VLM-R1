@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of Colorado.",
+    "Note that the capital of Colorado is listed in the image.",
+    "Verify the capital of Colorado is Denver.",
+    "Conclude that the capital of Colorado is Denver."
+  ],
+  "answer": "Denver"
+}

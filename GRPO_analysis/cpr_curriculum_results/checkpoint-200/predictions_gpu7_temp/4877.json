@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the hand pushing the balls.",
+    "Note the direction of the push.",
+    "Observe the balls moving away from the boy's thumb.",
+    "Conclude that the push is away from the boy's thumb."
+  ],
+  "answer": "away from the boy's thumb"
+}

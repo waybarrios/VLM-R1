@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of Nebraska.",
+    "Note that the capital of Nebraska is listed in the image.",
+    "Identify the capital of Nebraska as Lincoln.",
+    "Confirm that Lincoln is the capital of Nebraska.",
+    "Conclude that the capital of Nebraska is Lincoln."
+  ],
+  "answer": "Lincoln"
+}

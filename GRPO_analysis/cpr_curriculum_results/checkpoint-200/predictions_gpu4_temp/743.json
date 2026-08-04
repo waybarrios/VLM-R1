@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the traffic light on the right side of the road.",
+    "Note that the traffic light is red.",
+    "Understand that red lights indicate that you must stop.",
+    "Determine that turning right is not allowed at this intersection.",
+    "Conclude that you cannot turn right."
+  ],
+  "answer": "no"
+}

@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the ice cream sundae, which is sticky.",
+    "Note the caramel corn, which is also sticky.",
+    "Observe the ice pop, which is sticky.",
+    "Conclude that all three objects are sticky.",
+    "The common property among the objects is stickiness."
+  ],
+  "answer": "sticky"
+}

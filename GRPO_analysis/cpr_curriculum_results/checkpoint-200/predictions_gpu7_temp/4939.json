@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the initial and final temperatures of both salmon.",
+    "Note that the salmon on the right half of the grill has a higher final temperature.",
+    "Conclude that the salmon on the left half of the grill lost heat.",
+    "Determine that the surroundings gained heat from the salmon.",
+    "Conclude that thermal energy transferred from the surroundings to each salmon."
+  ],
+  "answer": "the surroundings . . . each salmon"
+}

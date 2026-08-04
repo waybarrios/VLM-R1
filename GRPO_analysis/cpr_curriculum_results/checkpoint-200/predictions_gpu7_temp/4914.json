@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the alleles involved in the inheritance of dumbo ears.",
+    "Note that the parents both have dumbo ears, which suggests a dominant allele.",
+    "Assume the dominant allele is 'D' and the recessive allele is 'd'.",
+    "Calculate the expected genotypes in the offspring.",
+    "Determine the possible outcomes based on the genotypes.",
+    "Conclude that the offspring will have dumbo ears in a 3:1 ratio."
+  ],
+  "answer": "3:1"
+}

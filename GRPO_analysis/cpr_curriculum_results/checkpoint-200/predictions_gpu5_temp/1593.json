@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the correct positions of the letters in the word KANGAROO.",
+    "Note that the letter 'K' appears twice in the word.",
+    "Determine the number of times the letter 'K' needs to be turned to be in its correct position.",
+    "Identify the letter 'A' which needs to be turned once to be in its correct position.",
+    "Calculate the total number of turns needed to correct the word.",
+    "Conclude that Arno has to turn the word 3 times to read it correctly."
+  ],
+  "answer": "3"
+}

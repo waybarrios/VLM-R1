@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Utah is a state in the western United States.",
+    "Salt Lake City is the capital of Utah.",
+    "Nashville is the capital of Tennessee.",
+    "Boston is the capital of Massachusetts.",
+    "Salem is the capital of Oregon.",
+    "Therefore, the capital of Utah is Salt Lake City."
+  ],
+  "answer": "Salt Lake City"
+}

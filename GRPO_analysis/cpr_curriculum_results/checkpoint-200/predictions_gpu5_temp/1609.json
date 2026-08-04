@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the two types of plants in the garden.",
+    "Note that each plant has either 5 leaves or 2 leaves.",
+    "Determine the number of plants with 5 leaves.",
+    "Calculate the number of plants with 2 leaves.",
+    "Sum the total number of plants.",
+    "Verify the total number of leaves and flowers."
+  ],
+  "answer": "8"
+}

@@ -1,0 +1,11 @@
+{
+  "reasoning_steps": [
+    "Identify the existing triangles in the diagram.",
+    "Note that the big triangle is composed of smaller triangles.",
+    "Determine the number of small triangles needed to complete the big triangle.",
+    "Count the number of small triangles already present in the diagram.",
+    "Calculate the difference between the total number of small triangles needed and the ones already present.",
+    "Conclude that Clara needs to add 3 more small triangles to complete the big triangle."
+  ],
+  "answer": "3"
+}

@@ -1,0 +1,9 @@
+{
+  "reasoning_steps": [
+    "Identify the vehicles in the image.",
+    "Note the orange car parked near the building.",
+    "Confirm the presence of the orange car.",
+    "Conclude that there is an orange car parked."
+  ],
+  "answer": "no"
+}

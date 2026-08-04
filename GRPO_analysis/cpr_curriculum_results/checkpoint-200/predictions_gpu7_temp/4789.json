@@ -1,0 +1,10 @@
+{
+  "reasoning_steps": [
+    "Identify the capital of Rhode Island.",
+    "Note that Rhode Island is a state in the northeastern United States.",
+    "Recall that Rhode Island's capital city is Providence.",
+    "Conclude that Providence is the capital of Rhode Island.",
+    "Verify the capital of Rhode Island is Providence."
+  ],
+  "answer": "Providence"
+}
